@@ -82,11 +82,13 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, Tryte const& tryte);
 	friend std::istream& operator>>(std::istream& is, Tryte const& tryte);
 
-};
+	/*
+	handle arithmetic involving carry in static functions
+	*/
+	static Tryte add_with_carry(Tryte const& t1, Tryte const& t2, int8_t& carry);
+	static Tryte add_with_carry(Tryte const& t, int64_t const n, int8_t& carry);
+	static Tryte sub_with_borrow(Tryte const& t1, Tryte const& t2, int8_t& carry);
+	static Tryte sub_with_borrow(Tryte const& t, int64_t const n, int8_t& carry);
+	static Tryte shift(Tryte const& t1, Tryte const& t2, int8_t& carry);
 
-// handle arithmetic involving carry in separate functions
-Tryte add_with_carry(Tryte const& t1, Tryte const& t2, int8_t& carry);
-Tryte add_with_carry(Tryte const& t, int64_t const n, int8_t& carry);
-Tryte sub_with_borrow(Tryte const& t1, Tryte const& t2, int8_t& carry);
-Tryte sub_with_borrow(Tryte const& t, int64_t const n, int8_t& carry);
-Tryte shift(Tryte const& t1, Tryte const& t2, int8_t& carry);
+};

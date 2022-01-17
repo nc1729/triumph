@@ -239,6 +239,10 @@ Tryte Tryte::operator+(Tryte const& other) const
 {
 	int8_t temp;
 	int8_t carry = 0;
+
+	int8_t out_high = 0;
+	int8_t out_mid = 0;
+	int8_t out_low = 0;
 	
 	temp = this->_low + other._low;
 	if (temp > 13)
@@ -251,4 +255,78 @@ Tryte Tryte::operator+(Tryte const& other) const
 		temp += 13;
 		carry -= 1;
 	}
+	out_low = temp;
+
+	temp = this->_mid + other._mid + carry;
+	carry = 0;
+	if (temp > 13)
+	{
+		temp -= 13;
+		carry += 1;
+	}
+	else if (temp < -13)
+	{
+		temp += 13;
+		carry -= 1;
+	}
+	out_mid = temp;
+
+	temp = this->_high + other._high + carry;
+	carry = 0;
+	if (temp > 13)
+	{
+		temp -= 13;
+		carry += 1;
+	}
+	else if (temp < -13)
+	{
+		temp += 13;
+		carry -= 1;
+	}
+	out_high = temp;
+
+	return Tryte({ out_high, out_mid, out_low });
+
+}
+
+Tryte& Tryte::operator+=(Tryte const& other)
+{
+	*this = *this + other;
+	return *this;
+}
+
+Tryte Tryte::operator-(Tryte const& other) const
+{
+	return (*this) + (-other);
+}
+
+Tryte& Tryte::operator-=(Tryte const& other)
+{
+	*this = *this - other;
+	return *this;
+}
+
+Tryte Tryte::operator-() const
+{
+	int64_t const flip = -Tryte::get_int(*this);
+	return Tryte(flip);
+}
+
+std::ostream& operator<<(std::ostream& os, Tryte const& tryte)
+{
+	os << Tryte::get_str(tryte);
+	return os;
+}
+
+std::istream& operator>>(std::istream& is, Tryte const& tryte)
+{
+	char[3] c{0, 0, 0};
+
+	is >> c[0] >> c[1] >> c[2];
+
+	tryte._high = Tryte::schar_to_val[c[0]];
+	tryte._mid = Tryte::schar_to_val[c[1]];
+	tryte._low = Tryte::schar_to_val[c[2]];
+
+	return is;
 }
