@@ -3,9 +3,15 @@
 #include <stdexcept>
 #include <string>
 #include <array>
+#include <algorithm>
 
 #include "Tryte.h"
 
+std::map<char, int8_t> const Tryte::schar_to_val =
+	{ {'M', -13}, {'L', -12}, {'K', -11}, {'J', -10}, {'I', -9}, {'H', -8}, {'G', -7}, {'F', -6}, {'E', -5},
+	  {'D',  -4}, {'C',  -3}, {'B',  -2}, {'A',  -1}, {'0',  0}, {'a',  1}, {'b',  2}, {'c',  3}, {'d',  4},
+	  {'e',   5}, {'f',   6}, {'g',   7}, {'h',   8}, {'i',  9}, {'j', 10}, {'k', 11}, {'l', 12}, {'m', 13} };
+std::string const Tryte::schars = "MLKJIHGFEDCBA0abcdefghijklm";
 Tryte::Tryte(int64_t n)
 {
 	// calculate _high
@@ -51,7 +57,7 @@ Tryte::Tryte(int64_t n)
 	_low = n;
 }
 
-Tryte::Tryte(char[4] const& s)
+Tryte::Tryte(std::string const& s)
 {
 	try
 	{
@@ -63,6 +69,20 @@ Tryte::Tryte(char[4] const& s)
 	{
 		throw std::out_of_range("Invalid string for Tryte initialisation.");
 	}
+}
+
+Tryte::Tryte(std::array<int8_t, 3> const& arr)
+{
+	_high = arr[0];
+	_mid  = arr[1];
+	_low  = arr[2];
+}
+
+Tryte::Tryte(std::array<int8_t, 9> const& arr)
+{
+	_high = (9 * arr[0]) + (3 * arr[1]) + arr[2];
+	_mid  = (9 * arr[3]) + (3 * arr[4]) + arr[5];
+	_low  = (9 * arr[6]) + (3 * arr[7]) + arr[8];
 }
 
 int64_t constexpr Tryte::get_int(Tryte const& tryte)
@@ -127,4 +147,108 @@ std::array<int8_t, 9> constexpr Tryte::ternary_array(Tryte const& tryte)
 	}
 
 	return output;
+}
+
+bool Tryte::operator==(Tryte const& other) const
+{
+	return (this->_high == other._high) && (this->_mid == other._mid) && (this->_low == other._low);
+}
+
+bool Tryte::operator!=(Tryte const& other) const
+{
+	return !(*this == other);
+}
+
+bool Tryte::operator<(Tryte const& other) const
+{
+	int64_t const this_int = Tryte::get_int(*this);
+	int64_t const other_int = Tryte::get_int(other);
+	return this_int < other_int;
+}
+
+bool Tryte::operator<=(Tryte const& other) const
+{
+	int64_t const this_int = Tryte::get_int(*this);
+	int64_t const other_int = Tryte::get_int(other);
+	return this_int <= other_int;
+}
+
+bool Tryte::operator>(Tryte const& other) const
+{
+	int64_t const this_int = Tryte::get_int(*this);
+	int64_t const other_int = Tryte::get_int(other);
+	return this_int > other_int;
+}
+
+bool Tryte::operator>=(Tryte const& other) const
+{
+	int64_t const this_int = Tryte::get_int(*this);
+	int64_t const other_int = Tryte::get_int(other);
+	return this_int >= other_int;
+}
+
+Tryte Tryte::operator&(Tryte const& other) const
+{
+	std::array<int8_t, 9> const this_array = Tryte::ternary_array(*this);
+	std::array<int8_t, 9> const other_array = Tryte::ternary_array(other);
+
+	std::array<int8_t, 9> out_array;
+
+	for (size_t i = 0; i < 9; i++)
+	{
+		out_array[i] = std::min(this_array[i], other_array[i]);
+	}
+
+	return Tryte(out_array);
+}
+
+Tryte& Tryte::operator&=(Tryte const& other)
+{
+	*this = *this & other;
+	return *this;
+}
+
+Tryte Tryte::operator|(Tryte const& other) const
+{
+	std::array<int8_t, 9> const this_array = Tryte::ternary_array(*this);
+	std::array<int8_t, 9> const other_array = Tryte::ternary_array(other);
+
+	std::array<int8_t, 9> out_array;
+
+	for (size_t i = 0; i < 9; i++)
+	{
+		out_array[i] = std::max(this_array[i], other_array[i]);
+	}
+
+	return Tryte(out_array);
+}
+
+Tryte& Tryte::operator|=(Tryte const& other)
+{
+	*this = *this | other;
+	return *this;
+}
+
+Tryte Tryte::operator~() const
+{
+	int64_t const flip = -Tryte::get_int(*this);
+	return Tryte(flip);
+}
+
+Tryte Tryte::operator+(Tryte const& other) const
+{
+	int8_t temp;
+	int8_t carry = 0;
+	
+	temp = this->_low + other._low;
+	if (temp > 13)
+	{
+		temp -= 13;
+		carry += 1;
+	}
+	else if (temp < -13)
+	{
+		temp += 13;
+		carry -= 1;
+	}
 }
