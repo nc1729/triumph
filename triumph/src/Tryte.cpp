@@ -24,7 +24,7 @@ Tryte::Tryte(int64_t n)
 	{
 		n += 19683;
 	}
-	_high = n / 729;
+	_high = static_cast<int8_t>(n / 729);
 
 	// calculate _mid
 	n %= 729;
@@ -40,7 +40,7 @@ Tryte::Tryte(int64_t n)
 		// borrow from high
 		_high--;
 	}
-	_mid = n / 27;
+	_mid = static_cast<int8_t>(n / 27);
 
 	// calculate _low
 	n %= 27;
@@ -54,28 +54,14 @@ Tryte::Tryte(int64_t n)
 		n += 27;
 		_mid--;
 	}
-	_low = n;
+	_low = static_cast<int8_t>(n);
 }
 
 Tryte::Tryte(std::string const& s)
 {
-	try
-	{
-		_high = schar_to_val.at(s[0]);
-		_mid  = schar_to_val.at(s[1]);
-		_low  = schar_to_val.at(s[2]);
-	}
-	catch (std::out_of_range& e)
-	{
-		throw std::out_of_range("Invalid string for Tryte initialisation.");
-	}
-}
-
-Tryte::Tryte(std::array<int8_t, 3> const& arr)
-{
-	_high = arr[0];
-	_mid  = arr[1];
-	_low  = arr[2];
+	_high = schar_to_val.at(s[0]);
+	_mid = schar_to_val.at(s[1]);
+	_low = schar_to_val.at(s[2]);
 }
 
 Tryte::Tryte(std::array<int8_t, 9> const& arr)
@@ -85,12 +71,12 @@ Tryte::Tryte(std::array<int8_t, 9> const& arr)
 	_low  = (9 * arr[6]) + (3 * arr[7]) + arr[8];
 }
 
-int64_t constexpr Tryte::get_int(Tryte const& tryte)
+int64_t Tryte::get_int(Tryte const& tryte)
 {
 	return 729 * static_cast<int64_t>(tryte._high) + 27 * static_cast<int64_t>(tryte._mid) + static_cast<int64_t>(tryte._low);
 }
 
-std::string constexpr Tryte::get_str(Tryte const& tryte)
+std::string Tryte::get_str(Tryte const& tryte)
 {
 	std::string out(3, '0');
 	out[0] = Tryte::schars[tryte._high + 13];
@@ -99,7 +85,7 @@ std::string constexpr Tryte::get_str(Tryte const& tryte)
 	return out;
 }
 
-int8_t constexpr Tryte::sign(Tryte const& tryte)
+int8_t Tryte::sign(Tryte const& tryte)
 {
 	int64_t tryte_int = Tryte::get_int(tryte);
 	if (tryte_int > 0)
@@ -116,7 +102,7 @@ int8_t constexpr Tryte::sign(Tryte const& tryte)
 	}
 }
 
-std::array<int8_t, 9> constexpr Tryte::ternary_array(Tryte const& tryte)
+std::array<int8_t, 9> Tryte::ternary_array(Tryte const& tryte)
 {
 	std::array<int8_t, 9> output;
 
@@ -126,7 +112,7 @@ std::array<int8_t, 9> constexpr Tryte::ternary_array(Tryte const& tryte)
 	int64_t dividend = sign > 0 ? tryte_int : -tryte_int;
 	int64_t remainder = 0;
 
-	for (size_t i = 8; i >= 0; i--)
+	for (size_t i = 0; i < 9; i++)
 	{
 		remainder = dividend % 3;
 		dividend /= 3;
@@ -137,7 +123,7 @@ std::array<int8_t, 9> constexpr Tryte::ternary_array(Tryte const& tryte)
 			remainder = -1;
 		}
 		// fill output array
-		output[i] = remainder;
+		output[8 - i] = static_cast<int8_t>(remainder);
 	}
 
 	// flip sign back if necessary
@@ -237,56 +223,7 @@ Tryte Tryte::operator~() const
 
 Tryte Tryte::operator+(Tryte const& other) const
 {
-	int8_t temp;
-	int8_t carry = 0;
-
-	int8_t out_high = 0;
-	int8_t out_mid = 0;
-	int8_t out_low = 0;
-	
-	temp = this->_low + other._low;
-	if (temp > 13)
-	{
-		temp -= 13;
-		carry += 1;
-	}
-	else if (temp < -13)
-	{
-		temp += 13;
-		carry -= 1;
-	}
-	out_low = temp;
-
-	temp = this->_mid + other._mid + carry;
-	carry = 0;
-	if (temp > 13)
-	{
-		temp -= 13;
-		carry += 1;
-	}
-	else if (temp < -13)
-	{
-		temp += 13;
-		carry -= 1;
-	}
-	out_mid = temp;
-
-	temp = this->_high + other._high + carry;
-	carry = 0;
-	if (temp > 13)
-	{
-		temp -= 13;
-		carry += 1;
-	}
-	else if (temp < -13)
-	{
-		temp += 13;
-		carry -= 1;
-	}
-	out_high = temp;
-
-	return Tryte({ out_high, out_mid, out_low });
-
+	return Tryte::add_with_carry(*this, other, 0);
 }
 
 Tryte& Tryte::operator+=(Tryte const& other)
@@ -318,15 +255,118 @@ std::ostream& operator<<(std::ostream& os, Tryte const& tryte)
 	return os;
 }
 
-std::istream& operator>>(std::istream& is, Tryte const& tryte)
+std::istream& operator>>(std::istream& is, Tryte& tryte)
 {
-	char[3] c{0, 0, 0};
+	char c[3] = {0, 0, 0};
 
 	is >> c[0] >> c[1] >> c[2];
 
-	tryte._high = Tryte::schar_to_val[c[0]];
-	tryte._mid = Tryte::schar_to_val[c[1]];
-	tryte._low = Tryte::schar_to_val[c[2]];
+	tryte._high = Tryte::schar_to_val.at(c[0]);
+	tryte._mid = Tryte::schar_to_val.at(c[1]);
+	tryte._low = Tryte::schar_to_val.at(c[2]);
 
 	return is;
+}
+
+Tryte Tryte::add_with_carry(Tryte const& t1, Tryte const& t2, int8_t& carry)
+{
+	int8_t temp;
+
+	int8_t out_high = 0;
+	int8_t out_mid = 0;
+	int8_t out_low = 0;
+
+	temp = t1._low + t2._low + carry;
+	carry = 0;
+	if (temp > 13)
+	{
+		temp -= 27;
+		carry += 1;
+	}
+	else if (temp < -13)
+	{
+		temp += 27;
+		carry -= 1;
+	}
+	out_low = temp;
+
+	temp = t1._mid + t2._mid + carry;
+	carry = 0;
+	if (temp > 13)
+	{
+		temp -= 27;
+		carry += 1;
+	}
+	else if (temp < -13)
+	{
+		temp += 27;
+		carry -= 1;
+	}
+	out_mid = temp;
+
+	temp = t1._high + t2._high + carry;
+	carry = 0;
+	if (temp > 13)
+	{
+		temp -= 27;
+		carry += 1;
+	}
+	else if (temp < -13)
+	{
+		temp += 27;
+		carry -= 1;
+	}
+	out_high = temp;
+
+	return Tryte(out_high, out_mid, out_low);
+}
+
+Tryte Tryte::add_with_carry(Tryte const& t1, Tryte const& t2, int8_t&& carry)
+{
+	return Tryte::add_with_carry(t1, t2, carry);
+}
+
+Tryte Tryte::shift(Tryte const& t1, Tryte const& t2)
+{
+	int8_t shift = t2._low;
+
+	if (shift >= 9 || shift <= -9)
+	{
+		// shift out of range
+		return 0;
+	}
+	else if (shift == 0)
+	{
+		// shift by nothing, do nothing
+		return t1;
+	}
+	else if (shift > 0)
+	{
+		// tritshift left
+		std::array<int8_t, 9> t1_array = Tryte::ternary_array(t1);
+
+		for (int8_t i = 0; shift + i < 9; i++)
+		{
+			t1_array[i] = t1_array[shift + i];
+		}
+		return Tryte(t1_array);
+	}
+	else
+	{
+		// tritshift right
+		std::array<int8_t, 9> t1_array = Tryte::ternary_array(t1);
+
+		for (int8_t i = 8; i >= 0; i--)
+		{
+			if (shift + i >= 0)
+			{
+				t1_array[i] = t1_array[shift + i];
+			}
+			else
+			{
+				t1_array[i] = 0;
+			}
+		}
+		return Tryte(t1_array);
+	}
 }

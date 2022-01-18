@@ -266,24 +266,6 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Sign flag: Set with sign of result.
 - Stack flag: No effect.
 
-#### SBB X, Y
-- Opcode: GXY
-- Length: 1 tryte
-- Description: X -= (Y - c), where 'c' is the current value in the carry flag, being used as a borrow.
-- Compare flag: No effect.
-- Carry flag: Carry flag will be set; '+' if overflow is positive, '0' if no overflow, '-' if overflow is negative.
-- Sign flag: Set with sign of result.
-- Stack flag: No effect.
-
-#### SBB X, t9
-- Opcode: mGX t9
-- Length: 2 trytes
-- Description: X -= (t9 - c), where 'c' is the current value in the carry flag, being used as a borrow.
-- Compare flag: No effect.
-- Carry flag: Carry flag will be set; '+' if overflow is positive, '0' if no overflow, '-' if overflow is negative.
-- Sign flag: Set with sign of result.
-- Stack flag: No effect.
-
 #### SH X, Y
 - Opcode: CXY
 - Length: 1 tryte
