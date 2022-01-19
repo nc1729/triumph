@@ -3,7 +3,7 @@
 #include "Bank.h"
 #include "Tryte.h"
 
-Bank::Bank(size_t const size = 6561)
+Bank::Bank(int64_t const number, size_t const size = 6561) : number{number}
 {
 	// initialise all Trytes in memory bank to zero
 	_bank.resize(size);

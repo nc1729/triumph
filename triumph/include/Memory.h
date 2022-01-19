@@ -9,13 +9,13 @@
 class Memory
 {
 private:
-	std::vector<Bank> _banks;
+	BankManager _banks;
 	std::array<Tryte, 6561 * 2> _local;
 	// write boot code to memory
 	void init();
 
 public:
-	Memory(size_t const number_of_banks);
+	Memory(size_t const number_of_banks, std::vector<Bank*> const& bank_ptrs);
 
 	Tryte& operator[](int64_t const addr);
 	Tryte const& operator[](int64_t const addr) const;
