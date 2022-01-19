@@ -123,6 +123,18 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Sign flag: No effect.
 - Stack flag: No effect.
 
+### Memory bank management
+
+#### BANK X
+- Opcode: mjX
+- Length: 1 tryte
+- Description: Set current BANK to value of register X
+
+#### BANK t9
+- Opcode: Mj0 t9
+- Length: 1 tryte
+- Description: Set current BANK to value of immediate t9
+
 ### Register management
 
 #### SET X, Y
@@ -209,6 +221,16 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Carry flag: No effect.
 - Sign flag: No effect.
 - Stack flag: No effect.
+
+#### PORT X
+- Opcode: mJX
+- Length: 1 tryte
+- Description: Set current PORT to value of register X
+
+### PORT t9
+- Opcde: MJ0 t9
+- Length: 2 trytes
+- Description: Set current PORT to value of immediate t9
 
 ### Arithmetic operations
 
@@ -311,6 +333,15 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Sign flag: No effect.
 - Stack flag: No effect.
 
+#### ZERO X
+- Opcode: m0X
+- Length: 1 tryte
+- Description: X = 0; short for "SET X, 0", which would be a 2 Tryte instruction "maX 000"
+- Compare flag: No effect.
+- Carry flag: No effect.
+- Sign flag: No effect.
+- Stack flag: No effect.
+
 ### Logic operations
 
 #### CMP X, Y
@@ -363,6 +394,24 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Length: 2 trytes
 - Description: X |= t9, where | is the ternary OR operator.
 - Compare flag: Set to sign(X | t9).
+- Carry flag: No effect.
+- Sign flag: No effect.
+- Stack flag: No effect.
+
+#### STAR X, Y
+- Opcode: GXY
+- Length: 1 tryte
+- Description: Tritwise multiply registers X and Y. Useful for singling out particular trits. For example mmm * 00a = 00a.
+- Compare flag: Set to sign(X * Y).
+- Carry flag: No effect.
+- Sign flag: No effect.
+- Stack flag: No effect.
+
+#### STAR X, t9
+- Opcode: mGX t9
+- Length: 2 trytes
+- Description: X *= t9, where * is the ternary STAR operator, tritwise multiplication.
+- Compare flag: Set to sign(X * t9).
 - Carry flag: No effect.
 - Sign flag: No effect.
 - Stack flag: No effect.

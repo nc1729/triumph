@@ -71,11 +71,6 @@ Tryte::Tryte(std::array<int8_t, 9> const& arr)
 	_low  = (9 * arr[6]) + (3 * arr[7]) + arr[8];
 }
 
-int64_t Tryte::get_int(Tryte const& tryte)
-{
-	return 729 * static_cast<int64_t>(tryte._high) + 27 * static_cast<int64_t>(tryte._mid) + static_cast<int64_t>(tryte._low);
-}
-
 std::string Tryte::get_str(Tryte const& tryte)
 {
 	std::string out(3, '0');
