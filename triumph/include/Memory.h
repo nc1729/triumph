@@ -1,9 +1,9 @@
 #pragma once
 
-#include <vector>
+#include <cstdint>
 #include <array>
 
-#include "Bank.h"
+#include "BankManager.h"
 #include "Tryte.h"
 
 class Memory
@@ -28,6 +28,10 @@ public:
 	static int64_t const SP = 9840;
 	// $mmm - program counter
 	static int64_t const PC = 9841;
+	// $Emm - bank memory end
+	static int64_t const BANK_END = (-9841 + 6561);
+	// $m00 - reserved memory start
+	static int64_t const RESERVED_START = (9841 - 365);
 
 	// public access to current port
 	Tryte& port();

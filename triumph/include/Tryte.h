@@ -38,11 +38,18 @@ public:
 	/*
 	useful functions
 	*/
-	int64_t static get_int(Tryte const& tryte);
+	int64_t static constexpr get_int(Tryte const& tryte)
+	{
+		return 729 * static_cast<int64_t>(tryte._high) + 27 * static_cast<int64_t>(tryte._mid) + static_cast<int64_t>(tryte._low);
+	};
 	std::string static get_str(Tryte const& tryte);
 	int8_t static sign(Tryte const& tryte);
 	std::array<int8_t, 9> static ternary_array(Tryte const& tryte);
 
+	/*
+	cast to int64_t
+	*/
+	operator int64_t() const { return Tryte::get_int(*this); }
 	/*
 	relational operators
 	*/

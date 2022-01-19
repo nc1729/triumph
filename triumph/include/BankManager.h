@@ -14,5 +14,6 @@ private:
 public:
 	BankManager(std::vector<Bank*> const& bank_ptrs);
 
-	Tryte& operator()(int64_t const label, int64_t addr);
+	Tryte& operator()(int64_t const label, int64_t const addr);
+	Tryte const& operator()(int64_t const label, int64_t addr) const;
 };

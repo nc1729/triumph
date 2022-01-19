@@ -18,7 +18,14 @@ BankManager::BankManager(std::vector<Bank*> const& bank_ptrs) : _bank_ptrs{bank_
 
 Tryte& BankManager::operator()(int64_t const label, int64_t const addr)
 {
-    Bank* bank = _bank_ptrs[_label_map[label]];
+    Bank* bank = _bank_ptrs[_label_map.at(label)];
+    // map addr from "Tryte" memory space [-9841, -3280) to [0, 6561)
+    return (*bank)[static_cast<size_t>(addr + 9841)];
+}
+
+Tryte const& BankManager::operator()(int64_t const label, int64_t const addr) const
+{
+    Bank* bank = _bank_ptrs[_label_map.at(label)];
     // map addr from "Tryte" memory space [-9841, -3280) to [0, 6561)
     return (*bank)[static_cast<size_t>(addr + 9841)];
 }
