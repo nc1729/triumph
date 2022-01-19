@@ -535,6 +535,33 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Sign flag: No effect.
 - Stack flag: No effect.
 
+#### JPS \[X\]
+- Opcode: jfX
+- Length: 1 tryte
+- Description: Push the program counter onto the stack, and then jump to address $X. Used by function calls.
+- Compare flag: No effect.
+- Carry flag: No effect.
+- Sign flag: No effect.
+- Stack flag: If after decrementing, SP < mMM, stack flag will be set to '+', indicating overflow.
+
+#### JPS $X
+- Opcode: jjf $X
+- Length: 2 trytes
+- Description: Push the program counter onto the stack, and then jump to address $X. Used by function calls.
+- Compare flag: No effect.
+- Carry flag: No effect.
+- Sign flag: No effect.
+- Stack flag: If after decrementing, SP < mMM, stack flag will be set to '+', indicating overflow.
+
+#### PJP
+- Opcode jjF
+- Length: 1 tryte
+- Description: Pop an address off the stack, and then jump to that address.
+- Compare flag: No effect.
+- Carry flag: No effect.
+- Sign flag: No effect.
+- Stack flag: If after incrementing, SP > m00, stack flag will be set to '-', indicating underflow.
+
 #### TJP $X, $Y, $Z
 - Opcode: jjj $X $Y $Z
 - Length: 4 trytes
