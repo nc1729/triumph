@@ -12,71 +12,78 @@ std::map<char, int8_t> const Tryte::schar_to_val =
 	  {'D',  -4}, {'C',  -3}, {'B',  -2}, {'A',  -1}, {'0',  0}, {'a',  1}, {'b',  2}, {'c',  3}, {'d',  4},
 	  {'e',   5}, {'f',   6}, {'g',   7}, {'h',   8}, {'i',  9}, {'j', 10}, {'k', 11}, {'l', 12}, {'m', 13} };
 std::string const Tryte::schars = "MLKJIHGFEDCBA0abcdefghijklm";
+
 Tryte::Tryte(int64_t n)
 {
-	// calculate _high
-	n %= 19683;
-	if (n > 9841)
+	// fill internal trit array
+	for (size_t i = 0; i < 9; i++)
 	{
-		n -= 19683;
+		int8_t rem = static_cast<int8_t>(n % 3);
+		// deal with carry
+		if (rem == 2)
+		{
+			rem = -1;
+			n += (n / 3);
+		}
+		else if (rem == -2)
+		{
+			rem = 1;
+			n -= (n / 3);
+		}
+		n /= 3;
+		_trits[i] = rem;
 	}
-	else if (n < -9841)
-	{
-		n += 19683;
-	}
-	_high = static_cast<int8_t>(n / 729);
-
-	// calculate _mid
-	n %= 729;
-	if (n > 364)
-	{
-		n -= 729;
-		// carry to high
-		_high++;
-	}
-	else if (n < -364)
-	{
-		n += 729;
-		// borrow from high
-		_high--;
-	}
-	_mid = static_cast<int8_t>(n / 27);
-
-	// calculate _low
-	n %= 27;
-	if (n > 13)
-	{
-		n -= 27;
-		_mid++;
-	}
-	else if (n < -13)
-	{
-		n += 27;
-		_mid--;
-	}
-	_low = static_cast<int8_t>(n);
 }
 
 Tryte::Tryte(std::string const& s)
 {
-	_high = schar_to_val.at(s[0]);
-	_mid = schar_to_val.at(s[1]);
-	_low = schar_to_val.at(s[2]);
+	int64_t tryte_int = 729 * schar_to_val.at(s[0]) + 27 * schar_to_val.at(s[1]) + schar_to_val.at(s[2]);
+	for (size_t i = 0; i < 9; i++)
+	{
+		int8_t rem = static_cast<int8_t>(tryte_int % 3);
+		// deal with carry
+		if (rem == 2)
+		{
+			rem = -1;
+			tryte_int += (tryte_int / 3);
+		}
+		else if (rem == -2)
+		{
+			rem = 1;
+			tryte_int -= (tryte_int / 3);
+		}
+		tryte_int /= 3;
+		_trits[i] = rem;
+	}
 }
 
 Tryte::Tryte(std::array<int8_t, 9> const& arr)
 {
-	_high = (9 * arr[0]) + (3 * arr[1]) + arr[2];
-	_mid  = (9 * arr[3]) + (3 * arr[4]) + arr[5];
-	_low  = (9 * arr[6]) + (3 * arr[7]) + arr[8];
+	_trits = arr;
+}
+
+int8_t Tryte::get_high(Tryte const& tryte)
+{
+	return tryte[6] + 3 * tryte[7] + 9 * tryte[8];
+}
+
+int8_t Tryte::get_mid(Tryte const& tryte)
+{
+	return tryte[3] + 3 * tryte[4] + 9 * tryte[5];
+}
+
+int8_t Tryte::get_low(Tryte const& tryte)
+{
+	return tryte[0] + 3 * tryte[1] + 9 * tryte[2];
 }
 
 std::string Tryte::get_str(Tryte const& tryte)
 {
 	std::string out(3, '0');
-	out[0] = Tryte::schars[tryte._high + 13];
-	out[1] = Tryte::schars[tryte._mid + 13];
-	out[2] = Tryte::schars[tryte._low + 13];
+	std::array<int8_t, 9> const& arr = tryte._trits;
+	out[0] = Tryte::schars[Tryte::get_high(tryte) + 13];
+	out[1] = Tryte::schars[Tryte::get_mid(tryte) + 13];
+	out[2] = Tryte::schars[Tryte::get_low(tryte) + 13];
 	return out;
 }
 
@@ -97,42 +104,26 @@ int8_t Tryte::sign(Tryte const& tryte)
 	}
 }
 
-std::array<int8_t, 9> Tryte::ternary_array(Tryte const& tryte)
+int8_t& Tryte::operator[](size_t const n)
 {
-	std::array<int8_t, 9> output;
+	return this->_trits[n];
+}
 
-	int64_t const tryte_int = Tryte::get_int(tryte);
-	// store sign, algorithm is easier if everything is positive
-	int8_t const sign = Tryte::sign(tryte);
-	int64_t dividend = sign > 0 ? tryte_int : -tryte_int;
-	int64_t remainder = 0;
-
-	for (size_t i = 0; i < 9; i++)
-	{
-		remainder = dividend % 3;
-		dividend /= 3;
-		// handle shift for balanced ternary representation
-		if (remainder == 2)
-		{
-			dividend++;
-			remainder = -1;
-		}
-		// fill output array
-		output[8 - i] = static_cast<int8_t>(remainder);
-	}
-
-	// flip sign back if necessary
-	if (sign < 0)
-	{
-		for (auto& trit : output) trit = -trit;
-	}
-
-	return output;
+int8_t const& Tryte::operator[](size_t const n) const
+{
+	return this->_trits[n];
 }
 
 bool Tryte::operator==(Tryte const& other) const
 {
-	return (this->_high == other._high) && (this->_mid == other._mid) && (this->_low == other._low);
+	for (size_t i = 0; i < 9; i++)
+	{
+		if (this->_trits[i] != other._trits[i])
+		{
+			return false;
+		}
+	}
+	return true;
 }
 
 bool Tryte::operator!=(Tryte const& other) const
@@ -170,16 +161,11 @@ bool Tryte::operator>=(Tryte const& other) const
 
 Tryte Tryte::operator&(Tryte const& other) const
 {
-	std::array<int8_t, 9> const this_array = Tryte::ternary_array(*this);
-	std::array<int8_t, 9> const other_array = Tryte::ternary_array(other);
-
 	std::array<int8_t, 9> out_array;
-
 	for (size_t i = 0; i < 9; i++)
 	{
-		out_array[i] = std::min(this_array[i], other_array[i]);
+		out_array[i] = std::min(this->_trits[i], other._trits[i]);
 	}
-
 	return Tryte(out_array);
 }
 
@@ -191,16 +177,11 @@ Tryte& Tryte::operator&=(Tryte const& other)
 
 Tryte Tryte::operator|(Tryte const& other) const
 {
-	std::array<int8_t, 9> const this_array = Tryte::ternary_array(*this);
-	std::array<int8_t, 9> const other_array = Tryte::ternary_array(other);
-
 	std::array<int8_t, 9> out_array;
-
 	for (size_t i = 0; i < 9; i++)
 	{
-		out_array[i] = std::max(this_array[i], other_array[i]);
+		out_array[i] = std::max(this->_trits[i], other._trits[i]);
 	}
-
 	return Tryte(out_array);
 }
 
@@ -212,8 +193,12 @@ Tryte& Tryte::operator|=(Tryte const& other)
 
 Tryte Tryte::operator~() const
 {
-	int64_t const flip = -Tryte::get_int(*this);
-	return Tryte(flip);
+	std::array<int8_t, 9> out_array;
+	for (size_t i = 0; i < 9; i++)
+	{
+		out_array[i] = -this->_trits[i];
+	}
+	return Tryte(out_array);
 }
 
 Tryte Tryte::operator+(Tryte const& other) const
@@ -240,8 +225,7 @@ Tryte& Tryte::operator-=(Tryte const& other)
 
 Tryte Tryte::operator-() const
 {
-	int64_t const flip = -Tryte::get_int(*this);
-	return Tryte(flip);
+	return ~(*this);
 }
 
 std::ostream& operator<<(std::ostream& os, Tryte const& tryte)

@@ -9,9 +9,7 @@
 class Tryte
 {
 private:
-	int8_t _high;
-	int8_t _mid;
-	int8_t _low;
+	std::array<int8_t, 9> _trits;
 	static std::map<char, int8_t> const schar_to_val;
 	static std::string const schars;
 
@@ -21,7 +19,7 @@ public:
 	*/
 
 	// default constructor (default value is 0)
-	Tryte() : _high{ 0 }, _mid{ 0 }, _low{ 0 } {};
+	Tryte();
 
 	// integer constructor
 	Tryte(int64_t n);
@@ -30,7 +28,7 @@ public:
 	Tryte(std::string const& s);
 
 	// septavingt array constructor
-	Tryte(int8_t high, int8_t mid, int8_t low) : _high{ high }, _mid{ mid }, _low{ low } {};
+	Tryte(int8_t high, int8_t mid, int8_t low);
 
 	// ternary array constructor
 	Tryte(std::array<int8_t, 9> const& arr);
@@ -40,16 +38,31 @@ public:
 	*/
 	int64_t static constexpr get_int(Tryte const& tryte)
 	{
-		return 729 * static_cast<int64_t>(tryte._high) + 27 * static_cast<int64_t>(tryte._mid) + static_cast<int64_t>(tryte._low);
+		int64_t result = 0;
+		int64_t power_of_3 = 1;
+		for (size_t i = 0; i < 9; i++)
+		{
+			result += (power_of_3 * static_cast<int64_t>(tryte[i]));
+			power_of_3 *= 3;
+		}
 	};
+	int8_t static get_high(Tryte const& tryte);
+	int8_t static get_mid(Tryte const& tryte);
+	int8_t static get_low(Tryte const& tryte);
 	std::string static get_str(Tryte const& tryte);
 	int8_t static sign(Tryte const& tryte);
-	std::array<int8_t, 9> static ternary_array(Tryte const& tryte);
 
 	/*
 	cast to int64_t
 	*/
 	operator int64_t() const { return Tryte::get_int(*this); }
+	
+	/*
+	quick access to trits
+	*/
+	int8_t& operator[](size_t const n);
+	int8_t const& operator[](size_t const n) const;
+
 	/*
 	relational operators
 	*/
