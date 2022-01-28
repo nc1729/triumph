@@ -37,7 +37,7 @@ int main()
             d << t;
             std::cout << '\n';
         }
-        catch(const std::out_of_range& e)
+        catch(const std::out_of_range&)
         {
             std::cerr << "Invalid Tryte expression" << '\n';
         }
