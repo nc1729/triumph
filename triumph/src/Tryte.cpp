@@ -27,18 +27,18 @@ Tryte::Tryte(int64_t n)
 	for (size_t i = 0; i < 9; i++)
 	{
 		int8_t rem = static_cast<int8_t>(n % 3);
+		n /= 3;
 		// deal with carry
 		if (rem == 2)
 		{
 			rem = -1;
-			n += (n / 3);
+			n++;
 		}
 		else if (rem == -2)
 		{
 			rem = 1;
-			n -= (n / 3);
+			n--;
 		}
-		n /= 3;
 		_trits[i] = rem;
 	}
 }
@@ -47,6 +47,22 @@ Tryte::Tryte(int64_t n)
 Tryte::Tryte(std::array<int8_t, 9> const& arr)
 {
 	_trits = arr;
+}
+
+// get_high - get the value (as an 8-bit integer taking the values [-13, 13]) of the high three trits
+int8_t Tryte::get_high(Tryte const& tryte)
+{
+	return tryte[6] + 3 * tryte[7] + 9 * tryte[8];
+}
+// get_mid - get the value (as an 8-bit integer taking the values [-13, 13]) of the middle three trits
+int8_t Tryte::get_mid(Tryte const& tryte)
+{
+	return tryte[3] + 3 * tryte[4] + 9 * tryte[5];
+}
+// get_low - get the value (as an 8-bit integer taking the values [-13, 13]) of the low three trits
+int8_t Tryte::get_low(Tryte const& tryte)
+{
+	return tryte[0] + 3 * tryte[1] + 9 * tryte[2];
 }
 
 // get_str - get the Tryte as a septavingt string (three chars from [A-M]0[a-m])

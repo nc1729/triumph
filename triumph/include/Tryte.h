@@ -47,21 +47,14 @@ public:
 		}
 		return result;
 	};
+
 	// get_high - get the value (as an 8-bit integer taking the values [-13, 13]) of the high three trits
-	int8_t static constexpr get_high(Tryte const& tryte)
-	{
-		return tryte[6] + 3 * tryte[7] + 9 * tryte[8];
-	}
+	int8_t static get_high(Tryte const& tryte);
 	// get_mid - get the value (as an 8-bit integer taking the values [-13, 13]) of the middle three trits
-	int8_t static constexpr get_mid(Tryte const& tryte)
-	{
-		return tryte[3] + 3 * tryte[4] + 9 * tryte[5];
-	}
+	int8_t static get_mid(Tryte const& tryte);
 	// get_low - get the value (as an 8-bit integer taking the values [-13, 13]) of the low three trits
-	int8_t static constexpr get_low(Tryte const& tryte)
-	{
-		return tryte[0] + 3 * tryte[1] + 9 * tryte[2];
-	}
+	int8_t static get_low(Tryte const& tryte);
+
 	// get_str - get the Tryte as a septavingt string (three chars from [A-M]0[a-m])
 	std::string static get_str(Tryte const& tryte);
 	// sign - get the sign of the Tryte

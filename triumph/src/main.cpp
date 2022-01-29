@@ -25,7 +25,7 @@ int main()
     std::cout << memory[-9841] << '\n';
     std::cout << memory.pc();
     */
-    
+
     Tryte t;
     Device d(&std::cin, &std::cout);
     d.num_mode();
@@ -37,12 +37,11 @@ int main()
             d << t;
             std::cout << '\n';
         }
-        catch(const std::out_of_range&)
+        catch (const std::out_of_range&)
         {
             std::cerr << "Invalid Tryte expression" << '\n';
         }
     }
-    
     
 
     return 0;
