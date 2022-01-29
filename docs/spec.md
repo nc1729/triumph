@@ -288,12 +288,21 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Sign flag: Set with sign of result.
 - Stack flag: No effect.
 
+#### SBB X, Y
+- Opcode: GXY
+- Length: 1 tryte
+- Description: X -= (Y - b), where 'b', the "borrow" is the current value in the carry flag.
+- Compare flag: No effect.
+- Carry flag: Carry flag will be set; '+' if overflow is positive, '0' if no overflow, '-' if overflow is negative.
+- Sign flag: Set with sign of result.
+- Stack flag: No effect.
+
 #### SH X, Y
 - Opcode: CXY
 - Length: 1 tryte
 - Description: Trit-shift the value of register X left or right by the value of the three least-significant trits of register Y. A positive number means shift left, i.e. multiply by 3 repeatedly. Negative means shift right. If Y == 0, nothing happens.
 - Compare flag: No effect.
-- Carry flag: If result overflows, carry flag will be set to the sign of register X before shifting (shifting preserves sign). If no overflow, carry flag will be set to '0'.
+- Carry flag: No effect.
 - Sign flag: Set with sign of result.
 - Stack flag: No effect.
 
@@ -302,7 +311,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Length: 2 trytes
 - Description: Trit-shift the value of register X left or right by the value of the three least-significant trits of immediate value t9. A positive number means shift left, i.e. multiply by 3 repeatedly. Negative means shift right. SH X, 0 does nothing.
 - Compare flag: No effect.
-- Carry flag: If result overflows, carry flag will be set to the sign of register X before shifting (shifting preserves sign). If no overflow, carry flag will be set to '0'.
+- Carry flag: No effect.
 - Sign flag: Set with sign of result.
 - Stack flag: No effect.
 
@@ -311,7 +320,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Length: 1 tryte
 - Description: X += 1.
 - Compare flag: No effect.
-- Carry flag: If result overflows, carry flag will be set to the sign of register X before shifting (shifting preserves sign). If no overflow, carry flag will be set to '0'.
+- Carry flag: No effect.
 - Sign flag: Set with sign of result.
 - Stack flag: No effect.
 
@@ -320,7 +329,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Length: 1 tryte
 - Description: X -= 1.
 - Compare flag: No effect.
-- Carry flag: If result overflows, carry flag will be set to the sign of register X before shifting (shifting preserves sign). If no overflow, carry flag will be set to '0'.
+- Carry flag: No effect.
 - Sign flag: Set with sign of result.
 - Stack flag: No effect.
 
@@ -366,54 +375,54 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Opcode: bXY
 - Length: 1 tryte
 - Description: Perform tritwise ternary logical AND on registers X and Y. In ternary logic, - is FALSE, 0 is UNKNOWN/MAYBE, + is TRUE. Each pair of trits is compared, and their minimum value is used to construct the result, which is placed in register X.
-- Compare flag: Set to sign(X & Y).
+- Compare flag: No effect.
 - Carry flag: No effect.
-- Sign flag: No effect.
+- Sign flag: Set to sign(X & Y).
 - Stack flag: No effect.
 
 #### AND X, t9
 - Opcode: mbX t9
 - Length: 2 trytes
 - Description: X &= t9, where & is the ternary AND operator.
-- Compare flag: Set to sign(X & t9).
+- Compare flag: No effect.
 - Carry flag: No effect.
-- Sign flag: No effect.
+- Sign flag: Set to sign(X & t9).
 - Stack flag: No effect.
 
 #### OR X, Y
 - Opcode: BXY
 - Length: 1 tryte
 - Description: Perform tritwise ternary logical OR on registers X and Y. In ternary logic, - is FALSE, 0 is UNKNOWN/MAYBE, + is TRUE. Each pair of trits is compared, and their maximum value is used to construct the result, which is placed in register X.
-- Compare flag: Set to sign(X | Y).
+- Compare flag: No effect.
 - Carry flag: No effect.
-- Sign flag: No effect.
+- Sign flag: Set to sign(X | Y).
 - Stack flag: No effect.
 
 #### OR X, t9
 - Opcode: mBX t9
 - Length: 2 trytes
 - Description: X |= t9, where | is the ternary OR operator.
-- Compare flag: Set to sign(X | t9).
+- Compare flag: No effect.
 - Carry flag: No effect.
-- Sign flag: No effect.
+- Sign flag: Set to sign(X | t9).
 - Stack flag: No effect.
 
 #### STAR X, Y
-- Opcode: GXY
+- Opcode: kXY
 - Length: 1 tryte
 - Description: Tritwise multiply registers X and Y. Useful for singling out particular trits. For example mmm * 00a = 00a.
-- Compare flag: Set to sign(X * Y).
+- Compare flag: No effect.
 - Carry flag: No effect.
-- Sign flag: No effect.
+- Sign flag: Set to sign(X * Y).
 - Stack flag: No effect.
 
 #### STAR X, t9
-- Opcode: mGX t9
+- Opcode: mkX t9
 - Length: 2 trytes
 - Description: X *= t9, where * is the ternary STAR operator, tritwise multiplication.
-- Compare flag: Set to sign(X * t9).
+- Compare flag: No effect.
 - Carry flag: No effect.
-- Sign flag: No effect.
+- Sign flag: Set to sign(X * t9).
 - Stack flag: No effect.
 
 #### NOT X
