@@ -88,6 +88,20 @@ int8_t const& Tryte::operator[](size_t const n) const
 	return this->_trits[n];
 }
 
+// quick int arithmetic
+Tryte Tryte::operator+(int64_t const n)
+{
+	Tryte result = *this;
+	add_with_carry(result, Tryte(n), 0);
+	return result;
+}
+
+Tryte& Tryte::operator+=(int64_t const n)
+{
+	add_with_carry(*this, Tryte(n), 0);
+	return *this;
+}
+
 /*
 relational operators
 */

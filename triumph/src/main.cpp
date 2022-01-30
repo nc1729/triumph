@@ -5,6 +5,8 @@
 #include "Tryte.h"
 #include "Memory.h"
 #include "Device.h"
+#include "Console.h"
+#include "PortManager.h"
 #include "Bank.h"
 
 int main()
@@ -27,14 +29,14 @@ int main()
     */
 
     Tryte t;
-    Device d(&std::cin, &std::cout);
-    d.num_mode();
+    Console console;
+
     while (true)
     {
         try
         {
-            d >> t;
-            d << t;
+            console >> t;
+            console << t;
             std::cout << '\n';
         }
         catch (const std::out_of_range&)

@@ -87,6 +87,12 @@ public:
 	int8_t const& operator[](size_t const n) const;
 
 	/*
+	quick int arithmetic
+	*/
+	Tryte operator+(int64_t const n);
+	Tryte& operator+=(int64_t const n);
+
+	/*
 	relational operators
 	*/
 	bool operator==(Tryte const& other) const;

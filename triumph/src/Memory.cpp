@@ -23,29 +23,32 @@ void Memory::init()
 	this->pc() = Tryte("m00"); // move program counter to $m00
 	std::vector<std::string> const boot_code =
 	{
-		"m0a",        // $m00:       ZERO A; ZERO I - set registers A and I to 0
-		"mja", "mJa", // $m0a, $m0b: PORT A; BANK A - set PORT to 0, BANK to 0
-		"m0f",        // $m0c:       ZERO F - set all flags to zero
-		"mai", "eMM", // $m0d, $m0e: SET I, #eMM - set I to start of PROGRAM memory
+		"m0a", "m0b", // $m00-m0h:   ZERO all registers
+		"m0c", "m0d",
+		"m0e", "m0f",
+		"m0g", "m0h",
+		"m0i",
+		"mja", "mJa", // $m0i, $m0j: PORT A; BANK A - set PORT to 0, BANK to 0
+		"mai", "eMM", // $m0k, $m0l: SET I, #eMM - set I to start of PROGRAM memory
 		/*
 		Main loop: read from standard input until end-of-file, then break out of loop
 		*/
 		              //             !start
-        "mib",	      // $m0f:       IN B - read from PORT 0
-        "mGf", "0c0", // $m0g, $m0h: STAR F, #0c0 - set compare flag to value of PORT flag
-        "jjA", "m0m", // $m0h, $m0i: JPN end - if PORT flag was negative, break out of read loop
-        "Dbi",        // $m0j:       SAVE B, [I] - write read-in Tryte to PROGRAM memory
-        "mhi",   	  // $m0k:       INC I - increment memory pointer
-        "jj0", "m0e"  // $m0l, $m0m: JP start - loop until PORT flag is negative
+        "mib",	      // $m0m:       IN B - read from PORT 0
+        "mGf", "0c0", // $maM, $maL: STAR F, #0c0 - set compare flag to value of PORT flag
+        "jjA", "maF", // $maK, $maJ: JPN end - if PORT flag was negative, break out of read loop
+        "Dbi",        // $maI:       SAVE B, [I] - write read-in Tryte to PROGRAM memory
+        "mhi",   	  // $maH:       INC I - increment memory pointer
+        "jj0", "m0l"  // $maG, $maF: JP start - loop until PORT flag is negative
 			          //             !end
         /*
         end main loop - program from stdin is now in PROGRAM region of memory
         !! Caution - program must not be longer than 5,832 Trytes, or program will grow into stack!
         !! An error will occur if this loop tries to overwrite itself (boot memory is read-only)
         */
-        "m0b", "m0f", // $maM:       ZERO B; ZERO F - clear all registers
-        "m0i",        // $maL:       ZERO I
-        "jj0", "eMM"  // $maK, $maJ: JP $eMM - jump to start of PROGRAM memory and begin executing program!
+        "m0b", "m0f", // $maE:       ZERO B; ZERO F - clear all registers used
+        "m0i",        // $maD:       ZERO I
+        "jj0", "eMM"  // $maC, $maB: JP $eMM - jump to start of PROGRAM memory and begin executing program!
 	};
 
 	int64_t boot_code_size = boot_code.size();
