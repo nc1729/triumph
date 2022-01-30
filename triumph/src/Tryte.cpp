@@ -88,6 +88,18 @@ int8_t const& Tryte::operator[](size_t const n) const
 	return this->_trits[n];
 }
 
+// increment operator
+Tryte& Tryte::operator+=(int64_t const n)
+{
+	Tryte::add_with_carry(*this, Tryte(n), 0);
+	return *this;
+}
+// decrement operator
+Tryte& Tryte::operator-=(int64_t const n)
+{
+	Tryte::add_with_carry(*this, Tryte(-n), 0);
+	return *this;
+}
 /*
 relational operators
 */
@@ -214,6 +226,11 @@ void Tryte::add_with_carry(Tryte& t1, Tryte const& t2, int8_t& carry)
 		}
 		t1[i] = temp;
 	}
+}
+
+void Tryte::add_with_carry(Tryte& t1, Tryte const& t2, int8_t&& carry)
+{
+	Tryte::add_with_carry(t1, t2, carry);
 }
 
 void Tryte::subtract_with_borrow(Tryte& t1, Tryte const& t2, int8_t& borrow)

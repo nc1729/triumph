@@ -87,6 +87,12 @@ public:
 	int8_t const& operator[](size_t const n) const;
 
 	/*
+	increment/decrement operators
+	*/
+    Tryte& operator+=(int64_t const n);
+	Tryte& operator-=(int64_t const n);
+
+	/*
 	relational operators
 	*/
 	bool operator==(Tryte const& other) const;
@@ -119,6 +125,7 @@ public:
 	*/
 	// addition that respects the carry flag
 	static void add_with_carry(Tryte& t1, Tryte const& t2, int8_t& carry);
+	static void add_with_carry(Tryte& t1, Tryte const& t2, int8_t&& carry);
 	// subtraction that respects the carry flag
 	static void subtract_with_borrow(Tryte& t1, Tryte const& t2, int8_t& borrow);
 	// star operator (tritwise product of two Trytes)
