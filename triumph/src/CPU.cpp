@@ -132,6 +132,10 @@ void CPU::decode_and_execute()
 			set_bank(_memory[_pc + 1]);
 			_pc += 2;
 			break;
+		default:
+			dump("Unrecognised instruction");
+			halt();
+			break;
 		}
 		break;
 	case -7:
@@ -262,13 +266,13 @@ void CPU::decode_and_execute()
 				ternary_jump(_memory[_pc + 1], _memory[_pc + 2], _memory[_pc + 3]);
 				_pc += 1;
 				break;
-			case default:
+			default:
 				dump("Unrecognised instruction");
 				halt();
 				break;
 			}
 			break;
-		case default:
+		default:
 			dump("Unrecognised instruction");
 			halt();
 			break;
@@ -400,7 +404,7 @@ void CPU::decode_and_execute()
 			break;
 		}
 		break;
-	case default:
+	default:
 		dump("Unrecognised instruction");
 		halt();
 		break;

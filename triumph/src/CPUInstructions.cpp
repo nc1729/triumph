@@ -21,6 +21,13 @@ void CPU::set(Tryte& x, Tryte const& y)
 	x = y;
 }
 
+void CPU::swap(Tryte& x, Tryte& y)
+{
+	Tryte temp = x;
+	x = y;
+	y = temp;
+}
+
 void CPU::push(Tryte const& x)
 {
 	_sp += -1;
@@ -50,12 +57,12 @@ void CPU::peek(Tryte& x)
 
 void CPU::in(Tryte& x)
 {
-	x << _devices[_port];
+	_devices[_port] >> x;
 }
 
 void CPU::out(Tryte const& x)
 {
-	x >> _devices[_port];
+	_devices[_port] << x;
 }
 
 void CPU::set_port(Tryte const& x)
