@@ -222,13 +222,22 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Sign flag: No effect.
 - Stack flag: No effect.
 
+#### OUT t9
+- Opcode: MI. t9
+- Length: 2 trytes
+- Description: Send a single tryte, t9, down the currently connected PORT.
+- Compare flag: No effect.
+- Carry flag: No effect.
+- Sign flag: No effect.
+- Stack flag: No effect.
+
 #### PORT X
 - Opcode: mJX
 - Length: 1 tryte
 - Description: Set current PORT to value of register X
 
 ### PORT t9
-- Opcde: MJ0 t9
+- Opcde: MJ. t9
 - Length: 2 trytes
 - Description: Set current PORT to value of immediate t9
 

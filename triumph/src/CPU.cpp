@@ -112,6 +112,11 @@ void CPU::decode_and_execute()
 			halt();
 			_pc += 1;
 			break;
+		case -9:
+			// MI. t9 - OUT t9
+			out(_memory[_pc + 1]);
+			_pc += 2;
+			break;
 		case -10:
 			// MJ. t9 - PORT t9
 			set_port(_memory[_pc + 1]);
