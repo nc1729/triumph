@@ -138,6 +138,11 @@ void CPU::decode_and_execute()
 			break;
 		}
 		break;
+	case -11:
+		// KXY - SH X, Y
+		trit_shift(_regs[mid], _regs[low]);
+		_pc += 1;
+		break;
 	case -7:
 		// GXY - SBB X, Y
 		sub_with_borrow(_regs[mid], _regs[low]);
@@ -151,11 +156,6 @@ void CPU::decode_and_execute()
 	case -4:
 		// DXY - SAVE X, [Y]
 		save(_regs[mid], _regs[low]);
-		_pc += 1;
-		break;
-	case -3:
-		// CXY - SH X, Y
-		trit_shift(_regs[mid], _regs[low]);
 		_pc += 1;
 		break;
 	case -2:
@@ -292,6 +292,11 @@ void CPU::decode_and_execute()
 			flip(_regs[low]);
 			_pc += 1;
 			break;
+		case -11:
+			// mKX - SH X, t9
+			trit_shift(_regs[low], _memory[_pc + 1]);
+			_pc += 2;
+			break;
 		case -10:
 			// mJX - PORT X
 			set_port(_regs[low]);
@@ -328,9 +333,9 @@ void CPU::decode_and_execute()
 			_pc += 2;
 			break;
 		case -3:
-			// mCX t9 - SH X, t9
-			trit_shift(_regs[low], _memory[_pc + 1]);
-			_pc += 2;
+			// mCX t9 - CPZ X
+			compare(_regs[low], 0);
+			_pc += 1;
 			break;
 		case -2:
 			// mBX t9 - OR X, t9

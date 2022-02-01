@@ -307,7 +307,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Stack flag: No effect.
 
 #### SH X, Y
-- Opcode: CXY
+- Opcode: KXY
 - Length: 1 tryte
 - Description: Trit-shift the value of register X left or right by the value of the three least-significant trits of register Y. A positive number means shift left, i.e. multiply by 3 repeatedly. Negative means shift right. If Y == 0, nothing happens.
 - Compare flag: No effect.
@@ -316,7 +316,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Stack flag: No effect.
 
 #### SH X, t9
-- Opcode: mCX t9
+- Opcode: mKX t9
 - Length: 2 trytes
 - Description: Trit-shift the value of register X left or right by the value of the three least-significant trits of immediate value t9. A positive number means shift left, i.e. multiply by 3 repeatedly. Negative means shift right. SH X, 0 does nothing.
 - Compare flag: No effect.
@@ -376,6 +376,15 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Length: 2 trytes
 - Description: compare flag is set to sign(X - t9).
 - Compare flag: Set to sign(X - t9).
+- Carry flag: No effect.
+- Sign flag: No effect.
+- Stack flag: No effect.
+
+#### CPZ X
+- Opcode: mCX t9
+- Length: 1 tryte
+- Description: Short form of "CMP X, 0".
+- Compare flag: Set to sign(X).
 - Carry flag: No effect.
 - Sign flag: No effect.
 - Stack flag: No effect.
