@@ -143,6 +143,11 @@ void CPU::decode_and_execute()
 		trit_shift(_regs[mid], _regs[low]);
 		_pc += 1;
 		break;
+	case -8:
+		// HX(t3) - SH X, t3
+		trit_shift(_regs[mid], Tryte(low));
+		_pc += 1;
+		break;
 	case -7:
 		// GXY - SBB X, Y
 		sub_with_borrow(_regs[mid], _regs[low]);
@@ -196,6 +201,11 @@ void CPU::decode_and_execute()
 	case 7:
 		// gXY - ADC X, Y
 		add_with_carry(_regs[mid], _regs[low]);
+		_pc += 1;
+		break;
+	case 8:
+		// hXY - SH X, Y
+		trit_shift(_regs[mid], _regs[low]);
 		_pc += 1;
 		break;
 	case 10:
@@ -292,10 +302,10 @@ void CPU::decode_and_execute()
 			flip(_regs[low]);
 			_pc += 1;
 			break;
-		case -11:
-			// mKX - SH X, t9
-			trit_shift(_regs[low], _memory[_pc + 1]);
-			_pc += 2;
+		case -12:
+			// mLX - DEC X
+			decrement(_regs[low]);
+			_pc += 1;
 			break;
 		case -10:
 			// mJX - PORT X
@@ -305,11 +315,6 @@ void CPU::decode_and_execute()
 		case -9:
 			// mIX - OUT X
 			out(_regs[low]);
-			_pc += 1;
-			break;
-		case -8:
-			// mHX - DEC X
-			decrement(_regs[low]);
 			_pc += 1;
 			break;
 		case -7:
@@ -382,11 +387,6 @@ void CPU::decode_and_execute()
 			add_with_carry(_regs[low], _memory[_pc + 1]);
 			_pc += 2;
 			break;
-		case 8:
-			// mhX - INC X
-			increment(_regs[low]);
-			_pc += 1;
-			break;
 		case 9:
 			// miX - IN X
 			in(_regs[low]);
@@ -401,6 +401,11 @@ void CPU::decode_and_execute()
 			// mkX t9 - STAR X, t9
 			trit_star(_regs[low], _memory[_pc + 1]);
 			_pc += 2;
+			break;
+		case 12:
+			// mlX - INC X
+			increment(_regs[low]);
+			_pc += 1;
 			break;
 		case 13:
 			// mmX - PEEK X

@@ -81,7 +81,7 @@ I - +00 ('i')
 
 For example, the general form of the opcode for "ADD X, Y" is eXY - "ADD A, B" is given by "eab". If instructions require raw memory addresses, these will immediately follow the opcode. For example, the jump instruction "JP $X" assembles to "jj0 X", where X is the raw tryte address of $X.
 
-The instructions also permit indirect addressing of memory using registers, denoted by square brackets \[\] - for example, if register A = a00, \[A\] will point to the contents of memory at address $a00. The placeholder 't9' represents a 9-trit immediate value, standing for any value between -9,841 and 9,841.
+The instructions also permit indirect addressing of memory using registers, denoted by square brackets \[\] - for example, if register A = a00, \[A\] will point to the contents of memory at address $a00. The placeholder 't9' represents a 9-trit immediate value, standing for any value between -9,841 and 9,841. 't3' represents a 3-trit immediate value, standing for any value between -13 and 13. Values outside these ranges will be truncated.
 
 ### LOAD instructions
 
@@ -307,7 +307,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Stack flag: No effect.
 
 #### SH X, Y
-- Opcode: KXY
+- Opcode: hXY
 - Length: 1 tryte
 - Description: Trit-shift the value of register X left or right by the value of the three least-significant trits of register Y. A positive number means shift left, i.e. multiply by 3 repeatedly. Negative means shift right. If Y == 0, nothing happens.
 - Compare flag: No effect.
@@ -315,17 +315,17 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Sign flag: Set with sign of result.
 - Stack flag: No effect.
 
-#### SH X, t9
-- Opcode: mKX t9
-- Length: 2 trytes
-- Description: Trit-shift the value of register X left or right by the value of the three least-significant trits of immediate value t9. A positive number means shift left, i.e. multiply by 3 repeatedly. Negative means shift right. SH X, 0 does nothing.
+#### SH X, t3
+- Opcode: HX(t3)
+- Length: 1 tryte
+- Description: Trit-shift the value of register X left or right by the value of t3. A positive number means shift left, i.e. multiply by 3 repeatedly. Negative means shift right. SH X, 0 does nothing.
 - Compare flag: No effect.
 - Carry flag: No effect.
 - Sign flag: Set with sign of result.
 - Stack flag: No effect.
 
 #### INC X
-- Opcode: mhX
+- Opcode: mlX
 - Length: 1 tryte
 - Description: X += 1.
 - Compare flag: No effect.
@@ -334,7 +334,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Stack flag: No effect.
 
 #### DEC X
-- Opcode: mHX
+- Opcode: mLX
 - Length: 1 tryte
 - Description: X -= 1.
 - Compare flag: No effect.
