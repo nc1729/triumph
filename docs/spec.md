@@ -131,7 +131,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Description: Set current BANK to value of register X
 
 #### BANK t9
-- Opcode: Mj0 t9
+- Opcode: Mj. t9
 - Length: 1 tryte
 - Description: Set current BANK to value of immediate t9
 
@@ -176,7 +176,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Stack flag: If after decrementing, SP < mMM, stack flag will be set to '+', indicating overflow.
 
 #### PUSH t9
-- Opcode: Mff
+- Opcode: Mf.
 - Length: 1 tryte
 - Description: decrement the stack pointer SP and write immediate value t9 to that point in memory.
 - Compare flag: No effect.
@@ -464,7 +464,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 ### Control flow operations
 
 #### NOP
-- Opcode: M00
+- Opcode: M0.
 - Length: 1 tryte
 - Description: Do nothing except increment program counter (PC).
 - Compare flag: No effect.
@@ -473,7 +473,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Stack flag: No effect.
 
 #### HALT
-- Opcode: MMM
+- Opcode: MM.
 - Length: 1 tryte
 - Description: Halt and catch fire. Computer will stop.
 - Compare flag: No effect.
