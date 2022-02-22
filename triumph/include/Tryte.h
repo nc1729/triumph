@@ -10,7 +10,7 @@ class Tryte
 {
 private:
 	// trits arranged from least significant to most significant
-	std::array<int8_t, 9> _trits;
+	std::array<int8_t, 9> trits_;
 	static std::map<char, int64_t> const schar_to_val;
 	static std::string const schars;
 

@@ -8,12 +8,12 @@
 class Console : public Device
 {
 private:
-	std::istream* _in;
-	std::ostream* _out;
+	std::istream* in_;
+	std::ostream* out_;
 public:
 	Console() :
-		_in{ &std::cin },
-		_out{ &std::cout } {};
+		in_{ &std::cin },
+		out_{ &std::cout } {};
 
 	Console& operator<<(Tryte const& tryte);
 	Console& operator>>(Tryte& tryte);

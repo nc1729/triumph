@@ -9,71 +9,71 @@
 #include <string>
 
 CPU::CPU(Memory& memory, PortManager& devices) :
-	_memory{memory}, _devices{devices}
+	memory_{memory}, devices_{devices}
 {
 	// initialise clock variables
-	_cycles = 0;
-	_max_frequency = 100000;
-	_throttled = false;
+	cycles_ = 0;
+	max_frequency_ = 100000;
+	throttled_ = false;
 
 	// CPU is switched off
-	_on = false;
+	on_ = false;
 
 	// registers/stack pointer/etc are set in boot code in Memory class
 }
 
 void CPU::turn_on()
 {
-	_on = true;
+	on_ = true;
 }
 
 void CPU::turn_off()
 {
-	_on = false;
+	on_ = false;
 }
 
 bool CPU::is_on()
 {
-	return _on;
+	return on_;
 }
 
 void CPU::cycle()
 {
 	fetch();
 	decode_and_execute();
-	_cycles++;
+	cycles_++;
 }
 
 void CPU::run()
 {
-	while (_on)
+	while (on_)
 	{
 		cycle();
 		// moderate processor speed
-		if (_cycles % _max_frequency == 0)
+		if (cycles_ % max_frequency_ == 0)
 		{
-			if (_throttled)
+			if (throttled_)
 			{
-				if ((_clock.now() - _second_start) < std::chrono::seconds{ 1 })
+				if ((clock_.now() - second_start_) < std::chrono::seconds{ 1 })
 				{
 					// we are going fast enough to hit the max frequency, unthrottle
-					_throttled = false;
+					throttled_ = false;
 				}
 			}
 			else
 			{
-				if ((_clock.now() - _second_start) < std::chrono::seconds{ 1 })
+				if ((clock_.now() - second_start_) < std::chrono::seconds{ 1 })
 				{
 					// pause until a second has passed, then move on to next cycle
-					std::this_thread::sleep_until(_second_start + std::chrono::seconds{ 1 });
+					std::this_thread::sleep_until(second_start_ + std::chrono::seconds{ 1 });
 				}
 				else
 				{
-					// _max_frequency cycles has taken longer than a second - throttle
-					_throttled = true;
+					// max_frequency_ cycles has taken longer than a second - throttle
+					throttled_ = true;
 				}
 			}
-			_second_start = _clock.now();
+			second_start_ = clock_.now();
 		}
 	}
 }
@@ -81,17 +81,17 @@ void CPU::run()
 void CPU::dump(std::string const& err_msg)
 {
 	std::cerr << "TRIUMPH exception: " << err_msg << '\n';
-	std::cerr << "Instruction pointer: " << _memory[_pc] << '\n';
-	std::cerr << "Stack pointer: " << _memory[_sp] << '\n';
+	std::cerr << "Instruction pointer: " << memory_[pc_] << '\n';
+	std::cerr << "Stack pointer: " << memory_[sp_] << '\n';
 	std::cerr << "---------REGISTERS---------\n";
-	std::cerr << "A : " << _a << " B : " << _b << " C : " << _c << '\n';
-	std::cerr << "D : " << _d << " E : " << _e << " F : " << _f << '\n';
-	std::cerr << "G : " << _g << " H : " << _h << " I : " << _i << '\n';
+	std::cerr << "A : " << regs_[1] << " B : " << regs_[2] << " C : " << regs_[3] << '\n';
+	std::cerr << "D : " << regs_[4] << " E : " << regs_[5] << " F : " << regs_[6] << '\n';
+	std::cerr << "G : " << regs_[7] << " H : " << regs_[8] << " I : " << regs_[9] << '\n';
 }
 
 void CPU::fetch()
 {
-	_instr = _memory[_pc];
+	_instr = memory_[pc_];
 }
 
 void CPU::decode_and_execute()
@@ -110,32 +110,32 @@ void CPU::decode_and_execute()
 		case -13:
 			// MM. - HALT
 			halt();
-			_pc += 1;
+			pc_ += 1;
 			break;
 		case -9:
 			// MI. t9 - OUT t9
-			out(_memory[_pc + 1]);
-			_pc += 2;
+			out(memory_[pc_ + 1]);
+			pc_ += 2;
 			break;
 		case -10:
 			// MJ. t9 - PORT t9
-			set_port(_memory[_pc + 1]);
-			_pc += 2;
+			set_port(memory_[pc_ + 1]);
+			pc_ += 2;
 			break;
 		case 0:
 			// M0. - NOP
 			nop();
-			_pc += 1;
+			pc_ += 1;
 			break;
 		case 6:
 			// Mf. t9 - PUSH t9
-			push(_memory[_pc + 1]);
-			_pc += 2;
+			push(memory_[pc_ + 1]);
+			pc_ += 2;
 			break;
 		case 10:
 			// Mj. t9 - BANK t9
-			set_bank(_memory[_pc + 1]);
-			_pc += 2;
+			set_bank(memory_[pc_ + 1]);
+			pc_ += 2;
 			break;
 		default:
 			dump("Unrecognised instruction");
@@ -145,73 +145,73 @@ void CPU::decode_and_execute()
 		break;
 	case -11:
 		// KXY - SH X, Y
-		trit_shift(_regs[mid], _regs[low]);
-		_pc += 1;
+		trit_shift(regs_[mid], regs_[low]);
+		pc_ += 1;
 		break;
 	case -8:
 		// HX(t3) - SH X, t3
-		trit_shift(_regs[mid], Tryte(low));
-		_pc += 1;
+		trit_shift(regs_[mid], Tryte(low));
+		pc_ += 1;
 		break;
 	case -7:
 		// GXY - SBB X, Y
-		sub_with_borrow(_regs[mid], _regs[low]);
-		_pc += 1;
+		sub_with_borrow(regs_[mid], regs_[low]);
+		pc_ += 1;
 		break;
 	case -5:
 		// EXY - SUB X, Y
-		sub(_regs[mid], _regs[low]);
-		_pc += 1;
+		sub(regs_[mid], regs_[low]);
+		pc_ += 1;
 		break;
 	case -4:
 		// DXY - SAVE X, [Y]
-		save(_regs[mid], _regs[low]);
-		_pc += 1;
+		save(regs_[mid], regs_[low]);
+		pc_ += 1;
 		break;
 	case -2:
 		// BXY - OR X, Y
-		trit_or(_regs[mid], _regs[low]);
-		_pc += 1;
+		trit_or(regs_[mid], regs_[low]);
+		pc_ += 1;
 		break;
 	case -1:
 		// AXY - SWAP X, Y
-		swap(_regs[mid], _regs[low]);
-		_pc += 1;
+		swap(regs_[mid], regs_[low]);
+		pc_ += 1;
 		break;
 	case 1:
 		// aXY - SET X, Y
-		set(_regs[mid], _regs[low]);
-		_pc += 1;
+		set(regs_[mid], regs_[low]);
+		pc_ += 1;
 		break;
 	case 2:
 		// bXY - AND X, Y
-		trit_and(_regs[mid], _regs[low]);
-		_pc += 1;
+		trit_and(regs_[mid], regs_[low]);
+		pc_ += 1;
 		break;
 	case 3:
 		// cXY - CMP X, Y
-		compare(_regs[mid], _regs[low]);
-		_pc += 1;
+		compare(regs_[mid], regs_[low]);
+		pc_ += 1;
 		break;
 	case 4:
 		// dXY - LOAD [X], Y
-		load(_regs[mid], _regs[low]);
-		_pc += 1;
+		load(regs_[mid], regs_[low]);
+		pc_ += 1;
 		break;
 	case 5:
 		// eXY - ADD X, Y
-		add(_regs[mid], _regs[low]);
-		_pc += 1;
+		add(regs_[mid], regs_[low]);
+		pc_ += 1;
 		break;
 	case 7:
 		// gXY - ADC X, Y
-		add_with_carry(_regs[mid], _regs[low]);
-		_pc += 1;
+		add_with_carry(regs_[mid], regs_[low]);
+		pc_ += 1;
 		break;
 	case 8:
 		// hXY - SH X, Y
-		trit_shift(_regs[mid], _regs[low]);
-		_pc += 1;
+		trit_shift(regs_[mid], regs_[low]);
+		pc_ += 1;
 		break;
 	case 10:
 		// j - jump instructions
@@ -219,23 +219,23 @@ void CPU::decode_and_execute()
 		{
 		case -9:
 			// jIX - JPNZ [X]
-			jump_if_not_zero(_memory[_regs[low]]);
-			_pc += 1;
+			jump_if_not_zero(memory_[regs_[low]]);
+			pc_ += 1;
 			break;
 		case -1:
 			// jAX - JPN [X]
-			jump_if_neg(_memory[_regs[low]]);
-			_pc += 1;
+			jump_if_neg(memory_[regs_[low]]);
+			pc_ += 1;
 			break;
 		case 1:
 			// jaX - JPP [X]
-			jump_if_pos(_memory[_regs[low]]);
-			_pc += 1;
+			jump_if_pos(memory_[regs_[low]]);
+			pc_ += 1;
 			break;
 		case 9:
 			// jiX - JPZ [X]
-			jump_if_zero(_memory[_regs[low]]);
-			_pc += 1;
+			jump_if_zero(memory_[regs_[low]]);
+			pc_ += 1;
 			break;
 		case 10:
 			// jj - jump instructions with addresses
@@ -243,43 +243,43 @@ void CPU::decode_and_execute()
 			{
 			case -9:
 				// jjI - JPNZ $X
-				jump_if_not_zero(_memory[_pc + 1]);
-				_pc += 1;
+				jump_if_not_zero(memory_[pc_ + 1]);
+				pc_ += 1;
 				break;
 			case -6:
 				// jjF - PJP
 				pop_and_jump();
-				_pc += 1;
+				pc_ += 1;
 				break;
 			case -1:
 				// jjA - JPN $X
-				jump_if_neg(_memory[_pc + 1]);
-				_pc += 1;
+				jump_if_neg(memory_[pc_ + 1]);
+				pc_ += 1;
 				break;
 			case 0:
 				// jj0 - JP $X
-				jump(_memory[_pc + 1]);
-				_pc += 1;
+				jump(memory_[pc_ + 1]);
+				pc_ += 1;
 				break;
 			case 1:
 				// jja - JPP $X
-				jump_if_pos(_memory[_pc + 1]);
-				_pc += 1;
+				jump_if_pos(memory_[pc_ + 1]);
+				pc_ += 1;
 				break;
 			case 6:
 				// jjf - JPS $X
-				jump_and_store(_memory[_pc + 1]);
-				_pc += 1;
+				jump_and_store(memory_[pc_ + 1]);
+				pc_ += 1;
 				break;
 			case 9:
 				// jji - JPZ $X
-				jump_if_zero(_memory[_pc + 1]);
-				_pc += 1;
+				jump_if_zero(memory_[pc_ + 1]);
+				pc_ += 1;
 				break;
 			case 10:
 				// jjj - TJP $X, $Y, $Z
-				ternary_jump(_memory[_pc + 1], _memory[_pc + 2], _memory[_pc + 3]);
-				_pc += 1;
+				ternary_jump(memory_[pc_ + 1], memory_[pc_ + 2], memory_[pc_ + 3]);
+				pc_ += 1;
 				break;
 			default:
 				dump("Unrecognised instruction");
@@ -295,8 +295,8 @@ void CPU::decode_and_execute()
 		break;
 	case 11:
 		// kXY - STAR X, Y
-		trit_star(_regs[mid], _regs[low]);
-		_pc += 1;
+		trit_star(regs_[mid], regs_[low]);
+		pc_ += 1;
 		break;
 	case 13:
 		// m - single Tryte register operations
@@ -304,118 +304,118 @@ void CPU::decode_and_execute()
 		{
 		case -13:
 			// mMX - FLIP X
-			flip(_regs[low]);
-			_pc += 1;
+			flip(regs_[low]);
+			pc_ += 1;
 			break;
 		case -12:
 			// mLX - DEC X
-			decrement(_regs[low]);
-			_pc += 1;
+			decrement(regs_[low]);
+			pc_ += 1;
 			break;
 		case -10:
 			// mJX - PORT X
-			set_port(_regs[low]);
-			_pc += 1;
+			set_port(regs_[low]);
+			pc_ += 1;
 			break;
 		case -9:
 			// mIX - OUT X
-			out(_regs[low]);
-			_pc += 1;
+			out(regs_[low]);
+			pc_ += 1;
 			break;
 		case -7:
 			// mGX t9 - SBB X, t9
-			sub_with_borrow(_regs[low], _memory[_pc + 1]);
-			_pc += 2;
+			sub_with_borrow(regs_[low], memory_[pc_ + 1]);
+			pc_ += 2;
 			break;
 		case -6:
 			// mFX - POP X
-			pop(_regs[low]);
-			_pc += 1;
+			pop(regs_[low]);
+			pc_ += 1;
 			break;
 		case -5:
 			// mEX t9 - SUB X, t9
-			sub(_regs[low], _memory[_pc + 1]);
-			_pc += 2;
+			sub(regs_[low], memory_[pc_ + 1]);
+			pc_ += 2;
 			break;
 		case -4:
 			// mDX $Y - SAVE X, $Y
-			save(_regs[mid], _memory[_pc + 1]);
-			_pc += 2;
+			save(regs_[mid], memory_[pc_ + 1]);
+			pc_ += 2;
 			break;
 		case -3:
 			// mCX t9 - CPZ X
-			compare(_regs[low], 0);
-			_pc += 1;
+			compare(regs_[low], 0);
+			pc_ += 1;
 			break;
 		case -2:
 			// mBX t9 - OR X, t9
-			trit_or(_regs[low], _memory[_pc + 1]);
-			_pc += 2;
+			trit_or(regs_[low], memory_[pc_ + 1]);
+			pc_ += 2;
 			break;
 		case 0:
 			// m0X - ZERO X
-			zero(_regs[low]);
-			_pc += 1;
+			zero(regs_[low]);
+			pc_ += 1;
 			break;
 		case 1:
 			// maX t9 - SET X, t9
-			set(_regs[low], _memory[_pc + 1]);
-			_pc += 2;
+			set(regs_[low], memory_[pc_ + 1]);
+			pc_ += 2;
 			break;
 		case 2:
 			// mbX t9 - AND X, t9
-			trit_and(_regs[low], _memory[_pc + 1]);
-			_pc += 2;
+			trit_and(regs_[low], memory_[pc_ + 1]);
+			pc_ += 2;
 			break;
 		case 3:
 			// mcX t9 - CMP X, t9
-			compare(_regs[low], _memory[_pc + 1]);
-			_pc += 2;
+			compare(regs_[low], memory_[pc_ + 1]);
+			pc_ += 2;
 			break;
 		case 4:
 			// mdY $X - LOAD $X, Y
-			load(_memory[_pc + 1], _regs[low]);
-			_pc += 2;
+			load(memory_[pc_ + 1], regs_[low]);
+			pc_ += 2;
 			break;
 		case 5:
 			// meX t9 - ADD X, t9
-			add(_regs[low], _memory[_pc + 1]);
-			_pc += 2;
+			add(regs_[low], memory_[pc_ + 1]);
+			pc_ += 2;
 			break;
 		case 6:
 			// mfX - PUSH X
-			push(_regs[low]);
-			_pc += 1;
+			push(regs_[low]);
+			pc_ += 1;
 			break;
 		case 7:
 			// mgX t9 - ADC X, t9
-			add_with_carry(_regs[low], _memory[_pc + 1]);
-			_pc += 2;
+			add_with_carry(regs_[low], memory_[pc_ + 1]);
+			pc_ += 2;
 			break;
 		case 9:
 			// miX - IN X
-			in(_regs[low]);
-			_pc += 1;
+			in(regs_[low]);
+			pc_ += 1;
 			break;
 		case 10:
 			// mjX - BANK X
-			set_bank(_regs[low]);
-			_pc += 1;
+			set_bank(regs_[low]);
+			pc_ += 1;
 			break;
 		case 11:
 			// mkX t9 - STAR X, t9
-			trit_star(_regs[low], _memory[_pc + 1]);
-			_pc += 2;
+			trit_star(regs_[low], memory_[pc_ + 1]);
+			pc_ += 2;
 			break;
 		case 12:
 			// mlX - INC X
-			increment(_regs[low]);
-			_pc += 1;
+			increment(regs_[low]);
+			pc_ += 1;
 			break;
 		case 13:
 			// mmX - PEEK X
-			peek(_regs[low]);
-			_pc += 1;
+			peek(regs_[low]);
+			pc_ += 1;
 			break;
 		}
 		break;

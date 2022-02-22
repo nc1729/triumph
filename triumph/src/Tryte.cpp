@@ -17,7 +17,7 @@ std::string const Tryte::schars = "MLKJIHGFEDCBA0abcdefghijklm";
 Tryte::Tryte()
 {
 	// initialise internal trit array with zeroes
-	_trits = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	trits_ = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 }
 
 // integer constructor
@@ -39,14 +39,14 @@ Tryte::Tryte(int64_t n)
 			rem = 1;
 			n--;
 		}
-		_trits[i] = rem;
+		trits_[i] = rem;
 	}
 }
 
 // ternary array constructor
 Tryte::Tryte(std::array<int8_t, 9> const& arr)
 {
-	_trits = arr;
+	trits_ = arr;
 }
 
 // get_high - get the value (as an 8-bit integer taking the values [-13, 13]) of the high three trits
@@ -69,7 +69,7 @@ int8_t Tryte::get_low(Tryte const& tryte)
 std::string Tryte::get_str(Tryte const& tryte)
 {
 	std::string out(3, '0');
-	std::array<int8_t, 9> const& arr = tryte._trits;
+	std::array<int8_t, 9> const& arr = tryte.trits_;
 	out[0] = Tryte::schars[Tryte::get_high(tryte) + 13];
 	out[1] = Tryte::schars[Tryte::get_mid(tryte) + 13];
 	out[2] = Tryte::schars[Tryte::get_low(tryte) + 13];
@@ -79,13 +79,13 @@ std::string Tryte::get_str(Tryte const& tryte)
 // access to trits
 int8_t& Tryte::operator[](size_t const n)
 {
-	return this->_trits[n];
+	return this->trits_[n];
 }
 
 // const access to trits
 int8_t const& Tryte::operator[](size_t const n) const
 {
-	return this->_trits[n];
+	return this->trits_[n];
 }
 
 // increment operator
@@ -106,7 +106,7 @@ relational operators
 
 bool Tryte::operator==(Tryte const& other) const
 {
-	return this->_trits == other._trits;
+	return this->trits_ == other.trits_;
 }
 
 bool Tryte::operator!=(Tryte const& other) const
@@ -147,7 +147,7 @@ Tryte Tryte::operator&(Tryte const& other) const
 	std::array<int8_t, 9> out_array;
 	for (size_t i = 0; i < 9; i++)
 	{
-		out_array[i] = std::min(this->_trits[i], other._trits[i]);
+		out_array[i] = std::min(this->trits_[i], other.trits_[i]);
 	}
 	return Tryte(out_array);
 }
@@ -163,7 +163,7 @@ Tryte Tryte::operator|(Tryte const& other) const
 	std::array<int8_t, 9> out_array;
 	for (size_t i = 0; i < 9; i++)
 	{
-		out_array[i] = std::max(this->_trits[i], other._trits[i]);
+		out_array[i] = std::max(this->trits_[i], other.trits_[i]);
 	}
 	return Tryte(out_array);
 }
@@ -179,7 +179,7 @@ Tryte Tryte::operator~() const
 	std::array<int8_t, 9> out_array;
 	for (size_t i = 0; i < 9; i++)
 	{
-		out_array[i] = -this->_trits[i];
+		out_array[i] = -this->trits_[i];
 	}
 	return Tryte(out_array);
 }

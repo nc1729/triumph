@@ -4,12 +4,12 @@
 
 Console& Console::operator<<(Tryte const& tryte)
 {
-	*_out << Tryte::get_int(tryte);
+	*out_ << Tryte::get_int(tryte);
 	return *this;
 }
 
 Console& Console::operator>>(Tryte& tryte)
 {
-	*_in >> tryte;
+	*in_ >> tryte;
 	return *this;
 }

@@ -32,70 +32,61 @@ private:
 	registers
 	*/
 	// define registers and aliases for them
-	std::array<Tryte, 10> _regs;
-	Tryte& _instr = _regs[0]; // store the current instruction here
-	// start registers at index 1 - allows 'a' to match _a, 'b' to match _b etc
-	Tryte& _a = _regs[1];
-	Tryte& _b = _regs[2];
-	Tryte& _c = _regs[3];
-	Tryte& _d = _regs[4];
-	Tryte& _e = _regs[5];
-	Tryte& _f = _regs[6];
-	Tryte& _g = _regs[7];
-	Tryte& _h = _regs[8];
-	Tryte& _i = _regs[9];
+	std::array<Tryte, 10> regs_;
+	// store the current instruction at position 0 - other regs follow in positions 1-9
+	Tryte& _instr = regs_[0];
 
 	/*
 	flag variables
 	*/
 	// mark flags register
-	Tryte& _flags = _f;
-	int8_t& COMPARE_FLAG = _flags[0];
-	int8_t& CARRY_FLAG = _flags[1];
-	int8_t& SIGN_FLAG = _flags[2];
-	int8_t& STACK_FLAG = _flags[3];
+	Tryte& flags_ = regs_[6];
+	int8_t& COMPARE_FLAG = flags_[0];
+	int8_t& CARRY_FLAG = flags_[1];
+	int8_t& SIGN_FLAG = flags_[2];
+	int8_t& STACK_FLAG = flags_[3];
 
 
 	/*
 	memory variables
 	*/
 	// reference to memory array
-	Memory& _memory;
+	Memory& memory_;
 	// program counter
-	Tryte& _pc = _memory.pc();
+	Tryte& pc_ = memory_.pc();
 	// stack pointer
-	Tryte& _sp = _memory.sp();
+	Tryte& sp_ = memory_.sp();
 	// current bank
-	Tryte& _bank = _memory.bank();
+	Tryte& bank_ = memory_.bank();
 	// current port
-	Tryte& _port = _memory.port();
+	Tryte& port_ = memory_.port();
 
 	/*
 	external ports
 	*/
-	PortManager& _devices;
+	PortManager& devices_;
 
 	/*
 	clock variables
 	*/
 	// system clock
-	std::chrono::system_clock _clock;
+	std::chrono::system_clock clock_;
 	// precise time the clock was started
-	std::chrono::time_point<std::chrono::steady_clock> _boot_time;
+	std::chrono::time_point<std::chrono::steady_clock> boot_time_;
 	// time updated every time max_frequency cycles elapses
-	std::chrono::time_point<std::chrono::system_clock> _second_start;
+	std::chrono::time_point<std::chrono::system_clock> second_start_;
 	// number of cycles elasped so far
-	int64_t _cycles;
+	int64_t cycles_;
 	// maximum number of cycles per second
-	size_t _max_frequency;
+	size_t max_frequency_;
 	// CPU is being throttled by the emulator
-	bool _throttled;
+	bool throttled_;
 
 	/*
 	CPU variables and private functions
 	*/
 	// on/off switch
-	bool _on;
+	bool on_;
 
 	// fetch the Tryte at the instruction pointer and set it as current instruction
 	void fetch();

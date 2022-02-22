@@ -7,7 +7,7 @@
 class Bank
 {
 private:
-	std::vector<Tryte> _bank;
+	std::vector<Tryte> bank_;
 
 public:
 	// each bank has a number used to address it

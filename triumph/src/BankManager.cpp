@@ -5,27 +5,27 @@
 #include "Bank.h"
 #include "Tryte.h"
 
-BankManager::BankManager(std::vector<Bank*> const& bank_ptrs) : _bank_ptrs{bank_ptrs}
+BankManager::BankManager(std::vector<Bank*> const& bank_ptrs) : bank_ptrs_{bank_ptrs}
 {
     // construct label map
     size_t index = 0;
-    for (auto const& bp : _bank_ptrs)
+    for (auto const& bp : bank_ptrs_)
     {
-        _label_map[bp->number] = index;
+        label_map_[bp->number] = index;
         index++;
     }
 }
 
 Tryte& BankManager::operator()(int64_t const label, int64_t const addr)
 {
-    Bank* bank = _bank_ptrs[_label_map.at(label)];
+    Bank* bank = bank_ptrs_[label_map_.at(label)];
     // map addr from "Tryte" memory space [-9841, -3280) to [0, 6561)
     return (*bank)[static_cast<size_t>(addr + 9841)];
 }
 
 Tryte const& BankManager::operator()(int64_t const label, int64_t const addr) const
 {
-    Bank* bank = _bank_ptrs[_label_map.at(label)];
+    Bank* bank = bank_ptrs_[label_map_.at(label)];
     // map addr from "Tryte" memory space [-9841, -3280) to [0, 6561)
     return (*bank)[static_cast<size_t>(addr + 9841)];
 }

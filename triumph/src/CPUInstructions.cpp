@@ -3,17 +3,17 @@
 
 void CPU::load(Tryte const& x, Tryte& y)
 {
-	y = _memory[x];
+	y = memory_[x];
 }
 
 void CPU::save(Tryte& x, Tryte const& y)
 {
-	_memory[y] = x;
+	memory_[y] = x;
 }
 
 void CPU::set_bank(Tryte const& x)
 {
-	_bank = x;
+	bank_ = x;
 }
 
 void CPU::set(Tryte& x, Tryte const& y)
@@ -30,9 +30,9 @@ void CPU::swap(Tryte& x, Tryte& y)
 
 void CPU::push(Tryte const& x)
 {
-	_sp += -1;
-	_memory[_sp] = x;
-	if (_sp < Tryte("mMM"))
+	sp_ += -1;
+	memory_[sp_] = x;
+	if (sp_ < Tryte("mMM"))
 	{
 		// stack has overflowed
 		STACK_FLAG = 1;
@@ -41,9 +41,9 @@ void CPU::push(Tryte const& x)
 
 void CPU::pop(Tryte& x)
 {
-	x = _memory[_sp];
-	_sp += 1;
-	if (_sp > Tryte("m00"))
+	x = memory_[sp_];
+	sp_ += 1;
+	if (sp_ > Tryte("m00"))
 	{
 		// stack has underflowed
 		STACK_FLAG = -1;
@@ -52,22 +52,22 @@ void CPU::pop(Tryte& x)
 
 void CPU::peek(Tryte& x)
 {
-	x = _memory[_sp];
+	x = memory_[sp_];
 }
 
 void CPU::in(Tryte& x)
 {
-	_devices[_port] >> x;
+	devices_[port_] >> x;
 }
 
 void CPU::out(Tryte const& x)
 {
-	_devices[_port] << x;
+	devices_[port_] << x;
 }
 
 void CPU::set_port(Tryte const& x)
 {
-	_port = x;
+	port_ = x;
 }
 
 void CPU::add(Tryte& x, Tryte const& y)
@@ -166,14 +166,14 @@ void CPU::nop()
 void CPU::halt()
 {
 	// stop execution, will need to be turned back on
-	_on = false;
+	on_ = false;
 }
 
 void CPU::jump_if_zero(Tryte const& x)
 {
 	if (COMPARE_FLAG == 0)
 	{
-		_pc = x;
+		pc_ = x;
 	}
 }
 
@@ -181,7 +181,7 @@ void CPU::jump_if_not_zero(Tryte const& x)
 {
 	if (COMPARE_FLAG != 0)
 	{
-		_pc = x;
+		pc_ = x;
 	}
 }
 
@@ -189,7 +189,7 @@ void CPU::jump_if_pos(Tryte const& x)
 {
 	if (COMPARE_FLAG > 0)
 	{
-		_pc = x;
+		pc_ = x;
 	}
 }
 
@@ -197,38 +197,38 @@ void CPU::jump_if_neg(Tryte const& x)
 {
 	if (COMPARE_FLAG < 0)
 	{
-		_pc = x;
+		pc_ = x;
 	}
 }
 
 void CPU::jump(Tryte const& x)
 {
-	_pc = x;
+	pc_ = x;
 }
 
 void CPU::jump_and_store(Tryte const& x)
 {
-	CPU::push(_pc);
-	_pc = x;
+	CPU::push(pc_);
+	pc_ = x;
 }
 
 void CPU::pop_and_jump()
 {
-	CPU::pop(_pc);
+	CPU::pop(pc_);
 }
 
 void CPU::ternary_jump(Tryte const& x, Tryte const& y, Tryte const& z)
 {
 	if (COMPARE_FLAG < 0)
 	{
-		_pc = x;
+		pc_ = x;
 	}
 	else if (COMPARE_FLAG == 0)
 	{
-		_pc = y;
+		pc_ = y;
 	}
 	else
 	{
-		_pc = z;
+		pc_ = z;
 	}
 }

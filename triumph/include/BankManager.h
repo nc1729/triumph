@@ -9,8 +9,8 @@
 class BankManager
 {
 private:
-	std::vector<Bank*> _bank_ptrs;
-	std::map<int64_t, size_t> _label_map;
+	std::vector<Bank*> bank_ptrs_;
+	std::map<int64_t, size_t> label_map_;
 public:
 	BankManager(std::vector<Bank*> const& bank_ptrs);
 

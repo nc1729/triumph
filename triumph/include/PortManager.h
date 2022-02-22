@@ -11,7 +11,7 @@ PortManager class
 class PortManager
 {
 private:
-    std::map<int64_t, Device> _devices;
+    std::map<int64_t, Device> devices_;
 public:
     Device& operator[](int64_t const& port);
     Device const& operator[](int64_t const& port) const;

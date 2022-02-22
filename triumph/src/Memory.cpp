@@ -55,13 +55,13 @@ void Memory::init()
 	int64_t index = 12757; // _local array - maps to address $m00 - (2 * 6561 - 365) -> 9841 - 365
 	for (int64_t i = 0; i < boot_code_size; i++)
 	{
-		_local[index + i] = boot_code[i];
+		local_[index + i] = boot_code[i];
 		index++;
 	}
 	while (index < 2 * 6561 - 4) // stop before overwriting PORT, BANK etc!  
 	{
 		// fill 'spare' memory with #MMM = -9841 - HALT instructions
-		_local[index] = -9841;
+		local_[index] = -9841;
 		index++;
 	}
 }
@@ -98,26 +98,26 @@ Tryte const& Memory::operator[](int64_t const addr) const
 	}
 	else
 	{
-		return _local[addr - Memory::BANK_END];
+		return local_[addr - Memory::BANK_END];
 	}
 }
 
 Tryte& Memory::port()
 {
-	return _local[Memory::PORT + 9841 - 6561];
+	return local_[Memory::PORT + 9841 - 6561];
 }
 
 Tryte& Memory::bank()
 {
-	return _local[Memory::BANK + 9841 - 6561];
+	return local_[Memory::BANK + 9841 - 6561];
 }
 
 Tryte& Memory::sp()
 {
-	return _local[Memory::SP + 9841 - 6561];
+	return local_[Memory::SP + 9841 - 6561];
 }
 
 Tryte& Memory::pc()
 {
-	return _local[Memory::PC + 9841 - 6561];
+	return local_[Memory::PC + 9841 - 6561];
 }

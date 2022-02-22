@@ -9,8 +9,8 @@
 class Memory
 {
 private:
-	BankManager _banks;
-	std::array<Tryte, 6561 * 2> _local;
+	BankManager banks_;
+	std::array<Tryte, 6561 * 2> local_;
 	// write boot code to memory
 	void init();
 
