@@ -4,14 +4,11 @@
 
 #include "Tryte.h"
 #include "Memory.h"
-#include "Device.h"
-#include "Console.h"
 #include "PortManager.h"
 #include "Bank.h"
 
 int main()
 {
-    /*
     Bank bank0(0);
     Bank bank1(1);
     std::vector<Bank*> banks = { &bank0, &bank1 };
@@ -26,24 +23,7 @@ int main()
     memory.bank() = 0;
     std::cout << memory[-9841] << '\n';
     std::cout << memory.pc();
-    */
 
-    Tryte t;
-    Console console;
-
-    while (true)
-    {
-        try
-        {
-            console >> t;
-            console << t;
-            std::cout << '\n';
-        }
-        catch (const std::out_of_range&)
-        {
-            std::cerr << "Invalid Tryte expression" << '\n';
-        }
-    }
     
 
     return 0;
