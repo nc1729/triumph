@@ -1,5 +1,5 @@
 #include "PortManager.h"
-#include "Device.h"
+#include "Port.h"
 
 Port& PortManager::operator[](Tryte const& port_number)
 {
