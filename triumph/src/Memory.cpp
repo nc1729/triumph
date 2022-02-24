@@ -7,10 +7,10 @@
 #include "Bank.h"
 #include "Tryte.h"
 
-Memory::Memory(size_t const number_of_banks, std::vector<Bank*> const& bank_ptrs) : _banks(bank_ptrs)
+Memory::Memory(size_t const number_of_banks, std::vector<Bank*> const& bank_ptrs) : banks_(bank_ptrs)
 {
 	// initialise local memory
-	_local.fill(0);
+	local_.fill(0);
 
 	// write boot code to memory
 	init();
@@ -71,7 +71,7 @@ Tryte& Memory::operator[](int64_t const addr)
 	if (addr < Memory::BANK_END)
 	{
 		// accessing memory bank
-		return _banks(Tryte::get_int((*this).bank()), addr);
+		return banks_(Tryte::get_int((*this).bank()), addr);
 	}
 	else if (addr > Memory::RESERVED_START)
 	{
@@ -80,7 +80,7 @@ Tryte& Memory::operator[](int64_t const addr)
 	}
 	else
 	{
-		return _local[addr - Memory::BANK_END];
+		return local_[addr - Memory::BANK_END];
 	}
 }
 
@@ -89,7 +89,7 @@ Tryte const& Memory::operator[](int64_t const addr) const
 	if (addr < Memory::BANK_END)
 	{
 		// accessing memory bank
-		return _banks(Tryte::get_int((*this)[Memory::BANK]), addr);
+		return banks_(Tryte::get_int((*this)[Memory::BANK]), addr);
 	}
 	else if (addr > Memory::RESERVED_START)
 	{

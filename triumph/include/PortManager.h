@@ -1,20 +1,24 @@
 #pragma once
 
-#include "Device.h"
+#include "Port.h"
+#include "Tryte.h"
 
 #include <map>
+#include <memory>
 
 /*
-PortManager class
-- Wrapper around Devices and their port numbers. For the CPU to talk to a device, it must be in this list.
+-- PortManager --
+    A mapping from port_numbers (Tryte values between -9841 and 9841) to active Ports.
 */
 class PortManager
 {
 private:
-    std::map<int64_t, Device> devices_;
+    std::map<int64_t, Port> ports_;
+    Port dummy{ Port::Status::CLOSED };
 public:
-    Device& operator[](int64_t const& port);
-    Device const& operator[](int64_t const& port) const;
+    Port& operator[](Tryte const& port_number);
+    Port const& operator[](Tryte const& port_number) const;
 
-    void add_device(Device const& device, int64_t const& port);
+    void connect_port(Tryte const& port_number);
+    void disconnect_port(Tryte const& port_number);
 };

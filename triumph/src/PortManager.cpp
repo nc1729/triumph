@@ -1,17 +1,37 @@
 #include "PortManager.h"
-#include "Device.h"
+#include "Port.h"
 
-Device& PortManager::operator[](int64_t const& port)
+Port& PortManager::operator[](Tryte const& port_number)
 {
-	return devices_.at(port);
+	try
+	{
+		return ports_.at(port_number);
+	}
+	catch (std::out_of_range&)
+	{
+		return dummy;
+	}
+	
 }
 
-Device const& PortManager::operator[](int64_t const& port) const
+Port const& PortManager::operator[](Tryte const& port_number) const
 {
-	return devices_.at(port);
+	try
+	{
+		return ports_.at(port_number);
+	}
+	catch (std::out_of_range&)
+	{
+		return dummy;
+	}
 }
 
-void PortManager::add_device(Device const& device, int64_t const& port)
+void PortManager::connect_port(Tryte const& port_number)
 {
-	devices_[port] = device;
+	ports_[Tryte::get_int(port_number)] = Port();
+}
+
+void PortManager::disconnect_port(Tryte const& port_number)
+{
+	ports_.erase(Tryte::get_int(port_number));
 }
