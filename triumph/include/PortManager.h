@@ -19,6 +19,6 @@ public:
     Port& operator[](Tryte const& port_number);
     Port const& operator[](Tryte const& port_number) const;
 
-    void connect_port(Tryte const& port_number);
+    Port* connect_port(Tryte const& port_number);
     void disconnect_port(Tryte const& port_number);
 };
