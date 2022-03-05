@@ -10,7 +10,7 @@ private:
 public:
 	enum class Status
 	{
-		CLOSED = -1, READ_ONLY = 0, OPEN = 1
+		CLOSED, READ_ONLY, WRITE_ONLY, OPEN
 	};
 	Status status;
 
@@ -21,5 +21,8 @@ public:
 	Port& operator<<(Tryte const& input_tryte);
 	// receive Tryte from port
 	Port& operator>>(Tryte& output_tryte);
+
+	// public access to Tryte (circumventing Port status)
+	Tryte& tryte();
 };
 
