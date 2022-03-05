@@ -5,24 +5,24 @@
 class Port
 {
 private:
-	Tryte t_;
+	Tryte* t_;
 
 public:
 	enum class Status
 	{
 		CLOSED, READ_ONLY, WRITE_ONLY, OPEN
 	};
-	Status status;
+	Status status_;
 
-	Port() : status{ Port::Status::OPEN } {};
-	Port(Port::Status status) : status{ status } {};
+	Port() : t_{ nullptr }, status_{ Port::Status::CLOSED } {};
+	Port(Tryte& target, Port::Status status = Port::Status::OPEN) : 
+		t_{&target},
+		status_{status}
+	{};
 
 	// send Tryte down port
 	Port& operator<<(Tryte const& input_tryte);
 	// receive Tryte from port
 	Port& operator>>(Tryte& output_tryte);
-
-	// public access to Tryte (circumventing Port status)
-	Tryte& tryte();
 };
 

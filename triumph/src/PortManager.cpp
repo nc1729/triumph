@@ -13,10 +13,11 @@ Port& PortManager::operator[](Tryte const& port_number)
 	}
 }
 
-Port* PortManager::connect_port(Tryte const& port_number,
+Port* PortManager::connect_port(Tryte& target,
+								Tryte const& port_number,
 								Port::Status const& port_status)
 {
-	ports_[Tryte::get_int(port_number)] = Port(port_status);
+	ports_[Tryte::get_int(port_number)] = Port(target, port_status);
 	return &(ports_[Tryte::get_int(port_number)]);
 }
 

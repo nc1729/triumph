@@ -3,9 +3,9 @@
 
 Port& Port::operator<<(Tryte const& input_tryte)
 {
-	if (this->status == Port::Status::WRITE_ONLY || this->status == Port::Status::OPEN)
+	if (this->status_ == Port::Status::WRITE_ONLY || this->status_ == Port::Status::OPEN)
 	{
-		t_ = input_tryte;
+		*t_ = input_tryte;
 	}
 	return *this;
 	
@@ -13,14 +13,9 @@ Port& Port::operator<<(Tryte const& input_tryte)
 
 Port& Port::operator>>(Tryte& output_tryte)
 {
-	if (this->status == Port::Status::READ_ONLY || this->status == Port::Status::OPEN)
+	if (this->status_ == Port::Status::READ_ONLY || this->status_ == Port::Status::OPEN)
 	{
-		output_tryte = t_;
+		output_tryte = *t_;
 	}
 	return *this;
-}
-
-Tryte& Port::tryte()
-{
-	return t_;
 }
