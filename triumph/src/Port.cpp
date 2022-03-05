@@ -3,10 +3,10 @@
 
 Port& Port::operator<<(Tryte const& input_tryte)
 {
-	if (this->status == Port::Status::OPEN)
+	if (this->status == Port::Status::EMPTY)
 	{
-		// only modify Port if Port is OPEN
-		t_ = input_tryte;
+		*t_ = input_tryte;
+		this->status = Port::Status::FULL;
 	}
 	return *this;
 	
@@ -14,10 +14,10 @@ Port& Port::operator<<(Tryte const& input_tryte)
 
 Port& Port::operator>>(Tryte& output_tryte)
 {
-	if (this->status != Port::Status::CLOSED)
+	if (this->status == Port::Status::FULL)
 	{
-		// if Port is OPEN or READ_ONLY, allow read access
-		output_tryte = t_;
+		output_tryte = *t_;
+		this->status = Port::Status::EMPTY;
 	}
 	return *this;
 }

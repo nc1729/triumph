@@ -13,10 +13,22 @@ Memory::Memory(size_t const number_of_banks, std::vector<Bank*> const& bank_ptrs
 	local_.fill(0);
 
 	// write boot code to memory
-	init();
+	//init();
 
 }
 
+void Memory::load_program(int64_t addr, std::vector<Tryte> const& program)
+{
+	this->sp() = Tryte("m00");
+	this->pc() = addr;
+
+	for (int64_t i = 0; i < static_cast<int64_t>(program.size()); ++i)
+	{
+		(*this)[addr + i] = program[i];
+	}
+
+}
+#if 0
 void Memory::init()
 {
 	this->sp() = Tryte("m00"); // move stack pointer to $m00
@@ -65,6 +77,7 @@ void Memory::init()
 		index++;
 	}
 }
+#endif
 
 Tryte& Memory::operator[](int64_t const addr)
 {

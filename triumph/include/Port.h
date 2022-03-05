@@ -5,17 +5,25 @@
 class Port
 {
 private:
-	Tryte t_;
+	Tryte* t_;
 
 public:
 	enum class Status
 	{
-		CLOSED = -1, READ_ONLY = 0, OPEN = 1
+		// port won't accept any input and should not be read from
+		CLOSED,
+		// port is ready for input
+		EMPTY,
+		// port has received input and is ready to send
+		FULL
 	};
 	Status status;
 
-	Port() : status{ Port::Status::OPEN } {};
-	Port(Port::Status status) : status{ status } {};
+	Port() : t_{ nullptr }, status{ Port::Status::CLOSED } {};
+	Port(Tryte& target, Port::Status status = Port::Status::EMPTY) : 
+		t_{&target},
+		status{status}
+	{};
 
 	// send Tryte down port
 	Port& operator<<(Tryte const& input_tryte);
