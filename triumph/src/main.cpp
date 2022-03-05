@@ -29,7 +29,8 @@ int main()
     */
 
     Computer computer(std::cin, std::cout);
-
+    
+    // MJ0 00b MI0 00a 000 is the program "PORT 2; OUT 1; HALT"
     computer.run_program({ Tryte("MJ0"), Tryte("00b"), Tryte("MI0"), Tryte("00a"), Tryte("MMM") });
 
     return 0;
