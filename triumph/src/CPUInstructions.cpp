@@ -57,17 +57,17 @@ void CPU::peek(Tryte& x)
 
 void CPU::in(Tryte& x)
 {
-	devices_[port_] >> x;
+	ports_[port_number_] >> x;
 }
 
 void CPU::out(Tryte const& x)
 {
-	devices_[port_] << x;
+	ports_[port_number_] << x;
 }
 
 void CPU::set_port(Tryte const& x)
 {
-	port_ = x;
+	port_number_ = x;
 }
 
 void CPU::add(Tryte& x, Tryte const& y)

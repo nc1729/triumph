@@ -12,7 +12,7 @@ class CPU
 {
 public:
 	// constructor
-	CPU(Memory& memory, PortManager& devices);
+	CPU(Memory& memory, PortManager& ports);
 	// turn CPU on
 	void turn_on();
 	// turn CPU off
@@ -34,7 +34,7 @@ private:
 	// define registers and aliases for them
 	std::array<Tryte, 10> regs_;
 	// store the current instruction at position 0 - other regs follow in positions 1-9
-	Tryte& _instr = regs_[0];
+	Tryte& instr_ = regs_[0];
 
 	/*
 	flag variables
@@ -59,12 +59,12 @@ private:
 	// current bank
 	Tryte& bank_ = memory_.bank();
 	// current port
-	Tryte& port_ = memory_.port();
+	Tryte& port_number_ = memory_.port();
 
 	/*
 	external ports
 	*/
-	PortManager& devices_;
+	PortManager& ports_;
 
 	/*
 	clock variables

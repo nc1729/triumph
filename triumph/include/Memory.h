@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <array>
+#include <vector>
 
 #include "BankManager.h"
 #include "Tryte.h"
@@ -12,7 +13,7 @@ private:
 	BankManager banks_;
 	std::array<Tryte, 6561 * 2> local_;
 	// write boot code to memory
-	void init();
+	//void init();
 
 public:
 	Memory(size_t const number_of_banks, std::vector<Bank*> const& bank_ptrs);
@@ -41,4 +42,7 @@ public:
 	Tryte& sp();
 	// public access to program counter (for jump instructions)
 	Tryte& pc();
+
+	// dump a program into an address and move the program counter to that address, ready to run
+	void load_program(int64_t addr, std::vector<Tryte> const& program);
 };

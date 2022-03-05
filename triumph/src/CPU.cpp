@@ -8,8 +8,8 @@
 #include <iostream>
 #include <string>
 
-CPU::CPU(Memory& memory, PortManager& devices) :
-	memory_{memory}, devices_{devices}
+CPU::CPU(Memory& memory, PortManager& ports) :
+	memory_{memory}, ports_{ports}
 {
 	// initialise clock variables
 	cycles_ = 0;
@@ -81,8 +81,10 @@ void CPU::run()
 void CPU::dump(std::string const& err_msg)
 {
 	std::cerr << "TRIUMPH exception: " << err_msg << '\n';
-	std::cerr << "Instruction pointer: " << memory_[pc_] << '\n';
-	std::cerr << "Stack pointer: " << memory_[sp_] << '\n';
+	std::cerr << "Program counter: " << pc_ << '\n';
+	std::cerr << "Instruction: " << instr_ << '\n';
+	std::cerr << "Stack pointer: " << sp_ << '\n';
+
 	std::cerr << "---------REGISTERS---------\n";
 	std::cerr << "A : " << regs_[1] << " B : " << regs_[2] << " C : " << regs_[3] << '\n';
 	std::cerr << "D : " << regs_[4] << " E : " << regs_[5] << " F : " << regs_[6] << '\n';
@@ -91,14 +93,14 @@ void CPU::dump(std::string const& err_msg)
 
 void CPU::fetch()
 {
-	_instr = memory_[pc_];
+	instr_ = memory_[pc_];
 }
 
 void CPU::decode_and_execute()
 {
-	int8_t high = Tryte::get_high(_instr);
-	int8_t mid = Tryte::get_mid(_instr);
-	int8_t low = Tryte::get_low(_instr);
+	int8_t high = Tryte::get_high(instr_);
+	int8_t mid = Tryte::get_mid(instr_);
+	int8_t low = Tryte::get_low(instr_);
 
 	switch (high)
 	{
