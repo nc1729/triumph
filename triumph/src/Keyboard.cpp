@@ -13,14 +13,7 @@ void Keyboard::scan()
 	if (input_stream_ >> input)
 	{
 		input_buffer_.push_front(input);
-		STREAM_STATE_TRIT_ = 1;
-	}
-	else
-	{
-		// something went wrong with the stream, tell the CPU this
-		STREAM_STATE_TRIT_ = -1;
-	}
-	
+	}	
 }
 
 void Keyboard::push()
@@ -28,12 +21,8 @@ void Keyboard::push()
 	if (input_buffer_.size() != 0)
 	{
 		data_ = input_buffer_.back();
-		INPUT_READY_TRIT_ = 1;
-	}
-	else
-	{
-		// port points to nothing, tell the CPU this
-		INPUT_READY_TRIT_ = -1;
+		data_port_->status = Port::Status::FULL;
+		input_buffer_.pop_back();
 	}
 }
 

@@ -22,7 +22,7 @@ public:
     // add a port at a given port_number and with a given port_status and return a ptr to this new port
     Port* connect_port(Tryte& target,
                        Tryte const& port_number,
-                       Port::Status const& port_status = Port::Status::OPEN);
+                       Port::Status const& port_status = Port::Status::EMPTY);
 
     // delete a port at a given port_number
     void disconnect_port(Tryte const& port_number);

@@ -10,14 +10,19 @@ private:
 public:
 	enum class Status
 	{
-		CLOSED, READ_ONLY, WRITE_ONLY, OPEN
+		// port won't accept any input and should not be read from
+		CLOSED,
+		// port is ready for input
+		EMPTY,
+		// port has received input and is ready to send
+		FULL
 	};
-	Status status_;
+	Status status;
 
-	Port() : t_{ nullptr }, status_{ Port::Status::CLOSED } {};
-	Port(Tryte& target, Port::Status status = Port::Status::OPEN) : 
+	Port() : t_{ nullptr }, status{ Port::Status::CLOSED } {};
+	Port(Tryte& target, Port::Status status = Port::Status::EMPTY) : 
 		t_{&target},
-		status_{status}
+		status{status}
 	{};
 
 	// send Tryte down port
