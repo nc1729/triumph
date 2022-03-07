@@ -14,7 +14,8 @@ class PortManager
 {
 private:
     std::map<int64_t, Port> ports_;
-    Port dummy{ Tryte(0), Port::Status::CLOSED};
+    Tryte dummy_tryte{0};
+    Port dummy{ dummy_tryte, Port::Status::CLOSED};
 public:
     // access a port at port_number - if this port doesn't exist, expose a dummy closed port
     Port& operator[](Tryte const& port_number);
