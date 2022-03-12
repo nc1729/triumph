@@ -7,7 +7,7 @@
 #include "Bank.h"
 #include "Tryte.h"
 
-Memory::Memory(size_t const number_of_banks, std::vector<Bank*> const& bank_ptrs) : banks_(bank_ptrs)
+Memory::Memory(std::vector<Bank*> const& bank_ptrs) : banks_(bank_ptrs)
 {
 	// initialise local memory
 	local_.fill(0);

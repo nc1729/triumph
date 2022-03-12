@@ -16,7 +16,7 @@ private:
 	Bank bank0{ 0 };
 	Bank bank1{ 1 };
 	std::vector<Bank*> banks = { &bank0, &bank1 };
-	Memory memory{ banks.size(), banks };
+        Memory memory;
 	PortManager ports;
 	CPU cpu{ memory, ports };
 	Keyboard keyboard;
@@ -25,8 +25,9 @@ private:
 public:
 	Computer(std::istream& input_stream,
 			 std::ostream& output_stream) :
-		keyboard{ports, 1, -1, input_stream},
-		out{ports, 2, -2, output_stream}
+	    memory{banks},
+	    keyboard{ports, 1, -1, input_stream},
+	    out{ports, 2, -2, output_stream}
 	{};
 
 	void run_program(std::vector<Tryte> const& program);

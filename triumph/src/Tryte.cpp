@@ -69,7 +69,6 @@ int8_t Tryte::get_low(Tryte const& tryte)
 std::string Tryte::get_str(Tryte const& tryte)
 {
 	std::string out(3, '0');
-	std::array<int8_t, 9> const& arr = tryte.trits_;
 	out[0] = Tryte::schars[Tryte::get_high(tryte) + 13];
 	out[1] = Tryte::schars[Tryte::get_mid(tryte) + 13];
 	out[2] = Tryte::schars[Tryte::get_low(tryte) + 13];

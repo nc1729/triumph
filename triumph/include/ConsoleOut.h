@@ -10,12 +10,12 @@
 class ConsoleOut
 {
 private:
+    	// output stream (by default, std::cout)
+	std::ostream& output_stream_;
 	// data port for receiving Trytes from CPU
 	Port* data_port_;
 	// data Tryte exposed to CPU
 	Tryte data_ = 0;
-	// output stream (by default, std::cout)
-	std::ostream& output_stream_;
 	// queue for buffered output
 	std::deque<Tryte> output_buffer_;
 

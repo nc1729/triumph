@@ -25,9 +25,9 @@ add_executable(triumph ${TRIUMPH_SOURCES})
 target_include_directories(triumph PUBLIC "triumph/include")
 
 set(MSVC_DEBUG_OPTIONS "/WX")
-set(MSVC_RELEASE_OPTIONS "/WX /O2")
-set(DEBUG_OPTIONS "-Wall -Wextra -Werror -O0 -g")
-set(RELEASE_OPTIONS "-Wall -Wextra -Werror -O2")
+set(MSVC_RELEASE_OPTIONS "/WX" "/O2")
+set(DEBUG_OPTIONS "-Wall" "-Wextra" "-Werror" "-O0" "-g")
+set(RELEASE_OPTIONS "-Wall" "-Wextra" "-Werror" "-O2")
 
 # compiler options
 if (MSVC)

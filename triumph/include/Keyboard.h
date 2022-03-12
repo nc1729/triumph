@@ -11,12 +11,12 @@
 class Keyboard
 {
 private:
+    	// input stream (by default, std::cin)
+	std::istream& input_stream_;
 	// data port for sending Trytes to CPU
 	Port* data_port_;
 	// data Tryte exposed to CPU
 	Tryte data_ = 0;
-	// input stream (by default, std::cin)
-	std::istream& input_stream_;
 	// queue for buffered input
 	std::deque<Tryte> input_buffer_;
 
