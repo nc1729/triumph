@@ -8,6 +8,31 @@
 #include "Bank.h"
 #include "Computer.h"
 
+std::vector<Tryte> read_input()
+{
+    std::vector<Tryte> program;
+    std::string schars = "MLKJIHGFEDCBA0abcdefghijklm";
+    char c;
+    std::string tryte_str;
+    while (std::cin >> c)
+    {
+        // ignore any non-septavingt chars
+        if (schars.find(c) != std::string::npos)
+        {
+            // c is a valid septavingt char
+            tryte_str += c;
+            if (tryte_str.size() == 3)
+            {
+                // found a whole Tryte, add it to program
+                program.emplace_back(tryte_str);
+                tryte_str.clear();
+            }
+        }
+    }
+
+    return program;
+    
+}
 int main()
 {
     /*
@@ -28,10 +53,21 @@ int main()
     std::cout << memory.pc();
     */
 
-    Computer computer(std::cin, std::cout);
+    Computer computer;
+
+    std::vector<Tryte> program = read_input();
     
     // MJ0 00b MI0 00a 000 is the program "PORT 2; OUT 1; HALT"
-    computer.run_program({ Tryte("MJ0"), Tryte("00b"), Tryte("MI0"), Tryte("00a"), Tryte("MMM") });
+    //computer.run_program({ Tryte("MJ0"), Tryte("00b"), Tryte("MI0"), Tryte("00a"), Tryte("MMM") });
 
+    // maa 00b mla Laa MMM : SET A, 2; INC A; SHOW A; HALT
+    //computer.run_program({Tryte("maa"), Tryte("mmm"), Tryte("mla"), Tryte("Laa"), Tryte("MMM")});
+
+    // LAa eaa Laa MMM: TELL A; ADD A, A; SHOW A; HALT;
+    //computer.run_program({Tryte("LAa"), Tryte("eaa"), Tryte("Laa"), Tryte("MMM")});
+
+    computer.run_program(program);
+
+    std::cout << '\n';
     return 0;
 }

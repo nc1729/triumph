@@ -145,6 +145,26 @@ void CPU::decode_and_execute()
 			break;
 		}
 		break;
+	case -12:
+		// L - print to console
+		switch (mid)
+		{
+			case -1:
+			    // LAX - TELL X
+				tell(regs_[low]);
+				pc_ += 1;
+				break;
+			case 1:
+				// LaX - SHOW X
+				show(regs_[low]);
+				pc_ += 1;
+				break;
+			default:
+				dump("Unrecognised instruction");
+				halt();
+				break;
+		}
+		break;
 	case -11:
 		// KXY - SH X, Y
 		trit_shift(regs_[mid], regs_[low]);

@@ -1,6 +1,8 @@
 #include "CPU.h"
 #include "Tryte.h"
 
+#include <iostream> // for show/tell
+
 void CPU::load(Tryte const& x, Tryte& y)
 {
 	y = memory_[x];
@@ -231,4 +233,14 @@ void CPU::ternary_jump(Tryte const& x, Tryte const& y, Tryte const& z)
 	{
 		pc_ = z;
 	}
+}
+
+void CPU::show(Tryte const& x)
+{
+	std::cout << x;
+}
+
+void CPU::tell(Tryte& x)
+{
+	std::cin >> x;
 }

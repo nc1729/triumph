@@ -19,15 +19,10 @@ private:
         Memory memory;
 	PortManager ports;
 	CPU cpu{ memory, ports };
-	Keyboard keyboard;
-	ConsoleOut out;
 
 public:
-	Computer(std::istream& input_stream,
-			 std::ostream& output_stream) :
-	    memory{banks},
-	    keyboard{ports, 1, -1, input_stream},
-	    out{ports, 2, -2, output_stream}
+	Computer() :
+	    memory{banks}
 	{};
 
 	void run_program(std::vector<Tryte> const& program);
