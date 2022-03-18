@@ -146,7 +146,7 @@ void CPU::decode_and_execute()
 		}
 		break;
 	case -12:
-		// L - print to console
+		// L - console input/output
 		switch (mid)
 		{
 			case -1:
