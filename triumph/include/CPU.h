@@ -199,4 +199,11 @@ private:
 
 	// ternary jump
 	void ternary_jump(Tryte const& x, Tryte const& y, Tryte const& z);
+
+	/* for debugging */
+	// push Tryte to stdout
+	void show(Tryte const& x);
+
+	// fetch Tryte from stdin
+	void tell(Tryte& x);
 };
