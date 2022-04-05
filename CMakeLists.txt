@@ -21,8 +21,13 @@ file(GLOB_RECURSE TRIUMPH_SOURCES CONFIGURE_DEPENDS "triumph/src/*.cpp")
 add_executable(tas ${TAS_SOURCES})
 target_include_directories(tas PUBLIC "tas/include")
 
+# set up SDL2
+find_package(SDL2 REQUIRED)
+include_directories(${SDL2_INCLUDE_DIRS})
+
 add_executable(triumph ${TRIUMPH_SOURCES})
 target_include_directories(triumph PUBLIC "triumph/include")
+target_link_libraries(triumph ${SDL2_LIBRARIES})
 
 set(MSVC_DEBUG_OPTIONS "/WX")
 set(MSVC_RELEASE_OPTIONS "/WX" "/O2")
