@@ -29,6 +29,12 @@ add_executable(triumph ${TRIUMPH_SOURCES})
 target_include_directories(triumph PUBLIC "triumph/include")
 target_link_libraries(triumph ${SDL2_LIBRARIES})
 
+# set up multithreading (for Linux, clang on MacOS doesn't seem to need this)
+set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+find_package(Threads REQUIRED)
+target_link_libraries(triumph Threads::Threads)
+
 set(MSVC_DEBUG_OPTIONS "/WX")
 set(MSVC_RELEASE_OPTIONS "/WX" "/O2")
 set(DEBUG_OPTIONS "-Wall" "-Wextra" "-Werror" "-O0" "-g")
