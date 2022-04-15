@@ -5,3 +5,4 @@
 /out/*
 /.vscode/*
 CMakeSettings.json
+/tools/bmp_to_trytes/build/*

@@ -23,6 +23,7 @@ public:
     Bitmap(std::string const& filename);
     Pixel& operator()(size_t const& i, size_t const& j);
 };
+
 std::vector<uint8_t> read_bmp_file(std::string const& filename)
 {
     std::fstream bmp_file(filename);
