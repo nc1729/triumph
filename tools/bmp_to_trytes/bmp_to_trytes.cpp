@@ -1,28 +1,10 @@
+#include "Bitmap.h"
+#include "Pixel.h"
+
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <string>
-
-struct Pixel
-{
-    uint8_t red;
-    uint8_t green;
-    uint8_t blue;
-    Pixel() : red{0}, green{0}, blue{0} {};
-    Pixel(uint8_t red, uint8_t green, uint8_t blue) :
-        red{red}, green{green}, blue{blue} {};
-};
-
-class Bitmap
-{
-private:
-    std::vector<Pixel> pixels_;
-    uint8_t height_;
-    uint8_t width_;
-public:
-    Bitmap(std::string const& filename);
-    Pixel& operator()(size_t const& i, size_t const& j);
-};
 
 std::vector<uint8_t> read_bmp_file(std::string const& filename)
 {
@@ -40,7 +22,7 @@ std::vector<uint8_t> read_bmp_file(std::string const& filename)
 }
 int main()
 {
-    std::vector<uint8_t> file_bytes = read_bmp_file("./pixels.bmp");
+    //std::vector<uint8_t> file_bytes = read_bmp_file("./pixels.bmp");
 
-    std::cout << file_bytes.size() << '\n';
+    Bitmap bmp("./pixels.bmp");
 }
