@@ -47,6 +47,8 @@ std::vector<Tryte> bmp_to_tiles(Bitmap const& bmp)
                 {
                     row_trits[off_x] = pixel_to_trit(bmp(9 * j + off_y, 9 * i + off_x));
                 }
+                // trits are stored 'right to left' in Trytes - tryte[0] is least significant digit
+                // (rightmost digit as a number, but leftmost on the bitmap!)
                 tile_trytes.push_back(row_trits);
             }
         }
