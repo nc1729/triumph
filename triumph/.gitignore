@@ -2,6 +2,7 @@
 /bin/*
 /CMakeFiles/*
 /.vs/*
+/x64/
 /out/*
 /.vscode/*
 CMakeSettings.json

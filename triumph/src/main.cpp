@@ -5,11 +5,7 @@
 #include <thread>
 
 #include "Tryte.h"
-#include "Memory.h"
-#include "PortManager.h"
-#include "Bank.h"
 #include "Computer.h"
-#include "Screen.h"
 
 std::vector<Tryte> read_input(std::string const& filename)
 {
@@ -77,10 +73,11 @@ int main(int argc, char* argv[])
     // LAa eaa Laa MMM: TELL A; ADD A, A; SHOW A; HALT;
     //computer.run_program({Tryte("LAa"), Tryte("eaa"), Tryte("Laa"), Tryte("MMM")});
 
-    std::thread t{&Computer::run_program, &computer, std::ref(program)};
+    //std::thread t{&Computer::run_program, &computer, std::ref(program)};
 
-    show_window();
-    t.join();
+    computer.test();
+    //show_window();
+    //t.join();
     //std::cout << '\n';
     return 0;
 }
