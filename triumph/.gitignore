@@ -1,0 +1,8 @@
+/build/*
+/bin/*
+/CMakeFiles/*
+/.vs/*
+/out/*
+/.vscode/*
+CMakeSettings.json
+/tools/bmp_to_trytes/build/*
