@@ -1,9 +1,11 @@
 #include <SDL.h>
 #include <iostream>
 #include <string>
+#include <fstream>
 
 #include "Screen.h"
 #include "Bank.h"
+#include "Tryte.h"
 
 Screen::Screen(Bank& tryte_frame_buffer, Bank& tilemap, Bank& work_RAM) : 
     tryte_frame_buffer_{ tryte_frame_buffer },
@@ -77,6 +79,19 @@ void Screen::test()
     }
     return;
 }
+
+void Screen::read_tilemap(std::string const& filename)
+{
+    std::ifstream tilemap_stream(filename);
+    size_t i = 0;
+    while (tilemap_stream >> tilemap_[i])
+    {
+        i++;
+    }
+    std::cout << tilemap_[0] << ' ' << tilemap_[1] << ' ' << tilemap_[2] << '\n';
+    return;
+}
+
 void show_window()
 {
     // initialisation flag

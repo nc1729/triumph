@@ -5,7 +5,8 @@
 
 void Computer::test()
 {
-	screen.test();
+	screen.read_tilemap("./tilemap.tri");
+
 }
 void Computer::run_program(std::vector<Tryte> const& program)
 {

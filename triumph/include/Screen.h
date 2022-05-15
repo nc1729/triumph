@@ -28,5 +28,6 @@ public:
 	Screen(Bank& tryte_frame_buffer, Bank& tilemap, Bank& work_RAM);
 	~Screen();
 	void test();
+	void read_tilemap(std::string const& filename);
 };
 void show_window();
