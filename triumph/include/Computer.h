@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <iostream>
+#include <string>
 
 #include "Bank.h"
 #include "Memory.h"
@@ -28,6 +29,6 @@ private:
 	Screen screen{ framebuffer, tilemap, work_RAM };
 
 public:
-	void test();
+	void test(std::string const& tilemap_filename);
 	void run_program(std::vector<Tryte> const& program);
 };
