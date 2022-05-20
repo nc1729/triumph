@@ -14,7 +14,6 @@ std::array<uint32_t, 27> Screen::colour_values =
     196, 206, 216, 226, 235, 245, 255 };
 
 Screen::Screen(Bank& tryte_framebuffer, Bank& tilemap, Bank& work_RAM) :
-    palettes(81, 0),
     tryte_framebuffer{ tryte_framebuffer },
     tilemap{ tilemap },
     work_RAM{ work_RAM }
@@ -49,6 +48,7 @@ Screen::Screen(Bank& tryte_framebuffer, Bank& tilemap, Bank& work_RAM) :
         }
         screen_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, PIXEL_WIDTH, PIXEL_HEIGHT);
         byte_framebuffer.resize(PIXEL_WIDTH * PIXEL_HEIGHT);
+        palettes.resize(81, 0);
     }
 }
 
@@ -109,7 +109,7 @@ void Screen::show_tilemap()
     // first, read tilemap's middle tile into tryte_frame_buffer with palette 0
     for (size_t j = 0; j < 6561; j++)
     {
-        tryte_framebuffer[j] = 73;
+        tryte_framebuffer[j] = -364 + (j % 729);
     }
 
     // let's set a palette colour
@@ -139,7 +139,7 @@ void Screen::show_tilemap()
             {
                 quit = true;
             }
-            //write_tryte_fb_to_byte_fb();
+            write_tryte_fb_to_byte_fb();
             SDL_UpdateTexture(screen_texture, nullptr, byte_framebuffer.data(), PIXEL_WIDTH * sizeof(uint32_t));
             SDL_RenderCopy(renderer, screen_texture, nullptr, nullptr);
             SDL_RenderPresent(renderer);
@@ -194,7 +194,7 @@ void Screen::write_tile_to_framebuffer(size_t const grid_index_x, size_t const g
         {
             size_t x = pixel_index_x + i;
             size_t y = pixel_index_y + j;
-            byte_framebuffer[(PIXEL_WIDTH * y) + x] = colours[tile_trytes[i][j] + 1];
+            byte_framebuffer[(PIXEL_WIDTH * y) + x] = colours[tile_trytes[j][i] + 1];
         }
     }
 }
