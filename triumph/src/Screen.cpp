@@ -214,7 +214,7 @@ void Screen::hello_world()
             SDL_UpdateTexture(screen_texture, nullptr, byte_framebuffer.data(), PIXEL_WIDTH * sizeof(uint32_t));
             SDL_RenderCopy(renderer, screen_texture, nullptr, nullptr);
             SDL_RenderPresent(renderer);
-            SDL_Delay(100);
+            //SDL_Delay(100);
         }
     }
     return;
