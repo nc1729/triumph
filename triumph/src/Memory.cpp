@@ -120,11 +120,6 @@ Tryte const& Memory::operator[](int64_t const addr) const
 	}
 }
 
-Tryte& Memory::port()
-{
-	return local_[Memory::PORT + 9841 - 6561];
-}
-
 Tryte& Memory::bank()
 {
 	return local_[Memory::BANK + 9841 - 6561];

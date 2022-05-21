@@ -57,8 +57,6 @@ private:
 	Tryte& sp_ = memory_.sp();
 	// current bank
 	Tryte& bank_ = memory_.bank();
-	// current port
-	Tryte& port_number_ = memory_.port();
 
 	/*
 	clock variables

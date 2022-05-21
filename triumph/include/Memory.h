@@ -21,8 +21,6 @@ public:
 	Tryte& operator[](int64_t const addr);
 	Tryte const& operator[](int64_t const addr) const;
 
-	// $mmj - current port
-	static int64_t const PORT = 9838;
 	// $mmk - current memory bank
 	static int64_t const BANK = 9839;
 	// $mml - stack pointer
@@ -34,8 +32,6 @@ public:
 	// $m00 - reserved memory start
 	static int64_t const RESERVED_START = (9841 - 365);
 
-	// public access to current port
-	Tryte& port();
 	// public access to current bank
 	Tryte& bank();
 	// public access to stack pointer
