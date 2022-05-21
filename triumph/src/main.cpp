@@ -2,11 +2,9 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <thread>
 
 #include "Tryte.h"
-#include "Memory.h"
-#include "PortManager.h"
-#include "Bank.h"
 #include "Computer.h"
 
 std::vector<Tryte> read_input(std::string const& filename)
@@ -58,13 +56,14 @@ int main(int argc, char* argv[])
 
     Computer computer;
 
-    if (argc != 2)
+    if (argc != 3)
     {
-        std::cerr << "Usage: ./triumph [INPUT_FILENAME]\n";
+        std::cerr << "Usage: ./triumph [INPUT_FILENAME] [TILEMAP_FILENAME]\n";
         return 1;
     }
     std::string const input_filename = argv[1];
     std::vector<Tryte> program = read_input(input_filename);
+    std::string const tilemap_filename = argv[2];
     
     // MJ0 00b MI0 00a 000 is the program "PORT 2; OUT 1; HALT"
     //computer.run_program({ Tryte("MJ0"), Tryte("00b"), Tryte("MI0"), Tryte("00a"), Tryte("MMM") });
@@ -75,8 +74,11 @@ int main(int argc, char* argv[])
     // LAa eaa Laa MMM: TELL A; ADD A, A; SHOW A; HALT;
     //computer.run_program({Tryte("LAa"), Tryte("eaa"), Tryte("Laa"), Tryte("MMM")});
 
-    computer.run_program(program);
+    //std::thread t{&Computer::run_program, &computer, std::ref(program)};
 
-    std::cout << '\n';
+    computer.test(tilemap_filename);
+    //show_window();
+    //t.join();
+    //std::cout << '\n';
     return 0;
 }

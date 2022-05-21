@@ -21,8 +21,19 @@ file(GLOB_RECURSE TRIUMPH_SOURCES CONFIGURE_DEPENDS "triumph/src/*.cpp")
 add_executable(tas ${TAS_SOURCES})
 target_include_directories(tas PUBLIC "tas/include")
 
+# set up SDL2
+find_package(SDL2 REQUIRED)
+include_directories(${SDL2_INCLUDE_DIRS})
+
 add_executable(triumph ${TRIUMPH_SOURCES})
 target_include_directories(triumph PUBLIC "triumph/include")
+target_link_libraries(triumph ${SDL2_LIBRARIES})
+
+# set up multithreading (for Linux, clang on MacOS doesn't seem to need this)
+set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+find_package(Threads REQUIRED)
+target_link_libraries(triumph Threads::Threads)
 
 set(MSVC_DEBUG_OPTIONS "/WX")
 set(MSVC_RELEASE_OPTIONS "/WX" "/O2")
