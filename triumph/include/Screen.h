@@ -11,11 +11,6 @@
 class Screen
 {
 private:
-	// video RAM
-	Bank& tryte_framebuffer;
-	Bank& tilemap;
-	Bank& work_RAM;
-
 	// SDL2 internals
 	SDL_Window* window = nullptr;
 	SDL_Surface* surface = nullptr; // software rendering
@@ -45,13 +40,17 @@ private:
 	uint32_t static tryte_to_colour(Tryte const& colour_tryte);
 	
 public:
-	Screen() = delete;
-	Screen(Bank& tryte_frame_buffer, Bank& tilemap, Bank& work_RAM);
+	Screen();
 	~Screen();
 	void test();
 	void read_tilemap(std::string const& filename);
 	void show_tilemap();
 	void hello_world();
+
+	// VRAM (accessible as banks -1, -2, -3 by CPU)
+	Bank tryte_framebuffer{ -1 };
+	Bank tilemap{ -2 };
+	Bank work_RAM{ -3 };
 	
 };
 void show_window();

@@ -2,7 +2,6 @@
 
 #include "Tryte.h"
 #include "Memory.h"
-#include "PortManager.h"
 
 #include <string>
 #include <array>
@@ -12,7 +11,7 @@ class CPU
 {
 public:
 	// constructor
-	CPU(Memory& memory, PortManager& ports);
+	CPU(Memory& memory);
 	// turn CPU on
 	void turn_on();
 	// turn CPU off
@@ -60,11 +59,6 @@ private:
 	Tryte& bank_ = memory_.bank();
 	// current port
 	Tryte& port_number_ = memory_.port();
-
-	/*
-	external ports
-	*/
-	PortManager& ports_;
 
 	/*
 	clock variables
@@ -121,15 +115,6 @@ private:
 
 	// peek Tryte from top of stack
 	void peek(Tryte& x);
-
-	// receive Tryte from current port
-	void in(Tryte& x);
-
-	// send Tryte out to current port
-	void out(Tryte const& x);
-
-	// set current port to Tryte value
-	void set_port(Tryte const& x);
 
 	// register += register/immediate
 	void add(Tryte& x, Tryte const& y);

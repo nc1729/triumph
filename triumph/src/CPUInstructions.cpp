@@ -57,21 +57,6 @@ void CPU::peek(Tryte& x)
 	x = memory_[sp_];
 }
 
-void CPU::in(Tryte& x)
-{
-	ports_[port_number_] >> x;
-}
-
-void CPU::out(Tryte const& x)
-{
-	ports_[port_number_] << x;
-}
-
-void CPU::set_port(Tryte const& x)
-{
-	port_number_ = x;
-}
-
 void CPU::add(Tryte& x, Tryte const& y)
 {
 	CARRY_FLAG = 0;

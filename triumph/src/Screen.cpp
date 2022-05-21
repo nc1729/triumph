@@ -13,10 +13,7 @@ std::array<uint32_t, 27> Screen::colour_values =
 { 0, 10, 20, 29, 39, 49, 59, 69, 78, 88, 98, 108, 118, 128, 137, 147, 157, 167, 177, 186,
     196, 206, 216, 226, 235, 245, 255 };
 
-Screen::Screen(Bank& tryte_framebuffer, Bank& tilemap, Bank& work_RAM) :
-    tryte_framebuffer{ tryte_framebuffer },
-    tilemap{ tilemap },
-    work_RAM{ work_RAM }
+Screen::Screen()
 {
     // initialise SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0)

@@ -7,7 +7,7 @@
 #include "Bank.h"
 #include "Tryte.h"
 
-Memory::Memory(std::vector<Bank> const& banks) : banks_(banks)
+Memory::Memory(std::vector<Bank*> const& banks) : banks_(banks)
 {
 	// initialise local memory
 	local_.fill(0);
@@ -15,6 +15,11 @@ Memory::Memory(std::vector<Bank> const& banks) : banks_(banks)
 	// write boot code to memory
 	//init();
 
+}
+
+void Memory::add_bank(Bank* new_bank_ptr)
+{
+	banks_.add_bank(new_bank_ptr);
 }
 
 void Memory::load_program(int64_t addr, std::vector<Tryte> const& program)

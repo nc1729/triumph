@@ -1,6 +1,5 @@
 #include "CPU.h"
 #include "Memory.h"
-#include "PortManager.h"
 #include "Tryte.h"
 
 #include <thread> // for sleeping
@@ -8,8 +7,8 @@
 #include <iostream>
 #include <string>
 
-CPU::CPU(Memory& memory, PortManager& ports) :
-	memory_{memory}, ports_{ports}
+CPU::CPU(Memory& memory) :
+	memory_{memory}
 {
 	// initialise clock variables
 	cycles_ = 0;
@@ -113,16 +112,6 @@ void CPU::decode_and_execute()
 			// MM. - HALT
 			halt();
 			pc_ += 1;
-			break;
-		case -9:
-			// MI. t9 - OUT t9
-			out(memory_[pc_ + 1]);
-			pc_ += 2;
-			break;
-		case -10:
-			// MJ. t9 - PORT t9
-			set_port(memory_[pc_ + 1]);
-			pc_ += 2;
 			break;
 		case 0:
 			// M0. - NOP
@@ -334,16 +323,6 @@ void CPU::decode_and_execute()
 			decrement(regs_[low]);
 			pc_ += 1;
 			break;
-		case -10:
-			// mJX - PORT X
-			set_port(regs_[low]);
-			pc_ += 1;
-			break;
-		case -9:
-			// mIX - OUT X
-			out(regs_[low]);
-			pc_ += 1;
-			break;
 		case -7:
 			// mGX t9 - SBB X, t9
 			sub_with_borrow(regs_[low], memory_[pc_ + 1]);
@@ -413,11 +392,6 @@ void CPU::decode_and_execute()
 			// mgX t9 - ADC X, t9
 			add_with_carry(regs_[low], memory_[pc_ + 1]);
 			pc_ += 2;
-			break;
-		case 9:
-			// miX - IN X
-			in(regs_[low]);
-			pc_ += 1;
 			break;
 		case 10:
 			// mjX - BANK X

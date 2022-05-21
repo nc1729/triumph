@@ -16,7 +16,7 @@ private:
 	//void init();
 
 public:
-	Memory(std::vector<Bank> const& banks);
+	Memory(std::vector<Bank*> const& banks);
 
 	Tryte& operator[](int64_t const addr);
 	Tryte const& operator[](int64_t const addr) const;
@@ -45,4 +45,7 @@ public:
 
 	// dump a program into an address and move the program counter to that address, ready to run
 	void load_program(int64_t addr, std::vector<Tryte> const& program);
+
+	// add a bank (if device 'plugged in')
+	void add_bank(Bank* new_bank_ptr);
 };
