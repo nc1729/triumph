@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <thread>
+#include <stdexcept>
 
 #include "Tryte.h"
 #include "Computer.h"
@@ -54,8 +55,26 @@ int main(int argc, char* argv[])
     std::cout << memory.pc();
     */
 
-    Computer computer;
+    if (argc != 2)
+    {
+        std::cerr << "Usage: ./triumph [DISK_FILENAME]\n";
+        return 1;
+    }
+    
+    std::string const disk_name = argv[1];
+    try
+    {
+        Computer computer(disk_name);
+        computer.test_disk();
+    }
+    catch(const std::runtime_error& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
+    
 
+    /*
     if (argc != 3)
     {
         std::cerr << "Usage: ./triumph [INPUT_FILENAME] [TILEMAP_FILENAME]\n";
@@ -64,6 +83,7 @@ int main(int argc, char* argv[])
     std::string const input_filename = argv[1];
     std::vector<Tryte> program = read_input(input_filename);
     std::string const tilemap_filename = argv[2];
+    */
     
     // MJ0 00b MI0 00a 000 is the program "PORT 2; OUT 1; HALT"
     //computer.run_program({ Tryte("MJ0"), Tryte("00b"), Tryte("MI0"), Tryte("00a"), Tryte("MMM") });
@@ -76,7 +96,7 @@ int main(int argc, char* argv[])
 
     //std::thread t{&Computer::run_program, &computer, std::ref(program)};
 
-    computer.test(tilemap_filename);
+    //computer.test(tilemap_filename);
     //show_window();
     //t.join();
     //std::cout << '\n';

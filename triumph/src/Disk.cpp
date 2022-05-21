@@ -6,7 +6,7 @@
 #include "Tryte.h"
 #include "Disk.h"
 Disk::Disk(int64_t const disk_number, std::string const& disk_path) : 
-	disk_path{disk_path}, disk_buffer{disk_number}
+	disk_path{disk_path}, buffer{disk_number}
 {
 	// calculate disk_size
 	file_handle.open(disk_path);
@@ -54,26 +54,24 @@ bool Disk::is_valid()
 	return true;
 }
 
-void Disk::read_from_disk(size_t const page_number)
+void Disk::read_from_page(size_t const page_number)
 {
 	file_handle.open(disk_path);
 	file_handle.seekg(PAGE_SIZE * page_number, std::ios::beg);
-	Tryte temp;
 	for (size_t i = 0; i < 729; i++)
 	{
-		file_handle >> disk_buffer[i];
+		file_handle >> buffer[i];
 	}
 	file_handle.close();
 }
 
-void Disk::write_to_disk(size_t const page_number)
+void Disk::write_to_page(size_t const page_number)
 {
 	file_handle.open(disk_path);
 	file_handle.seekg(PAGE_SIZE * page_number, std::ios::beg);
-	Tryte temp;
 	for (size_t i = 0; i < 729; i++)
 	{
-		file_handle << disk_buffer[i];
+		file_handle << buffer[i];
 	}
 	file_handle.close();
 }
