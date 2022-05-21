@@ -42,6 +42,9 @@
     <ClCompile Include="src\Tryte.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Disk.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Bank.h">
@@ -65,7 +68,7 @@
     <ClInclude Include="include\Tryte.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Disk.h">
+    <ClInclude Include="include\Disk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

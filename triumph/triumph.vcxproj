@@ -123,17 +123,18 @@
     <ClCompile Include="src\Computer.cpp" />
     <ClCompile Include="src\CPU.cpp" />
     <ClCompile Include="src\CPUInstructions.cpp" />
+    <ClCompile Include="src\Disk.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Memory.cpp" />
     <ClCompile Include="src\Screen.cpp" />
     <ClCompile Include="src\Tryte.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Disk.h" />
     <ClInclude Include="include\Bank.h" />
     <ClInclude Include="include\BankManager.h" />
     <ClInclude Include="include\Computer.h" />
     <ClInclude Include="include\CPU.h" />
+    <ClInclude Include="include\Disk.h" />
     <ClInclude Include="include\Memory.h" />
     <ClInclude Include="include\Screen.h" />
     <ClInclude Include="include\Tryte.h" />
