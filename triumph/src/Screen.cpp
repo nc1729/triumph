@@ -149,6 +149,77 @@ void Screen::show_tilemap()
     return;
 }
 
+void Screen::hello_world()
+{
+    // define palette 0
+    work_RAM[PALETTE_START + 39] = Tryte("MMM"); // negative trit pixels will be black
+    work_RAM[PALETTE_START + 40] = Tryte("mmM"); // 0 and + will be bright yellow!
+    work_RAM[PALETTE_START + 41] = Tryte("mmM");
+
+    // cache the palettes
+    regen_palettes();
+
+    // fill tryte framebuffer with black tiles
+    for (size_t j = 0; j < TILE_GRID_WIDTH * TILE_GRID_HEIGHT; j++)
+    {
+        tryte_framebuffer[j] = 0; // #000 - palette 0, tile 0 (centre of tilemap, all - trits)
+    }
+
+    // draw hello world to center row (slightly up from center...)
+    size_t const CENTER_ROW = 26; // kind of
+    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 20] = 21; // H
+    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 21] = 45; // e
+    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 22] = 52; // l
+    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 23] = 52; // l
+    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 24] = 55; // o
+    // leave a space...
+    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 26] = 63; // w
+    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 27] = 55; // o
+    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 28] = 58; // r
+    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 29] = 52; // l
+    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 30] = 44; // d
+    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 31] = 94; // !
+
+    // event loop
+    SDL_Event e;
+    bool quit = false;
+    bool red = false;
+    while (!quit)
+    {
+        while (SDL_PollEvent(&e))
+        {
+            regen_palettes();
+            if (e.type == SDL_QUIT)
+            {
+                quit = true;
+            }
+            if (e.type == SDL_KEYDOWN)
+            {
+                if (red)
+                {
+                    // change text colour to yellow
+                    work_RAM[PALETTE_START + 40] = Tryte("mmM");
+                    work_RAM[PALETTE_START + 41] = Tryte("mmM");
+                    red = false;
+                }
+                else
+                {
+                    // change text colour to red
+                    work_RAM[PALETTE_START + 40] = Tryte("mMM");
+                    work_RAM[PALETTE_START + 41] = Tryte("mMM");
+                    red = true;
+                }
+            }
+            write_tryte_fb_to_byte_fb();
+            SDL_UpdateTexture(screen_texture, nullptr, byte_framebuffer.data(), PIXEL_WIDTH * sizeof(uint32_t));
+            SDL_RenderCopy(renderer, screen_texture, nullptr, nullptr);
+            SDL_RenderPresent(renderer);
+            SDL_Delay(100);
+        }
+    }
+    return;
+}
+
 void Screen::write_tryte_fb_to_byte_fb()
 {
     // loop through tryte framebuffer
@@ -159,7 +230,7 @@ void Screen::write_tryte_fb_to_byte_fb()
             Tryte& t = tryte_framebuffer[(TILE_GRID_WIDTH * i) + j];
             size_t palette_index = Tryte::get_high(t) + 13;
             size_t tilemap_addr = static_cast<size_t>(27 * static_cast<int64_t>(Tryte::get_mid(t)) + static_cast<int64_t>(Tryte::get_low(t)) + 364);
-            write_tile_to_framebuffer(j, i, palette_index, tilemap_addr);
+             write_tile_to_framebuffer(j, i, palette_index, tilemap_addr);
         }
     }
 }

@@ -51,6 +51,7 @@ public:
 	void test();
 	void read_tilemap(std::string const& filename);
 	void show_tilemap();
+	void hello_world();
 	
 };
 void show_window();

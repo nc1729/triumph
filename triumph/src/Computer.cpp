@@ -7,7 +7,7 @@
 void Computer::test(std::string const& tilemap_filename)
 {
 	screen.read_tilemap(tilemap_filename);
-	screen.show_tilemap();
+	screen.hello_world();
 
 }
 void Computer::run_program(std::vector<Tryte> const& program)
