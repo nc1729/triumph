@@ -173,7 +173,7 @@ void Screen::write_tile_to_framebuffer(size_t const grid_index_x, size_t const g
     colours[2] = palettes[3 * palette_index + 2]; // +1 colour
 
     // find pointer to tile's trytes in tilemap
-    Tryte* tile_trytes = &(tilemap[tile_addr]);
+    Tryte* tile_trytes = &(tilemap[9 * tile_addr]);
 
     size_t pixel_index_x = 9 * grid_index_x;
     size_t pixel_index_y = 9 * grid_index_y;
@@ -188,15 +188,27 @@ void Screen::write_tile_to_framebuffer(size_t const grid_index_x, size_t const g
     std::cout << '\n';
 #endif
 
+    for (size_t row = 0; row < 9; row++)
+    {
+        size_t y = pixel_index_y + row;
+        for (size_t col = 0; col < 9; col++)
+        {
+            size_t x = pixel_index_x + col;
+            byte_framebuffer[(PIXEL_WIDTH * y) + x] = colours[tile_trytes[row][8 - col] + 1];
+        }
+    }
+#if 0
     for (size_t i = 0; i < 9; i++)
     {
         for (size_t j = 0; j < 9; j++)
         {
             size_t x = pixel_index_x + i;
             size_t y = pixel_index_y + j;
+            size_t index = (PIXEL_WIDTH * y) + x;
             byte_framebuffer[(PIXEL_WIDTH * y) + x] = colours[tile_trytes[j][i] + 1];
         }
     }
+#endif
 }
 
 void Screen::regen_palettes()
