@@ -5,16 +5,20 @@
 
 #include "Memory.h"
 #include "Bank.h"
+#include "Disk.h"
 #include "Tryte.h"
 
-Memory::Memory(std::vector<Bank*> const& banks) : banks_(banks)
+Memory::Memory(std::vector<Bank*> const& banks, std::vector<Disk>& disks) : banks_(banks)
 {
 	// initialise local memory
 	local_.fill(0);
 
-	// write boot code to memory
-	//init();
-
+	// disks occupy memory banks 1 to ... (defined by Disk constructors)
+	for (auto& disk : disks)
+	{
+		banks_.add_bank(&disk.buffer);
+	}
+	std::cout << "Mounted devices and disks- number of banks: " << banks_.size() << '\n';
 }
 
 void Memory::add_bank(Bank* new_bank_ptr)

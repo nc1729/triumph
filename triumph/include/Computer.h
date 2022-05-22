@@ -18,18 +18,19 @@ private:
 	// general purpose memory
 	Bank zero{ 0 };
 	// disk
-	Disk disk;
+	std::vector<Disk>& disks;
 	// collate memory banks and initialise memory management
-	Memory memory{ {&zero, &(screen.tryte_framebuffer), &(screen.tilemap), &(screen.work_RAM), &disk.buffer} };
+	Memory memory{ {&zero, &(screen.tryte_framebuffer), &(screen.tilemap), &(screen.work_RAM)}, disks };
 	// init CPU
 	CPU cpu{ memory };
 	
 
 public:
-	Computer(std::string const& disk_path) :
-    disk{1, disk_path},
-	memory{{&zero, &screen.tryte_framebuffer, &screen.tilemap, &screen.work_RAM, &disk.buffer}},
+	Computer(std::vector<Disk>& disks) :
+    disks{disks},
+	memory{{&zero, &screen.tryte_framebuffer, &screen.tilemap, &screen.work_RAM}, disks},
 	cpu{memory} {};
+
 	void test_disk();
 	void test(std::string const& tilemap_filename);
 	void run_program(std::vector<Tryte> const& program);

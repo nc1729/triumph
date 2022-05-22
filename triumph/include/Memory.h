@@ -6,6 +6,7 @@
 
 #include "BankManager.h"
 #include "Tryte.h"
+#include "Disk.h"
 
 class Memory
 {
@@ -16,7 +17,7 @@ private:
 	//void init();
 
 public:
-	Memory(std::vector<Bank*> const& banks);
+	Memory(std::vector<Bank*> const& banks, std::vector<Disk>& disks);
 
 	Tryte& operator[](int64_t const addr);
 	Tryte const& operator[](int64_t const addr) const;

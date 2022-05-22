@@ -22,6 +22,11 @@ void BankManager::add_bank(Bank* new_bank_ptr)
     label_map_[new_bank_ptr->number] = banks_.size();
 }
 
+size_t BankManager::size()
+{
+    return banks_.size();
+}
+
 Tryte& BankManager::operator()(int64_t const label, int64_t const addr)
 {
     Bank* bank = banks_[label_map_.at(label)];

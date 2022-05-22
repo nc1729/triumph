@@ -7,8 +7,12 @@
 
 void Computer::test_disk()
 {
+	std::cout << "Opening disk 0\n";
+	Disk& disk = disks[0];
 	disk.read_from_page(0);
+	std::cout << "Read from page 0\n";
 	memory.bank() = 1;
+	std::cout << "Changed to memory bank 1\n";
 	std::cout << memory[-9841] << memory[-9840] << memory[-9839] << '\n';
 	for (int64_t i = Disk::DISK_BUFF_START; i < Disk::DISK_BUFF_END; i++)
 	{

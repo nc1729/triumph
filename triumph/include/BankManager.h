@@ -15,6 +15,7 @@ public:
 	BankManager(std::vector<Bank*> const& banks);
 
 	void add_bank(Bank* new_bank_ptr);
+	size_t size();
 
 	Tryte& operator()(int64_t const label, int64_t const addr);
 	Tryte const& operator()(int64_t const label, int64_t addr) const;

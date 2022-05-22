@@ -6,6 +6,7 @@
 #include <stdexcept>
 
 #include "Tryte.h"
+#include "Disk.h"
 #include "Computer.h"
 
 std::vector<Tryte> read_input(std::string const& filename)
@@ -55,16 +56,24 @@ int main(int argc, char* argv[])
     std::cout << memory.pc();
     */
 
-    if (argc != 2)
+    if (argc < 2)
     {
-        std::cerr << "Usage: ./triumph [DISK_FILENAME]\n";
+        std::cerr << "Usage: ./triumph [DISK_FILE1] [DISK_FILE2] ...\n";
         return 1;
     }
+
+    size_t number_of_disks = argc - 1;
+
+    std::vector<Disk> disks;
+    for (size_t i = 0; i < number_of_disks; i++)
+    {
+        // the first disk in the argument list will be assigned to bank 1, then bank 2 etc
+        disks.push_back(Disk(i + 1, argv[i + 1]));
+    }
     
-    std::string const disk_name = argv[1];
     try
     {
-        Computer computer(disk_name);
+        Computer computer(disks);
         computer.test_disk();
     }
     catch(const std::runtime_error& e)
