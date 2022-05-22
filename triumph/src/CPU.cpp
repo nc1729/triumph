@@ -231,22 +231,18 @@ void CPU::decode_and_execute()
 		case -9:
 			// jIX - JPNZ [X]
 			jump_if_not_zero(memory_[regs_[low]]);
-			pc_ += 1;
 			break;
 		case -1:
 			// jAX - JPN [X]
 			jump_if_neg(memory_[regs_[low]]);
-			pc_ += 1;
 			break;
 		case 1:
 			// jaX - JPP [X]
 			jump_if_pos(memory_[regs_[low]]);
-			pc_ += 1;
 			break;
 		case 9:
 			// jiX - JPZ [X]
 			jump_if_zero(memory_[regs_[low]]);
-			pc_ += 1;
 			break;
 		case 10:
 			// jj - jump instructions with addresses
@@ -255,42 +251,34 @@ void CPU::decode_and_execute()
 			case -9:
 				// jjI - JPNZ $X
 				jump_if_not_zero(memory_[pc_ + 1]);
-				pc_ += 1;
 				break;
 			case -6:
 				// jjF - PJP
 				pop_and_jump();
-				pc_ += 1;
 				break;
 			case -1:
 				// jjA - JPN $X
 				jump_if_neg(memory_[pc_ + 1]);
-				pc_ += 1;
 				break;
 			case 0:
 				// jj0 - JP $X
 				jump(memory_[pc_ + 1]);
-				pc_ += 1;
 				break;
 			case 1:
 				// jja - JPP $X
 				jump_if_pos(memory_[pc_ + 1]);
-				pc_ += 1;
 				break;
 			case 6:
 				// jjf - JPS $X
 				jump_and_store(memory_[pc_ + 1]);
-				pc_ += 1;
 				break;
 			case 9:
 				// jji - JPZ $X
 				jump_if_zero(memory_[pc_ + 1]);
-				pc_ += 1;
 				break;
 			case 10:
 				// jjj - TJP $X, $Y, $Z
 				ternary_jump(memory_[pc_ + 1], memory_[pc_ + 2], memory_[pc_ + 3]);
-				pc_ += 1;
 				break;
 			default:
 				dump("Unrecognised instruction");

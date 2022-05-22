@@ -73,6 +73,10 @@ def main():
     boot_code = ""
     # write palette
     boot_code += "Mj000C" # M00: BANK -3 (work RAM - where palettes are stored)
+    boot_code += "mdbEmm" # LOAD B, #Emm
+    boot_code += "mcc00a" # CMP A, 1
+    boot_code += "jjiM0j" # JPZ $M0j
+    boot_code += "jj0M0b" # JP $M0b
     boot_code += "maaMMM" # SET A, #MMM
     boot_code += "macMLA" # SET C, #MLA - pointer to palette 0
     boot_code += "Dac"    # SAVE A, [C]
