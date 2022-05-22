@@ -31,7 +31,7 @@ private:
 	registers
 	*/
 	// define registers and aliases for them
-	std::array<Tryte, 10> regs_;
+	std::array<Tryte, 10> regs_ = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	// store the current instruction at position 0 - other regs follow in positions 1-9
 	Tryte& instr_ = regs_[0];
 

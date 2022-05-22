@@ -23,15 +23,17 @@ public:
 	Tryte const& operator[](int64_t const addr) const;
 
 	// $mmk - current memory bank
-	static int64_t const BANK = 9839;
+	static int64_t constexpr BANK = 9839;
 	// $mml - stack pointer
-	static int64_t const SP = 9840;
+	static int64_t constexpr SP = 9840;
 	// $mmm - program counter
-	static int64_t const PC = 9841;
+	static int64_t constexpr PC = 9841;
+	// $MMM - bank memory start
+	static int64_t constexpr BANK_START = -9841;
 	// $Emm - bank memory end
-	static int64_t const BANK_END = (-9841 + 6561);
+	static int64_t constexpr BANK_END = (-9841 + 6561);
 	// $m00 - reserved memory start
-	static int64_t const RESERVED_START = (9841 - 365);
+	static int64_t constexpr RESERVED_START = (9841 - 365);
 
 	// public access to current bank
 	Tryte& bank();

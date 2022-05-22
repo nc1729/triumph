@@ -19,7 +19,7 @@ BankManager::BankManager(std::vector<Bank*> const& banks) : banks_{banks}
 void BankManager::add_bank(Bank* new_bank_ptr)
 {
     banks_.push_back(new_bank_ptr);
-    label_map_[new_bank_ptr->number] = banks_.size();
+    label_map_[new_bank_ptr->number] = banks_.size() - 1;
 }
 
 size_t BankManager::size()

@@ -31,7 +31,11 @@ public:
 	memory{{&zero, &screen.tryte_framebuffer, &screen.tilemap, &screen.work_RAM}, disks},
 	cpu{memory} {};
 
+	bool is_on;
 	void test_disk();
+	void disk_copy();
+	void boot();
+	void disk_manager();
 	void test(std::string const& tilemap_filename);
 	void run_program(std::vector<Tryte> const& program);
 };

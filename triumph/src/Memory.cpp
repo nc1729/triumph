@@ -18,7 +18,6 @@ Memory::Memory(std::vector<Bank*> const& banks, std::vector<Disk>& disks) : bank
 	{
 		banks_.add_bank(&disk.buffer);
 	}
-	std::cout << "Mounted devices and disks- number of banks: " << banks_.size() << '\n';
 }
 
 void Memory::add_bank(Bank* new_bank_ptr)

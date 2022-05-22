@@ -68,17 +68,26 @@ int main(int argc, char* argv[])
     for (size_t i = 0; i < number_of_disks; i++)
     {
         // the first disk in the argument list will be assigned to bank 1, then bank 2 etc
-        disks.push_back(Disk(i + 1, argv[i + 1]));
+        try
+        {
+            disks.push_back(Disk(i + 1, argv[i + 1]));
+        }
+        catch (std::runtime_error const& e)
+        {
+            std::cerr << e.what() << '\n';
+            return 1;
+        }
     }
     
     try
     {
         Computer computer(disks);
-        computer.test_disk();
+        computer.boot();
     }
-    catch(const std::runtime_error& e)
+    catch(std::runtime_error const& e)
     {
         std::cerr << e.what() << '\n';
+        return 1;
     }
     
     

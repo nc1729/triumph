@@ -38,6 +38,8 @@ private:
 	// using the 81 trytes stored in palette memory, construct the byte palettes array
 	void regen_palettes();
 	uint32_t static tryte_to_colour(Tryte const& colour_tryte);
+
+	int64_t static constexpr STATUS = (-9841 + 6560);
 	
 public:
 	Screen();
@@ -47,10 +49,28 @@ public:
 	void show_tilemap();
 	void hello_world();
 
+	// main loop
+	void run();
+
+	void draw_to_screen();
+	int64_t static constexpr FPS = 30;
+
+	int64_t static constexpr FRAMEBUFFER_BANK = -1;
+	int64_t static constexpr TILEMAP_BANK = -2;
+	int64_t static constexpr WORKRAM_BANK = -3;
+	// location of screen status flag in work RAM
+	// + : screen is ready
+	// 0 : screen is busy
+	// - : screen is off or has an error
+	int64_t static constexpr STATUS_ADDR = STATUS;
+	
+
 	// VRAM (accessible as banks -1, -2, -3 by CPU)
-	Bank tryte_framebuffer{ -1 };
-	Bank tilemap{ -2 };
-	Bank work_RAM{ -3 };
+	Bank tryte_framebuffer{ FRAMEBUFFER_BANK };
+	Bank tilemap{ TILEMAP_BANK };
+	Bank work_RAM{ WORKRAM_BANK };
+
+	bool is_on;
 	
 };
 void show_window();
