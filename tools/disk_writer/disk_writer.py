@@ -57,7 +57,7 @@ def main():
 
     # disk tilemap page start
     disk_tile_ptr = 1
-    disk_contents += int_to_unsigned_tryte(disk_size)
+    disk_contents += int_to_unsigned_tryte(disk_tile_ptr)
 
     # disk boot code start
     disk_contents += "M00" # Tryte 364
@@ -109,7 +109,7 @@ def main():
     boot_code += "Dacmlc" # SAVE A, $C; INC C
     boot_code += "maa0cm" # SET A, 94 - '!'
     boot_code += "Dacmlc" # SAVE A, $C; INC C
-    boot_code += "MMM"    # HALT
+    boot_code += "jj0M00" # JP $M00 - loop bootcode infinitely
 
     padding = (365 - (len(boot_code) // 3)) * "000"
 

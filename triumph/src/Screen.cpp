@@ -337,6 +337,7 @@ void Screen::draw_to_screen()
     SDL_UpdateTexture(screen_texture, nullptr, byte_framebuffer.data(), PIXEL_WIDTH * sizeof(uint32_t));
     SDL_RenderCopy(renderer, screen_texture, nullptr, nullptr);
     SDL_RenderPresent(renderer);
+    work_RAM[STATUS] = 1;
 }
 
 void show_window()
