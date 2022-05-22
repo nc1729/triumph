@@ -7,7 +7,7 @@
 #include "Tryte.h"
 #include "Disk.h"
 Disk::Disk(size_t const disk_number, std::string const& disk_path) : 
-	disk_path{ disk_path }, number{ disk_number }, buffer{ disk_number }
+	disk_path{ disk_path }, number{ disk_number }, buffer{ static_cast<int64_t>(disk_number) }
 {
 	// calculate disk_size
 	file_handle.open(disk_path);

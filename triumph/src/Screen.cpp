@@ -316,6 +316,7 @@ void Screen::run()
             }
             
             draw_to_screen();
+            regen_palettes();
             uint64_t frame_end = SDL_GetPerformanceCounter();
 
             // calculate elapsed time in milliseconds
