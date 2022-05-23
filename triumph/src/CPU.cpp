@@ -45,6 +45,7 @@ void CPU::cycle()
 
 void CPU::run()
 {
+	this->turn_on();
 	while (on_)
 	{
 		cycle();
@@ -74,6 +75,7 @@ void CPU::run()
 			}
 			second_start_ = clock_.now();
 		}
+		dump("normal");
 	}
 }
 

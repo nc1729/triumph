@@ -1,63 +1,30 @@
 #!/usr/bin/python3
 import sys
-
-def tryte_to_int(tryte_string):
-    septavingt_chars = "MLKJIHGFEDCBA0abcdefghijklm"
-    high = septavingt_chars.find(tryte_string[0]) - 13
-    mid  = septavingt_chars.find(tryte_string[1]) - 13
-    low  = septavingt_chars.find(tryte_string[2]) - 13
-
-    return 729 * high + 27 * mid + low
-
-def int_to_tryte(integer):
-    triple_array = [0, 0, 0]
-    div = integer
-    for i in range(3):
-        div, rem = divmod(div, 27)
-        if rem > 13:
-            rem -= 27
-            div += 1
-        elif rem < -13:
-            rem += 27
-            div -= 1
-        triple_array[2 - i] = rem
-
-    septavingt_chars = "MLKJIHGFEDCBA0abcdefghijklm"
-    return "".join([septavingt_chars[triple_array[i] + 13] for i in range(3)])
-
-def int_to_unsigned_tryte(integer):
-    return int_to_tryte(integer - 9841)
-
-def string_to_trytes(in_string):
-    out_string = ""
-    for char in in_string:
-        char_ascii_val = ord(char)
-        out_string += int_to_tryte(char_ascii_val)
-    return out_string
+import tryte_tools
 
 def main():
     tilemap_file = sys.argv[1]
     output_file = sys.argv[2]
     disk_contents = ""
     # required signature (in tryte ASCII)
-    signature = string_to_trytes("TRIUMPH") + "000000"
+    signature = tryte_tools.string_to_trytes("TRIUMPH") + "000000"
     disk_contents += signature
     
     # disk name
     disk_name = "TRIUMPH TEST DISK"
-    disk_contents += (string_to_trytes(disk_name) + (27 - len(disk_name)) * "000")
+    disk_contents += (tryte_tools.string_to_trytes(disk_name) + (27 - len(disk_name)) * "000")
 
     # disk size (in pages)
     disk_size = 10 # 9 for tilemap, 1 for boot sector
-    disk_contents += int_to_unsigned_tryte(disk_size)
+    disk_contents += tryte_tools.int_to_unsigned_tryte(disk_size)
 
     # disk read/write permissions
     disk_permissions = 1 # read/write allowed
-    disk_contents += int_to_tryte(disk_permissions)
+    disk_contents += tryte_tools.int_to_tryte(disk_permissions)
 
     # disk tilemap page start
     disk_tile_ptr = 1
-    disk_contents += int_to_unsigned_tryte(disk_tile_ptr)
+    disk_contents += tryte_tools.int_to_unsigned_tryte(disk_tile_ptr)
 
     # disk boot code start
     disk_contents += "M00" # Tryte 364

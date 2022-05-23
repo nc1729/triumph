@@ -89,7 +89,8 @@ void Computer::boot()
 
 	// set stack pointer and program counter
 	memory.sp() = Tryte("m00");
-	memory.pc() = memory[Disk::DISK_BCODE_ADDR]; // usually M00
+	memory.pc() = Tryte("M00"); // usually M00
+	std::cout << memory.pc();
 
 	// start disk manager in new thread
 	std::thread disk_thread{ &Computer::disk_manager, this };
