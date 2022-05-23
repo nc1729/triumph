@@ -22,8 +22,10 @@ public:
 	void cycle();
 	// while CPU is on, run fetch/decode/execute cycle
 	void run();
-	// dump contents of registers and other things to stderr
-	void dump(std::string const& err_msg);
+	// dump contents of registers and other things to stdout
+	void dump();
+	// on crash, dump contents of registers and other things to stderr
+	void crash_dump(std::string const& err_msg);
 
 
 private:
@@ -44,6 +46,7 @@ private:
 	int8_t& CARRY_FLAG = flags_[1];
 	int8_t& SIGN_FLAG = flags_[2];
 	int8_t& STACK_FLAG = flags_[3];
+	int8_t& JUMP_FLAG = flags_[4];
 
 
 	/*
@@ -71,6 +74,8 @@ private:
 	int64_t cycles_;
 	// maximum number of cycles per second
 	size_t max_frequency_;
+	// instruction size, used for jumping
+	size_t instr_size_;
 	// CPU is being throttled by the emulator
 	bool throttled_;
 
@@ -98,6 +103,9 @@ private:
 
 	// set memory bank to Tryte value
 	void set_bank(Tryte const& x);
+
+	// get memory bank
+	void get_bank(Tryte& x);
 
 	// set register equal to register/immediate
 	void set(Tryte& x, Tryte const& y);

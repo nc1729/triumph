@@ -46,3 +46,7 @@ def trytes_to_string(tryte_string):
         print(tryte)
         out_string += tryte_to_char(tryte)
     return out_string
+
+def add_int_to_tryte(tryte, integer):
+    tryte_int = tryte_to_int(tryte)
+    return int_to_tryte(tryte_int + integer)

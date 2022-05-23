@@ -127,12 +127,17 @@ The instructions also permit indirect addressing of memory using registers, deno
 #### BANK X
 - Opcode: mjX
 - Length: 1 tryte
-- Description: Set current BANK to value of register X
+- Description: Set current BANK to value of register X.
 
 #### BANK t9
 - Opcode: Mj. t9
 - Length: 2 trytes
-- Description: Set current BANK to value of immediate t9
+- Description: Set current BANK to value of immediate t9.
+
+#### GANK X
+- Opcode: mJX
+- Length: 1 tryte
+- Description: Set register X equal to the current BANK value.
 
 ### Register management
 
@@ -350,7 +355,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Stack flag: No effect.
 
 #### CPZ X
-- Opcode: mCX t9
+- Opcode: mCX
 - Length: 1 tryte
 - Description: Short form of "CMP X, 0".
 - Compare flag: Set to sign(X).

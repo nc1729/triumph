@@ -6,6 +6,11 @@
 
 #include "Tryte.h"
 #include "Disk.h"
+
+int8_t const Disk::READWRITE = -1;
+int8_t const Disk::READONLY = 0;
+int8_t const Disk::WRITEONLY = -1;
+
 Disk::Disk(size_t const disk_number, std::string const& disk_path) : 
 	disk_path{ disk_path }, number{ disk_number }, buffer{ static_cast<int64_t>(disk_number) }
 {
@@ -27,45 +32,38 @@ Disk::Disk(size_t const disk_number, std::string const& disk_path) :
 		std::string err_msg = disk_path + " is not a valid TRIUMPH disk file.";
 		throw std::runtime_error(err_msg);
 	}
-	
+
+	// load control Trytes and metadata
+	// set disk name
+	for (size_t i = 0; i < 27; i++)
+	{
+		disk_name_trytes[i] = buffer[BootDisk::NAME_ADDR + i];
+	}
+
+	// set disk size
+	disk_size_tryte = buffer[BootDisk::SIZE_ADDR];
+
+	// set read/write permissions
+	rw_permissions = buffer[BootDisk::RW_ADDR];
+
+	// set tilemap page addr
+	tilemap_addr = buffer[BootDisk::TILEMAP_PAGE_ADDR];
+
+	// set bootcode ptr
+	bootcode_addr = buffer[BootDisk::BOOTCODE_PTR_ADDR];
+
+	// set page number to page 0 (as unsigned Tryte -9841)
+	page_number = -9841;
+	buffer[CACHE_PAGE_ADDR + 9841] = page_number;
+
+	// set disk status to 1 - disk is ready
+	disk_status = 1;
+	buffer[DISK_STATE_ADDR + 9841] = disk_status;
+
+	// set bootable flag for computer to attempt boot!
+	// disk is bootable if it has a valid header and is big enough to contain a 6561-Tryte tilemap
 	if (is_bootdisk())
 	{
-		// load control Trytes and metadata
-		// load disk name
-		for (size_t i = 0; i < 27; i++)
-		{
-			buffer[DISK_NAME_ADDR + 9841 + i] = buffer[BUFFER_NAME_ADDR + i];
-		}
-
-		// load boot code start pointer
-		buffer[DISK_BCODE_ADDR + 9841] = buffer[BUFFER_BOOT_ADDR];
-		
-		// load disk tilemap page start
-		buffer[DISK_TILEMAP_ADDR + 9841] = buffer[BUFFER_TILEMAP_ADDR];
-
-		// load disk size
-		buffer[DISK_SIZE_ADDR + 9841] = buffer[BUFFER_SIZE_ADDR];
-
-		// set open page to 0
-		buffer[DISK_PAGE_ADDR + 9841] = 0;
-
-		// load disk read/write permissions
-		buffer[DISK_STATE_ADDR + 9841] = buffer[BUFFER_STATE_ADDR];
-		// set internal disk read/write permissions - CPU cannot change this
-		if (buffer[BUFFER_STATE_ADDR][PERMISSIONS_FLAG] == 1)
-		{
-			status = Disk::Status::READWRITE;
-		}
-		else if (buffer[BUFFER_STATE_ADDR][PERMISSIONS_FLAG] == 0)
-		{
-			status = Disk::Status::READONLY;
-		}
-		else
-		{
-			status = Disk::Status::WRITEONLY;
-		}
-
-		// set bootable flag for computer to attempt boot!
 		is_bootable = true;
 	}
 
@@ -102,7 +100,7 @@ bool Disk::is_bootdisk()
 {
 	// header is valid and we know we have at least one page (and we've read it already!)
 	// to be bootable, we need a tilemap address (if running in graphics mode)
-	size_t tilemap_page_start = Tryte::get_int(buffer[38]) + 9841;
+	size_t tilemap_page_start = Tryte::get_int(buffer[BootDisk::TILEMAP_PAGE_ADDR]) + 9841;
 	if (tilemap_page_start + 9 > disk_size_pages)
 	{
 		// no room for valid tilemap on disk - disk is not bootable
@@ -113,6 +111,7 @@ bool Disk::is_bootdisk()
 
 void Disk::read_from_page(size_t const page_number)
 {
+
 	// check that we're accessing a valid page
 	if (page_number >= disk_size_pages)
 	{
@@ -121,7 +120,7 @@ void Disk::read_from_page(size_t const page_number)
 		// do nothing else to buffer
 		return;
 	}
-	if (status == Status::WRITEONLY)
+	if (rw_permissions[0] == WRITEONLY)
 	{
 		// set disk error trit
 		buffer[DISK_STATE_ADDR + 9841][STATUS_FLAG] = -1;
@@ -137,14 +136,16 @@ void Disk::read_from_page(size_t const page_number)
 		file_handle >> buffer[i];
 	}
 	file_handle.close();
-	// recover disk size
-	buffer[DISK_SIZE_ADDR + 9841] = static_cast<int64_t>(disk_size_pages) - 9841;
-	// set disk status trit to free
-	buffer[DISK_STATE_ADDR + 9841][Disk::STATUS_FLAG] = 1;
+
+	refresh_metadata();
 }
 
 void Disk::write_to_page(size_t const page_number)
 {
+	// set disk status flag to busy
+	buffer[DISK_STATE_ADDR + 9841][Disk::STATUS_FLAG] = 0;
+
+	// check that we're accessing a valid page
 	if (page_number >= disk_size_pages)
 	{
 		// set disk error trit
@@ -152,7 +153,7 @@ void Disk::write_to_page(size_t const page_number)
 		// do nothing else to buffer
 		return;
 	}
-	if (status == Status::READONLY)
+	if (rw_permissions[0] == READONLY)
 	{
 		// set disk error trit
 		buffer[DISK_STATE_ADDR + 9841][STATUS_FLAG] = -1;
@@ -166,10 +167,10 @@ void Disk::write_to_page(size_t const page_number)
 		file_handle << buffer[i];
 	}
 	file_handle.close();
-	// recover disk size
-	buffer[DISK_SIZE_ADDR + 9841] = static_cast<int64_t>(disk_size_pages) - 9841;
-	// set disk status trit to free
+	// set disk status flag to free
 	buffer[DISK_STATE_ADDR + 9841][Disk::STATUS_FLAG] = 1;
+
+	refresh_metadata();
 }
 
 bool Disk::header_is_valid()
@@ -178,7 +179,31 @@ bool Disk::header_is_valid()
 	this->read_from_page(0);
 	// check disk header (TRIUMPH in 'wide' encoding, padded with \0s - one Tryte per char, using ASCII for each char)
 	// T R I U M P H -> 84 82 73 85 77 80 72 00 00 -> 0cc 0ca 0cH 0cd 0cD 0cA 0cI 000 000
-	std::array<Tryte, BUFFER_SIG_SIZE> boot_header{ buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6], buffer[7], buffer[8]};
-	std::array<Tryte, BUFFER_SIG_SIZE> header{ Tryte("0cc"), Tryte("0ca"), Tryte("0cH"), Tryte("0cd"), Tryte("0cD"), Tryte("0cA"), Tryte("0cI"), Tryte("000"), Tryte("000")};
+	std::array<Tryte, BootDisk::SIGNATURE_SIZE> boot_header{ buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6], buffer[7], buffer[8]};
+	std::array<Tryte, BootDisk::SIGNATURE_SIZE> header{ Tryte("0cc"), Tryte("0ca"), Tryte("0cH"), Tryte("0cd"), Tryte("0cD"), Tryte("0cA"), Tryte("0cI"), Tryte("000"), Tryte("000")};
 	return boot_header == header;
+}
+
+void Disk::refresh_metadata()
+{
+	// refresh disk name
+	for (size_t i = 0; i < 27; i++)
+	{
+		buffer[CACHE_NAME_ADDR + i + 9841] = disk_name_trytes[i];
+	}
+
+	// refresh disk size
+	buffer[CACHE_SIZE_ADDR + 9841] = disk_size_tryte;
+
+	// refresh read/write permissions
+	buffer[CACHE_RW_ADDR + 9841] = rw_permissions;
+
+	// refresh tilemap page
+	buffer[CACHE_TILEMAP_ADDR + 9841] = tilemap_addr;
+
+	// refresh bootcode ptr
+	buffer[CACHE_BCODE_ADDR + 9841] = bootcode_addr;
+
+	// refresh page number
+	buffer[CACHE_PAGE_ADDR + 9841] = page_number;
 }

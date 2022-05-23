@@ -10,7 +10,7 @@
 #include "Bank.h"
 #include "Tryte.h"
 
-std::array<uint32_t, 27> Screen::colour_values = 
+std::array<uint32_t, 27> const Screen::colour_values = 
 { 0, 10, 20, 29, 39, 49, 59, 69, 78, 88, 98, 108, 118, 128, 137, 147, 157, 167, 177, 186,
     196, 206, 216, 226, 235, 245, 255 };
 
@@ -314,9 +314,9 @@ void Screen::run()
             {
                 is_on = false;
             }
-            
+
+            regen_palettes();            
             draw_to_screen();
-            regen_palettes();
             uint64_t frame_end = SDL_GetPerformanceCounter();
 
             // calculate elapsed time in milliseconds

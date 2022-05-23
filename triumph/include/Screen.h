@@ -28,7 +28,7 @@ private:
 	// 3 colours per palette, each colour is a tryte (high - R, mid - G, low - B)
 	uint64_t const PALETTE_START = 0; // $MMM
 	std::vector<uint32_t> palettes{ 81, 0 };
-	std::array<uint32_t, 27> static colour_values;
+	std::array<uint32_t, 27> static const colour_values;
 
 	const char* window_title = "SDL Test";
 
@@ -39,7 +39,7 @@ private:
 	void regen_palettes();
 	uint32_t static tryte_to_colour(Tryte const& colour_tryte);
 
-	int64_t static constexpr STATUS = (-9841 + 6560);
+	int64_t static constexpr STATUS = 6560;
 	
 public:
 	Screen();
@@ -62,7 +62,7 @@ public:
 	// + : screen is ready
 	// 0 : screen is busy
 	// - : screen is off or has an error
-	int64_t static constexpr STATUS_ADDR = STATUS;
+	int64_t static constexpr STATUS_ADDR = STATUS - 9841;
 	
 
 	// VRAM (accessible as banks -1, -2, -3 by CPU)

@@ -71,6 +71,9 @@
     <ClInclude Include="include\Disk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\BootDisk.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\tilemap.bmp">
