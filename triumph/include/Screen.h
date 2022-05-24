@@ -32,8 +32,10 @@ private:
 
 	const char* window_title = "SDL Test";
 
+	// convert the tryte framebuffer to byte framebuffer that SDL2 can render to screen
 	void write_tryte_fb_to_byte_fb();
 
+	// write a given tile in the tilemap buffer to a given x, y spot in the tryte framebuffer
 	void write_tile_to_framebuffer(size_t const grid_index_x, size_t const grid_index_y, size_t const palette_index, size_t const tile_addr);
 	// using the 81 trytes stored in palette memory, construct the byte palettes array
 	void regen_palettes();
@@ -49,10 +51,8 @@ private:
 public:
 	Screen();
 	~Screen();
-	void test();
 	void read_tilemap(std::string const& filename);
 	void show_tilemap();
-	void hello_world();
 
 	// main loop
 	void run();
@@ -78,4 +78,3 @@ public:
 	bool is_on;
 	
 };
-void show_window();

@@ -61,36 +61,6 @@ Screen::~Screen()
     SDL_Quit();
 }
 
-
-void Screen::test()
-{
-    SDL_FillRect(surface, nullptr, SDL_MapRGB(surface->format, 255, 0, 0));
-    SDL_UpdateWindowSurface(window);
-
-    // event loop
-    SDL_Event e;
-    bool quit = false;
-    while (!quit)
-    {
-        while (SDL_PollEvent(&e))
-        {
-            if (e.type == SDL_QUIT)
-            {
-                quit = true;
-            }
-            if (e.type == SDL_KEYDOWN)
-            {
-                quit = true;
-            }
-            if (e.type == SDL_MOUSEBUTTONDOWN)
-            {
-                quit = true;
-            }
-        }
-    }
-    return;
-}
-
 void Screen::read_tilemap(std::string const& filename)
 {
     std::ifstream tilemap_stream(filename);
@@ -143,77 +113,6 @@ void Screen::show_tilemap()
             SDL_RenderCopy(renderer, screen_texture, nullptr, nullptr);
             SDL_RenderPresent(renderer);
             SDL_Delay(100);
-        }
-    }
-    return;
-}
-
-void Screen::hello_world()
-{
-    // define palette 0
-    work_RAM[PALETTE_START + 39] = Tryte("MMM"); // negative trit pixels will be black
-    work_RAM[PALETTE_START + 40] = Tryte("mmM"); // 0 and + will be bright yellow!
-    work_RAM[PALETTE_START + 41] = Tryte("mmM");
-
-    // cache the palettes
-    regen_palettes();
-
-    // fill tryte framebuffer with black tiles
-    for (size_t j = 0; j < TILE_GRID_WIDTH * TILE_GRID_HEIGHT; j++)
-    {
-        tryte_framebuffer[j] = 0; // #000 - palette 0, tile 0 (centre of tilemap, all - trits)
-    }
-
-    // draw hello world to center row (slightly up from center...)
-    size_t const CENTER_ROW = 26; // kind of
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 20] = 21; // H
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 21] = 45; // e
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 22] = 52; // l
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 23] = 52; // l
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 24] = 55; // o
-    // leave a space...
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 26] = 63; // w
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 27] = 55; // o
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 28] = 58; // r
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 29] = 52; // l
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 30] = 44; // d
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 31] = 94; // !
-
-    // event loop
-    SDL_Event e;
-    bool quit = false;
-    bool red = false;
-    while (!quit)
-    {
-        while (SDL_PollEvent(&e))
-        {
-            regen_palettes();
-            if (e.type == SDL_QUIT)
-            {
-                quit = true;
-            }
-            if (e.type == SDL_KEYDOWN)
-            {
-                if (red)
-                {
-                    // change text colour to yellow
-                    work_RAM[PALETTE_START + 40] = Tryte("mmM");
-                    work_RAM[PALETTE_START + 41] = Tryte("mmM");
-                    red = false;
-                }
-                else
-                {
-                    // change text colour to red
-                    work_RAM[PALETTE_START + 40] = Tryte("mMM");
-                    work_RAM[PALETTE_START + 41] = Tryte("mMM");
-                    red = true;
-                }
-            }
-            write_tryte_fb_to_byte_fb();
-            SDL_UpdateTexture(screen_texture, nullptr, byte_framebuffer.data(), PIXEL_WIDTH * sizeof(uint32_t));
-            SDL_RenderCopy(renderer, screen_texture, nullptr, nullptr);
-            SDL_RenderPresent(renderer);
-            //SDL_Delay(100);
         }
     }
     return;
@@ -356,92 +255,6 @@ void Screen::draw_to_screen()
     work_RAM[STATUS] = 1;
 }
 
-void show_window()
-{
-    // initialisation flag
-    bool success = true;
-
-    // define the window
-    SDL_Window* window = nullptr;
-
-    // the surface contained by the window
-    SDL_Surface* screen_surface = nullptr;
-
-    // the image we will load and show on the screen
-    SDL_Surface* hello = nullptr;
-
-
-    // initialise SDL
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
-    {
-        std::cerr << "SDL could not initialise! SDL Error: " << SDL_GetError() << '\n';
-        success = false;
-    }
-    else
-    {
-        // create window
-        window = SDL_CreateWindow("SDL test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 600, 600, SDL_WINDOW_SHOWN);
-        if (window == nullptr)
-        {
-            std::cerr << "Window could not be created! SDL Error: " << SDL_GetError() << '\n';
-            success = false;
-        }
-        else
-        {
-            // get window surface
-            screen_surface = SDL_GetWindowSurface(window);
-        }
-    }
-
-    const char* filename = "./res/chars.bmp";
-    hello = SDL_LoadBMP(filename);
-    if (hello == nullptr)
-    {
-        std::cerr << "Unable to load image " << filename << "! SDL Error: " << SDL_GetError() << '\n';
-        success = false;
-    }
-
-    // apply the image
-    SDL_BlitSurface(hello, nullptr, screen_surface, nullptr);
-
-    // update the surface
-    SDL_UpdateWindowSurface(window);
-
-    // event loop
-    SDL_Event e;
-    bool quit = false;
-    while (!quit)
-    {
-        while (SDL_PollEvent(&e))
-        {
-            if (e.type == SDL_QUIT)
-            {
-                quit = true;
-            }
-            if (e.type == SDL_KEYDOWN)
-            {
-                quit = true;
-            }
-            if (e.type == SDL_MOUSEBUTTONDOWN)
-            {
-                quit = true;
-            }
-        }
-    }
-
-    // deallocate surface
-    SDL_FreeSurface(hello);
-    hello = nullptr;
-
-    // destroy window
-    SDL_DestroyWindow(window);
-    window = nullptr;
-
-    // quit SDL
-    SDL_Quit();
-
-}
-
 void Screen::dump_bank(Bank const& bank)
 {
     size_t const ROW_LENGTH = 27;
@@ -455,7 +268,7 @@ void Screen::dump_bank(Bank const& bank)
         std::cout << Tryte(row_start + (ROW_LENGTH * i)) << ": ";
         for (size_t j = 0; j < ROW_LENGTH; j++)
         {
-            std::cout << tryte_framebuffer[ROW_LENGTH * i + j] << ' ';
+            std::cout << bank[ROW_LENGTH * i + j] << ' ';
         }
         std::cout << ":" << Tryte(row_end + (ROW_LENGTH * i)) << "\n";
     }

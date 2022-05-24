@@ -108,8 +108,6 @@ void CPU::decode_and_execute()
 	int8_t mid = Tryte::get_mid(instr_);
 	int8_t low = Tryte::get_low(instr_);
 
-	Tryte current_pos = pc_;
-
 	switch (high)
 	{
 

@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 import sys
 
-from yaml import load
 import tryte_tools
 
 def main():
@@ -256,6 +255,8 @@ def main():
     copy_to_tilemap_code += "mfgmJg"
     #   !start
     start_ptr = tryte_tools.add_int_to_tryte(copy_to_tilemap_ptr, len(copy_to_tilemap_code) // 3)
+    #   BANK B             # set bank to disk
+    copy_to_tilemap_code += "mjb"
     #   CALL load_page(B, C)
     #   B and C are already in place - just need to JPS to load_page
     copy_to_tilemap_code += "jjf" + load_page_ptr
@@ -269,8 +270,8 @@ def main():
     #   on function return, recover B, C and D
     #   POP D; POP C; POP B
     copy_to_tilemap_code += "mFdmFcmFb"
-    #   BANK -1             # switch to framebuffer
-    copy_to_tilemap_code += "Mj000A"
+    #   BANK -2             # switch to tilemap
+    copy_to_tilemap_code += "Mj000B"
     #   CALL memcpy($AMM, D, 729)
     copy_to_tilemap_code += "mfbmfcmfd"
     copy_to_tilemap_code += "mabAMMacdmada00"
