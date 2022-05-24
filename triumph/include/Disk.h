@@ -106,9 +106,9 @@ public:
 	disk operations
 	*/
 	// read from the given page (729 Trytes) to the disk_buffer at $0MM-$0mm
-	void read_from_page(size_t const page_number);
+	void read_from_page(int64_t const page_number);
 	// write to the given page on disk
-	void write_to_page(size_t const page_number);
+	void write_to_page(int64_t const page_number);
 	// verify disk header
 	bool header_is_valid();
 	// after read/write, refresh buffer's metadata using internal Disk state - in case of accidental overwriting

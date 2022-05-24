@@ -108,6 +108,8 @@ void CPU::decode_and_execute()
 	int8_t mid = Tryte::get_mid(instr_);
 	int8_t low = Tryte::get_low(instr_);
 
+	Tryte current_pos = pc_;
+
 	switch (high)
 	{
 
@@ -436,6 +438,60 @@ void CPU::decode_and_execute()
 		halt();
 		break;
 	}
+
+#if 0
+
+	if (current_pos == Tryte("0em"))
+	{
+		std::cout << "Entered copy_to_tilemap\n";
+		print = true;
+	}
+
+	if (current_pos == Tryte("0dC"))
+	{
+		std::cout << "Entered load_page\n";
+		print = false;
+	}
+
+	if (current_pos == Tryte("0eA"))
+	{
+		std::cout << "Leaving load page\n";
+		print = true;
+	}
+
+	if (current_pos == Tryte("0e0"))
+	{
+		print = false;
+	}
+
+	if (current_pos == Tryte("0em"))
+	{
+		std::cout << "Leaving memcpy\n";
+		print = true;
+	}
+
+	if (print)
+	{
+		std::cout << "Program counter: " << current_pos << '\n';
+		std::cout << "This instruction: ";
+		for (size_t i = 0; i < instr_size_; i++)
+		{
+			std::cout << memory_[current_pos + i] << ' ';
+		}
+		std::cout << '\n';
+		std::cout << "Stack pointer: " << sp_ << '\n';
+		std::cout << "Memory bank: " << bank_ << '\n';
+
+		std::cout << "---------REGISTERS---------\n";
+		std::cout << "A : " << regs_[1] << " B : " << regs_[2] << " C : " << regs_[3] << '\n';
+		std::cout << "D : " << regs_[4] << " E : " << regs_[5] << " F : " << regs_[6] << '\n';
+		std::cout << "G : " << regs_[7] << " H : " << regs_[8] << " I : " << regs_[9] << '\n';
+
+		std::cout << "Disk status flag: " << memory_[-3281] << '\n';
+		std::cout << '\n';
+	}
+#endif
+	
 	if (JUMP_FLAG == 0)
 	{
 		pc_ += instr_size_;

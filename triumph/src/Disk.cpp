@@ -100,8 +100,20 @@ bool Disk::is_bootdisk()
 {
 	// header is valid and we know we have at least one page (and we've read it already!)
 	// to be bootable, we need a tilemap address (if running in graphics mode)
-	size_t tilemap_page_start = Tryte::get_int(buffer[BootDisk::TILEMAP_PAGE_ADDR]) + 9841;
-	if (tilemap_page_start + 9 > disk_size_pages)
+
+	// convert signed Tryte to 'unsigned' Tryte
+	int64_t tilemap_page_start = buffer[BootDisk::TILEMAP_PAGE_ADDR];
+	size_t tilemap_page_start_unsigned = 0;
+	if (tilemap_page_start < 0)
+	{
+		tilemap_page_start_unsigned = tilemap_page_start + 19683;
+	}
+	else
+	{
+		tilemap_page_start_unsigned = tilemap_page_start;
+	}
+
+	if (tilemap_page_start_unsigned + 9 > disk_size_pages)
 	{
 		// no room for valid tilemap on disk - disk is not bootable
 		return false;
@@ -109,17 +121,32 @@ bool Disk::is_bootdisk()
 	return true;
 }
 
-void Disk::read_from_page(size_t const page_number)
+void Disk::read_from_page(int64_t const page_number)
 {
+	// set disk status flag to busy
+	buffer[DISK_STATE_ADDR + 9841][Disk::STATUS_FLAG] = 0;
+
+	// calculate 'unsigned' page number
+	size_t unsigned_page_number = 0;
+	if (page_number < 0)
+	{
+		unsigned_page_number = page_number + 19683;
+	}
+	else
+	{
+		unsigned_page_number = page_number;
+	}
 
 	// check that we're accessing a valid page
-	if (page_number >= disk_size_pages)
+	if (unsigned_page_number >= disk_size_pages)
 	{
 		// set disk error trit
 		buffer[DISK_STATE_ADDR + 9841][STATUS_FLAG] = -1;
 		// do nothing else to buffer
 		return;
 	}
+
+	// check that the hardwired permissions are being respected
 	if (rw_permissions[0] == WRITEONLY)
 	{
 		// set disk error trit
@@ -130,29 +157,45 @@ void Disk::read_from_page(size_t const page_number)
 
 	// open disk file and copy to buffer
 	file_handle.open(disk_path);
-	file_handle.seekg(PAGE_SIZE * page_number, std::ios::beg);
+	file_handle.seekg(PAGE_SIZE * unsigned_page_number, std::ios::beg);
 	for (size_t i = 0; i < 729; i++)
 	{
 		file_handle >> buffer[i];
 	}
 	file_handle.close();
 
+	// set disk status flag to free
+	buffer[DISK_STATE_ADDR + 9841][Disk::STATUS_FLAG] = 1;
+
 	refresh_metadata();
 }
 
-void Disk::write_to_page(size_t const page_number)
+void Disk::write_to_page(int64_t const page_number)
 {
 	// set disk status flag to busy
 	buffer[DISK_STATE_ADDR + 9841][Disk::STATUS_FLAG] = 0;
 
+	// calculate 'unsigned' page number
+	size_t unsigned_page_number = 0;
+	if (page_number < 0)
+	{
+		unsigned_page_number = page_number + 19683;
+	}
+	else
+	{
+		unsigned_page_number = page_number;
+	}
+
 	// check that we're accessing a valid page
-	if (page_number >= disk_size_pages)
+	if (unsigned_page_number >= disk_size_pages)
 	{
 		// set disk error trit
 		buffer[DISK_STATE_ADDR + 9841][STATUS_FLAG] = -1;
 		// do nothing else to buffer
 		return;
 	}
+
+	// check that the hardwired permissions are being respected
 	if (rw_permissions[0] == READONLY)
 	{
 		// set disk error trit
@@ -160,13 +203,16 @@ void Disk::write_to_page(size_t const page_number)
 		// do nothing else to buffer
 		return;
 	}
+
+	// open disk file and write from buffer
 	file_handle.open(disk_path);
-	file_handle.seekg(PAGE_SIZE * page_number, std::ios::beg);
+	file_handle.seekg(PAGE_SIZE * unsigned_page_number, std::ios::beg);
 	for (size_t i = 0; i < 729; i++)
 	{
 		file_handle << buffer[i];
 	}
 	file_handle.close();
+
 	// set disk status flag to free
 	buffer[DISK_STATE_ADDR + 9841][Disk::STATUS_FLAG] = 1;
 

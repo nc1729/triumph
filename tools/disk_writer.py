@@ -18,7 +18,7 @@ def main():
 
     # disk size (in pages)
     disk_size = 10 # 9 for tilemap, 1 for boot sector
-    disk_contents += tryte_tools.int_to_unsigned_tryte(disk_size)
+    disk_contents += tryte_tools.int_to_tryte(disk_size)
 
     # disk read/write permissions
     # 1 - read/write allowed
@@ -29,7 +29,7 @@ def main():
 
     # disk tilemap page start
     disk_tile_ptr = 1
-    disk_contents += tryte_tools.int_to_unsigned_tryte(disk_tile_ptr)
+    disk_contents += tryte_tools.int_to_tryte(disk_tile_ptr)
 
     # disk boot code start
     disk_contents += "M00" # Tryte 364
@@ -61,9 +61,11 @@ def main():
     # boot code copy loop ends here
 
     main_code_ptr = "0aK"
+    print(f"Main code ptr: {main_code_ptr}")
     main_size = 8 # four function CALLs
 
     write_to_framebuffer_ptr = tryte_tools.add_int_to_tryte(main_code_ptr, main_size)
+    print(f"write_to_framebuffer ptr: {write_to_framebuffer_ptr}")
     write_to_framebuffer_code = ""
     # write_to_framebuffer:
     #   PUSH A; PUSH C;
@@ -127,6 +129,7 @@ def main():
     write_to_framebuffer_size = len(write_to_framebuffer_code) // 3
 
     write_to_palette_0_ptr = tryte_tools.add_int_to_tryte(write_to_framebuffer_ptr, write_to_framebuffer_size)
+    print(f"write_to_palette_0 ptr: {write_to_palette_0_ptr}")
     write_to_palette_0_code = ""
     # write_to_palette_0:
     #   PUSH A; PUSH C;
@@ -159,6 +162,7 @@ def main():
     
     
     load_page_ptr = tryte_tools.add_int_to_tryte(write_to_palette_0_ptr, write_to_palette_0_size)
+    print(f"load_page ptr: {load_page_ptr}")
     load_page_code = ""
     # load_page(bank_number, page_number):
     #   function with 2 arguments - B = bank_number, C = page_number
@@ -172,17 +176,19 @@ def main():
     load_page_code += "mjb"
     #   LOAD $Emm, D        # D = disk_flag
     load_page_code += "mddEmm"
-    #   OR D, #MMg          # (set read request trit to 1)
-    load_page_code += "mBdMMg"
+    #   OR D, #MMG          # (set read request trit to 1)
+    load_page_code += "mBdMMG"
     #   SAVE D, $Emm        # (send read request)
     load_page_code += "mDdEmm"
     #   !send_loop
     send_loop_ptr = tryte_tools.add_int_to_tryte(load_page_ptr, len(load_page_code) // 3)
     #   LOAD D, $Emm
     load_page_code += "mddEmm"
-    #   STAR D, 1
-    load_page_code += "mkd00a"
-    #   JPP send_loop       # if D = 1, disk hasn't started reading, go back to send_loop
+    #   STAR D, 3
+    load_page_code += "mkd00c"
+    #   CPZ D
+    load_page_code += "mCd"
+    #   JPP send_loop       # if D > 0, disk hasn't started reading, go back to send_loop
     load_page_code += "jja" + send_loop_ptr
     #   !wait_loop
     wait_loop_ptr = tryte_tools.add_int_to_tryte(load_page_ptr, len(load_page_code) // 3)
@@ -190,8 +196,10 @@ def main():
     load_page_code += "mddEmm"
     #   STAR D, 1
     load_page_code += "mkd00a"
+    #   CPZ D
+    load_page_code += "mCd"
     #   JPZ wait_loop       # if D = 0, disk is still busy, go back to wait_loop
-    load_page_code += "jji" + send_loop_ptr
+    load_page_code += "jji" + wait_loop_ptr
     #   BANK G
     load_page_code += "mjg"
     #   POP G; POP D;
@@ -203,6 +211,7 @@ def main():
 
 
     memcpy_ptr = tryte_tools.add_int_to_tryte(load_page_ptr, load_page_size)
+    print(f"memcpy ptr: {memcpy_ptr}")
     memcpy_code = ""
     # memcpy(start_ptr, dest_ptr, length):
     #   function with 3 arguments - 
@@ -213,34 +222,35 @@ def main():
     memcpy_code += "mCd"
     #   JPZ done
     done_start_ptr = tryte_tools.add_int_to_tryte(memcpy_ptr, len(memcpy_code) // 3)
-    memcpy_code += "jji" + tryte_tools.add_int_to_tryte(done_start_ptr, 8)
+    memcpy_code += "jji" + tryte_tools.add_int_to_tryte(done_start_ptr, 11)
     #   PUSH E
     memcpy_code += "mfe"
     #   LOAD [B], E
     memcpy_code += "dbe"
     #   SAVE E, [C]
     memcpy_code += "Dec"
+    #   POP E
+    memcpy_code += "mFe"
     #   INC B; INC C; DEC D
     memcpy_code += "mlbmlcmLd"
     #   JP loop
     memcpy_code += "jj0" + loop_ptr
     #   !done
-    #   POP E;
-    memcpy_code += "mFe"
     #   PJP
     memcpy_code += "jjF"
     memcpy_size = len(memcpy_code) // 3
 
     copy_to_tilemap_ptr = tryte_tools.add_int_to_tryte(memcpy_ptr, memcpy_size)
+    print(f"copy_to_tilemap ptr: {copy_to_tilemap_ptr}")
     copy_to_tilemap_code = ""
     # copy_to_tilemap:
     #   PUSH B; PUSH C; PUSH D;
-    copy_to_tilemap_code += "mfamfbmfd"
+    copy_to_tilemap_code += "mfbmfcmfd"
     #   SET B, 1            # bank number (points to boot disk)
     copy_to_tilemap_code += "mab00a"
-    #   SET C, u1           # page number (unsigned Tryte, u1 = #MML)
-    copy_to_tilemap_code += "macMML"
-    #   SET D, u0           # data pointer
+    #   SET C, 1           # page number
+    copy_to_tilemap_code += "mac00a"
+    #   SET D, #MMM           # data pointer
     copy_to_tilemap_code += "madMMM"
     #   PUSH G; GANK G      # set G to curent bank
     copy_to_tilemap_code += "mfgmJg"
@@ -249,11 +259,11 @@ def main():
     #   CALL load_page(B, C)
     #   B and C are already in place - just need to JPS to load_page
     copy_to_tilemap_code += "jjf" + load_page_ptr
-    #   CALL memcpy($MMM, $AMM, u729)
+    #   CALL memcpy($MMM, $AMM, 729)
     #   need to PUSH B; PUSH C; PUSH D
-    copy_to_tilemap_code += "mfamfbmfd"
-    #   then SET B, #MMM; SET C, #AMM; SET D, #LMM
-    copy_to_tilemap_code += "mabMMMmacAMMmadLMM"
+    copy_to_tilemap_code += "mfbmfcmfd"
+    #   then SET B, #MMM; SET C, #AMM; SET D, #a00
+    copy_to_tilemap_code += "mabMMMmacAMMmada00"
     #   then JPS to memcpy
     copy_to_tilemap_code += "jjf" + memcpy_ptr
     #   on function return, recover B, C and D
@@ -261,17 +271,17 @@ def main():
     copy_to_tilemap_code += "mFdmFcmFb"
     #   BANK -1             # switch to framebuffer
     copy_to_tilemap_code += "Mj000A"
-    #   CALL memcpy($AMM, D, u729)
-    copy_to_tilemap_code += "mfamfbmfd"
-    copy_to_tilemap_code += "mabAMMacdmadLMM"
+    #   CALL memcpy($AMM, D, 729)
+    copy_to_tilemap_code += "mfbmfcmfd"
+    copy_to_tilemap_code += "mabAMMacdmada00"
     copy_to_tilemap_code += "jjf" + memcpy_ptr
     copy_to_tilemap_code += "mFdmFcmFb"
     #   ADD D, 729          # move data pointer to next page in framebuffer
     copy_to_tilemap_code += "meda00"
     #   INC C
     copy_to_tilemap_code += "mlc"
-    #   CMP C, u10          # loop to start 9 times
-    copy_to_tilemap_code += "mccMMC"
+    #   CMP C, 10          # loop to start 9 times
+    copy_to_tilemap_code += "mcc00j"
     #   JPN start
     copy_to_tilemap_code += "jjA" + start_ptr
     #   BANK G
@@ -283,6 +293,7 @@ def main():
     copy_to_tilemap_size = len(copy_to_tilemap_code) // 3
 
     infinite_loop_ptr = tryte_tools.add_int_to_tryte(copy_to_tilemap_ptr, copy_to_tilemap_size)
+    print(f"infinite_loop ptr: {infinite_loop_ptr}")
     infinite_loop_code = ""
     # infinite_loop:
     #   JP infinite_loop

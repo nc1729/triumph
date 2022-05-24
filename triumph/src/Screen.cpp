@@ -308,7 +308,17 @@ void Screen::run()
             }
             if (e.type == SDL_KEYDOWN)
             {
-                is_on = false;
+                switch (e.key.keysym.sym)
+                {
+                    case SDLK_f:
+                        dump_bank(tryte_framebuffer);
+                        break;
+                    case SDLK_t:
+                        dump_bank(tilemap);
+                        break;
+                    default:
+                        break;
+                }
             }
             if (e.type == SDL_MOUSEBUTTONDOWN)
             {
@@ -322,8 +332,14 @@ void Screen::run()
             // calculate elapsed time in milliseconds
             double elapsed_time = static_cast<double>(frame_end - frame_start) * 1000.0 / static_cast<double>(SDL_GetPerformanceFrequency());
 
+            double wait_time = 1000.0 / FPS - elapsed_time;
+            if (wait_time < 0)
+            {
+                wait_time = 0;
+            }
+
             // cap frame rate at 30 fps
-            SDL_Delay(std::floor(1000.0 / FPS - elapsed_time));
+            SDL_Delay(std::floor(wait_time));
         }
     }
     return;
@@ -423,5 +439,26 @@ void show_window()
 
     // quit SDL
     SDL_Quit();
+
+}
+
+void Screen::dump_bank(Bank const& bank)
+{
+    size_t const ROW_LENGTH = 27;
+    Tryte row_start = -9841;
+    Tryte row_end = -9841 + ROW_LENGTH - 1;
+    // draw the top row
+    std::cout << "      M   L   K   J   I   H   G   F   E   D   C   B   A   0   a   b   c";
+    std::cout << "   d   e   f   g   h   i   j   k   l   m     \n";
+    for (size_t i = 0; i < 243; i++)
+    {
+        std::cout << Tryte(row_start + (ROW_LENGTH * i)) << ": ";
+        for (size_t j = 0; j < ROW_LENGTH; j++)
+        {
+            std::cout << tryte_framebuffer[ROW_LENGTH * i + j] << ' ';
+        }
+        std::cout << ":" << Tryte(row_end + (ROW_LENGTH * i)) << "\n";
+    }
+    std::cout << "\n\n";
 
 }

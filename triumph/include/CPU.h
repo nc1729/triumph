@@ -79,6 +79,8 @@ private:
 	// CPU is being throttled by the emulator
 	bool throttled_;
 
+	bool print = false;
+
 	/*
 	CPU variables and private functions
 	*/

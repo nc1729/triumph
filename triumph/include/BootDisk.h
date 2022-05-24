@@ -5,7 +5,7 @@ locations of important data on boot disk header
 disk header layout is:
 		9 Trytes  - disk signature
 		27 Trytes - disk name
-		1 Tryte   - disk size (in pages); unsigned tryte
+		1 Tryte   - disk size (in pages); 'unsigned' Tryte - negative values implies > 9841 (overflow MMM = 9842)
 		1 Tryte   - disk read/write permissions and other flags
 		1 Tryte	  - tilemap page start (needs to be 9 pages in front of this); unsigned Tryte
 		1 Tryte	  - boot code start ptr (usually M00)

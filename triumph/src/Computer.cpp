@@ -15,6 +15,12 @@ void Computer::turn_on()
 }
 void Computer::boot()
 {
+	// can't boot if the computer is switched off...
+	if (!is_on)
+	{
+		return;
+	}
+
 	// find a bootable disk
 	size_t boot_disk_number = 0;
 	for (auto& disk : disks)
@@ -72,21 +78,15 @@ void Computer::disk_manager()
 			if (memory[Disk::DISK_STATE_ADDR][Disk::READ_REQUEST_FLAG] == 1)
 			{
 				// the CPU has requested a read
-				
-				// set disk to busy
-				memory[Disk::DISK_STATE_ADDR][Disk::STATUS_FLAG] = 0;
 
 				// which page was requested?
-				size_t page_number = static_cast<size_t>(Tryte::get_int(memory[Disk::CACHE_PAGE_ADDR]) + 9841);
+				int64_t page_number = memory[Disk::CACHE_PAGE_ADDR];
 				// which disk is this?
-				size_t disk_number = static_cast<size_t>(Tryte::get_int(memory.bank()) + 1);
+				size_t disk_number = static_cast<size_t>(memory.bank() - 1);
 				Disk& disk = disks[disk_number];
 
 				// perform the read
 				disk.read_from_page(page_number);
-
-				// set disk to free
-				memory[Disk::DISK_STATE_ADDR][Disk::STATUS_FLAG] = 1;
 
 				// reset read request flag
 				memory[Disk::DISK_STATE_ADDR][Disk::READ_REQUEST_FLAG] = 0;
@@ -96,20 +96,15 @@ void Computer::disk_manager()
 			if (memory[Disk::DISK_STATE_ADDR][Disk::WRITE_REQUEST_FLAG] == 1)
 			{
 				// the CPU has requested a write
-				 
-				// set disk to busy
-				memory[Disk::DISK_STATE_ADDR][Disk::STATUS_FLAG] = 0;
 
 				// which page was requested?
-				size_t page_number = static_cast<size_t>(Tryte::get_int(memory[Disk::CACHE_PAGE_ADDR]) + 9841);
+				size_t page_number = static_cast<size_t>(memory[Disk::CACHE_PAGE_ADDR] + 9841);
 				// which disk is this?
-				size_t disk_number = static_cast<size_t>(Tryte::get_int(memory.bank()) + 1);
+				size_t disk_number = static_cast<size_t>(memory.bank() + 1);
 				Disk& disk = disks[disk_number];
 				// perform the write
 				disk.write_to_page(page_number);
 
-				// set disk to free
-				memory[Disk::DISK_STATE_ADDR][Disk::STATUS_FLAG] = 1;
 
 				// reset write request flag
 				memory[Disk::DISK_STATE_ADDR][Disk::WRITE_REQUEST_FLAG] = 0;

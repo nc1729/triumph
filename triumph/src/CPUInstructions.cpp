@@ -205,7 +205,8 @@ void CPU::jump(Tryte const& x)
 
 void CPU::jump_and_store(Tryte const& x)
 {
-	CPU::push(pc_);
+	// need to push the program counter to after this JPS $X instruction (two trytes)
+	CPU::push(pc_ + 2);
 	pc_ = x;
 	JUMP_FLAG = 1;
 }
