@@ -32,8 +32,8 @@ public:
 	static int64_t constexpr BANK_START = -9841;
 	// $Emm - bank memory end
 	static int64_t constexpr BANK_END = (-9841 + 6561);
-	// $m00 - reserved memory start
-	static int64_t constexpr RESERVED_START = (9841 - 365);
+	// $mmk-mmm - reserved memory
+	static int64_t constexpr RESERVED_START = (9841 - 3);
 
 	// public access to current bank
 	Tryte& bank();

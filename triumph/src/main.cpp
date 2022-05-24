@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
     try
     {
         Computer computer(disks);
-        computer.boot();
+        computer.turn_on();
     }
     catch(std::runtime_error const& e)
     {

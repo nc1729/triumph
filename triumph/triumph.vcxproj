@@ -132,6 +132,7 @@
   <ItemGroup>
     <ClInclude Include="include\Bank.h" />
     <ClInclude Include="include\BankManager.h" />
+    <ClInclude Include="include\BootDisk.h" />
     <ClInclude Include="include\Computer.h" />
     <ClInclude Include="include\CPU.h" />
     <ClInclude Include="include\Disk.h" />

@@ -22,12 +22,6 @@ def int_to_tryte(integer):
     septavingt_chars = "MLKJIHGFEDCBA0abcdefghijklm"
     return "".join([septavingt_chars[triple_array[i] + 13] for i in range(3)])
 
-def int_to_unsigned_tryte(integer):
-    return int_to_tryte(integer - 9841)
-
-def unsigned_tryte_to_int(tryte):
-    return tryte_to_int(tryte) + 9841
-
 def string_to_trytes(in_string):
     out_string = ""
     for char in in_string:
@@ -46,3 +40,7 @@ def trytes_to_string(tryte_string):
         print(tryte)
         out_string += tryte_to_char(tryte)
     return out_string
+
+def add_int_to_tryte(tryte, integer):
+    tryte_int = tryte_to_int(tryte)
+    return int_to_tryte(tryte_int + integer)

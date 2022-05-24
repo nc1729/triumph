@@ -2,7 +2,11 @@
 
 #include <string>
 #include <fstream>
+#include <array>
+
 #include "Bank.h"
+#include "BootDisk.h"
+#include "Tryte.h"
 
 class Disk
 {
@@ -17,34 +21,19 @@ private:
 	bool is_bootdisk();
 
 	/*
-	header constants (relative to buffer)
-	disk header layout is:
-		9 Trytes  - disk signature
-		27 Trytes - disk name
-		1 Tryte   - disk size (in pages); unsigned tryte
-		1 Tryte   - disk read/write permissions and other flags
-		1 Tryte	  - tilemap page start (needs to be 9 pages in front of this); unsigned Tryte
-		1 Tryte	  - boot code start ptr (usually M00)
-		81 Trytes - 3 Tryte palette (3 9-trit colours) in order from -13 to 13
-		243 Trytes - if boot code starts at M00, free space
-		365 Trytes - boot code; load tilemap, zero registers, etc...
+	private Tryte metadata
 	*/
-	// disk signature location
-	size_t static constexpr BUFFER_SIG_ADDR = 0; // "TRIUMPH  "
-	// disk signature size
-	size_t static constexpr BUFFER_SIG_SIZE = 9;
-	// disk name location
-	size_t static constexpr BUFFER_NAME_ADDR = 9;
-	// disk size location
-	size_t static constexpr BUFFER_SIZE_ADDR = 36;
-	// disk r/w permissions location (and default state)
-	size_t static constexpr BUFFER_STATE_ADDR = 37;
-	// tilemap page start location
-	size_t static constexpr BUFFER_TILEMAP_ADDR = 38;
-	// boot code ptr location
-	size_t static constexpr BUFFER_BOOT_ADDR = 39;
-	// palette location
-	size_t static constexpr BUFFER_PALETTE_ADDR = 40;
+	std::array<Tryte, 27> disk_name_trytes;
+	Tryte disk_size_tryte;
+	Tryte rw_permissions;
+	Tryte tilemap_addr;
+	Tryte bootcode_addr;
+	Tryte page_number;
+
+	Tryte disk_status;
+	static int8_t const READWRITE;
+	static int8_t const READONLY;
+	static int8_t const WRITEONLY;
 
 public:
 	std::string const disk_path;
@@ -54,11 +43,7 @@ public:
 	size_t disk_size_pages;
 	// check boot status of disk
 	bool is_bootable = false;
-	enum class Status
-	{
-		READWRITE, READONLY, WRITEONLY
-	};
-	Status status;
+
 	// buffer accessible by CPU
 	Bank buffer;
 	Disk() = delete;
@@ -67,61 +52,65 @@ public:
 	
 
 	/*
-	control Tryte addresses - metadata about the disk is stored in disk_buffer at the following addresses
-	these are read from disk when it is loaded
+	useful memory addresses for disk management
 	*/
 	// buffer start
-	static int64_t const DISK_BUFF_START = -9841; // $MMM
+	static int64_t const DISK_PAGE_START = -9841; // $MMM
 	// buffer end
-	static int64_t const DISK_BUFF_END = -9112; // $LMM
+	static int64_t const DISK_PAGE_END = -9841 + 729; // $LMM
+	// bank end
+	static int64_t constexpr DISK_BANK_END = -9841 + 6561; // $DMM
 	// palette location
-	size_t static constexpr DISK_PALETTE_ADDR = -9801;
+	static int64_t constexpr DISK_PALETTE_ADDR = -9841 + BootDisk::PALETTE_ARRAY_ADDR; // $ML0
+
+	// disk cache - metadata is cached at the bottom of the disk's memory bank
+	// regenerated from Disk object when the disk is read/written
+	// cache start
+	static int64_t constexpr CACHE_START = DISK_BANK_END - 54; // $ElM
 	// disk name - 27 Trytes reserved for this
-	static int64_t const DISK_NAME_ADDR = -3335; // $Ekm
-	// bootcode pointer
-	static int64_t const DISK_BCODE_ADDR = -3283; // $Emi
-	// tilemap pointer
-	static int64_t const DISK_TILEMAP_ADDR = -3284; // $Emj
+	static int64_t constexpr CACHE_NAME_ADDR = CACHE_START + BootDisk::NAME_ADDR; // $ElD
 	// disk size
-	static int64_t const DISK_SIZE_ADDR = -3283; // $Emk
+	static int64_t constexpr CACHE_SIZE_ADDR = CACHE_START + BootDisk::SIZE_ADDR; // $EmD
+	// disk rw permissions
+	static int64_t constexpr CACHE_RW_ADDR = CACHE_START + BootDisk::RW_ADDR; // $EmC
+	// tilemap pointer
+	static int64_t constexpr CACHE_TILEMAP_ADDR = CACHE_START + BootDisk::TILEMAP_PAGE_ADDR; // $EmB
+	// bootcode pointer
+	static int64_t constexpr CACHE_BCODE_ADDR = CACHE_START + BootDisk::BOOTCODE_PTR_ADDR; // $EmA	
 	// which page is open
-	static int64_t const DISK_PAGE_ADDR = -3282; // $Eml
-	// state of the disk - read/write status
-	static int64_t const DISK_STATE_ADDR = -3281; // $Emm
+	static int64_t constexpr CACHE_PAGE_ADDR = DISK_BANK_END - 2; // $Eml
+	// live state of the disk - read/write status
+	static int64_t constexpr DISK_STATE_ADDR = DISK_BANK_END - 1; // $Emm
 
 	/*
 	disk status trits - memory at $Emm is how CPU and disk communicate
 	*/
-	// GS flag
-	// + : disk can be read/written to
-	// 0 : disk is read only
-	// - : disk is write only
-	static size_t const PERMISSIONS_FLAG = 0; // lowest trit
+	// disk status flag
+	// + : disk is ready for reading/writing
+	// 0 : disk is busy
+	// - : disk error (see error code - high three trits)
+	static size_t const STATUS_FLAG = 0;
 	// read request flag
 	// + : read requested - disk will begin copying page to buffer when free
 	// 0 : do nothing
 	// - : do nothing
 	static size_t const READ_REQUEST_FLAG = 1;
-	// read status flag
-	// + : disk is ready for reading
-	// 0 : disk is busy
-	// - : disk read error (see error code - high three trits)
+	// write request flag
+	// + : write requested - disk will begin copying page to buffer when free
+	// 0 : do nothing
+	// - : disk write error (see error code - high three trits)
 	static size_t const WRITE_REQUEST_FLAG = 2;
-	// write status flag
-	// + : disk is ready for reading/writing
-	// 0 : disk is busy
-	// - : disk error (see error code - high three trits)
-	static size_t const STATUS_FLAG = 3;
+	
 
 	/*
 	disk operations
 	*/
 	// read from the given page (729 Trytes) to the disk_buffer at $0MM-$0mm
-	void read_from_page(size_t const page_number);
+	void read_from_page(int64_t const page_number);
 	// write to the given page on disk
-	void write_to_page(size_t const page_number);
+	void write_to_page(int64_t const page_number);
 	// verify disk header
 	bool header_is_valid();
-	// after read/write, refresh buffer's metadata using internal Disk state
+	// after read/write, refresh buffer's metadata using internal Disk state - in case of accidental overwriting
 	void refresh_metadata();
 };

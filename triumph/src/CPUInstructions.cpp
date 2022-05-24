@@ -18,6 +18,11 @@ void CPU::set_bank(Tryte const& x)
 	bank_ = x;
 }
 
+void CPU::get_bank(Tryte& x)
+{
+	x = bank_;
+}
+
 void CPU::set(Tryte& x, Tryte const& y)
 {
 	x = y;
@@ -161,6 +166,7 @@ void CPU::jump_if_zero(Tryte const& x)
 	if (COMPARE_FLAG == 0)
 	{
 		pc_ = x;
+		JUMP_FLAG = 1;
 	}
 }
 
@@ -169,6 +175,7 @@ void CPU::jump_if_not_zero(Tryte const& x)
 	if (COMPARE_FLAG != 0)
 	{
 		pc_ = x;
+		JUMP_FLAG = 1;
 	}
 }
 
@@ -177,6 +184,7 @@ void CPU::jump_if_pos(Tryte const& x)
 	if (COMPARE_FLAG > 0)
 	{
 		pc_ = x;
+		JUMP_FLAG = 1;
 	}
 }
 
@@ -185,23 +193,28 @@ void CPU::jump_if_neg(Tryte const& x)
 	if (COMPARE_FLAG < 0)
 	{
 		pc_ = x;
+		JUMP_FLAG = 1;
 	}
 }
 
 void CPU::jump(Tryte const& x)
 {
 	pc_ = x;
+	JUMP_FLAG = 1;
 }
 
 void CPU::jump_and_store(Tryte const& x)
 {
-	CPU::push(pc_);
+	// need to push the program counter to after this JPS $X instruction (two trytes)
+	CPU::push(pc_ + 2);
 	pc_ = x;
+	JUMP_FLAG = 1;
 }
 
 void CPU::pop_and_jump()
 {
 	CPU::pop(pc_);
+	JUMP_FLAG = 1;
 }
 
 void CPU::ternary_jump(Tryte const& x, Tryte const& y, Tryte const& z)
@@ -209,14 +222,17 @@ void CPU::ternary_jump(Tryte const& x, Tryte const& y, Tryte const& z)
 	if (COMPARE_FLAG < 0)
 	{
 		pc_ = x;
+		JUMP_FLAG = 1;
 	}
 	else if (COMPARE_FLAG == 0)
 	{
 		pc_ = y;
+		JUMP_FLAG = 1;
 	}
 	else
 	{
 		pc_ = z;
+		JUMP_FLAG = 1;
 	}
 }
 
