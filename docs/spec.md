@@ -350,7 +350,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Stack flag: No effect.
 
 #### CPZ X
-- Opcode: mCX t9
+- Opcode: mCX
 - Length: 1 tryte
 - Description: Short form of "CMP X, 0".
 - Compare flag: Set to sign(X).
