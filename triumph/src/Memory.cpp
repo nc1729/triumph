@@ -5,16 +5,24 @@
 
 #include "Memory.h"
 #include "Bank.h"
+#include "Disk.h"
 #include "Tryte.h"
 
-Memory::Memory(std::vector<Bank> const& banks) : banks_(banks)
+Memory::Memory(std::vector<Bank*> const& banks, std::vector<Disk>& disks) : banks_(banks)
 {
 	// initialise local memory
 	local_.fill(0);
 
-	// write boot code to memory
-	//init();
+	// disks occupy memory banks 1 to ... (defined by Disk constructors)
+	for (auto& disk : disks)
+	{
+		banks_.add_bank(&disk.buffer);
+	}
+}
 
+void Memory::add_bank(Bank* new_bank_ptr)
+{
+	banks_.add_bank(new_bank_ptr);
 }
 
 void Memory::load_program(int64_t addr, std::vector<Tryte> const& program)
@@ -113,11 +121,6 @@ Tryte const& Memory::operator[](int64_t const addr) const
 	{
 		return local_[addr - Memory::BANK_END];
 	}
-}
-
-Tryte& Memory::port()
-{
-	return local_[Memory::PORT + 9841 - 6561];
 }
 
 Tryte& Memory::bank()

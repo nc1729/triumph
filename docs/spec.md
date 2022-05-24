@@ -42,8 +42,7 @@ A *tryte* is a balanced septavingtesmal number from -9,841 to 9,841 (MMM to mmm)
 - little-endian ternary computer
 - 9 9-trit general purpose registers
 - 9-trit data width and address space (capable of addressing 19,683 trytes)
-- Memory bank system allowing for up to 19,683 memory banks of storage, each with 6,561 Trytes
-- I/O faciliated by dedicated PORT/IN/OUT instructions, allowing for 19,683 connected devices (some of which are used internally by TRIUMPH)
+- Memory bank system allowing for up to 19,683 memory banks of storage, each with 6,561 Trytes. These memory banks facilitate device I/O by direct memory access, rather than dedicated I/O instructions. For example, internal VRAM is accessible through this memory bank interface.
 
 ## Registers
 
@@ -63,7 +62,7 @@ G - GP register
 H - GP register
 I - GP register
 
-in memory, also have the PC (program counter), the SP (stack pointer), the MB (memory bank), and the current port PORT.
+in memory, also have the PC (program counter), the SP (stack pointer and the current MB (memory bank).
 
 ## Instruction set
 
@@ -128,12 +127,17 @@ The instructions also permit indirect addressing of memory using registers, deno
 #### BANK X
 - Opcode: mjX
 - Length: 1 tryte
-- Description: Set current BANK to value of register X
+- Description: Set current BANK to value of register X.
 
 #### BANK t9
 - Opcode: Mj. t9
+- Length: 2 trytes
+- Description: Set current BANK to value of immediate t9.
+
+#### GANK X
+- Opcode: mJX
 - Length: 1 tryte
-- Description: Set current BANK to value of immediate t9
+- Description: Set register X equal to the current BANK value.
 
 ### Register management
 
@@ -201,45 +205,6 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Carry flag: No effect.
 - Sign flag: No effect.
 - Stack flag: No effect.
-
-### I/O operations
-
-#### IN X
-- Opcode: miX
-- Length: 1 tryte
-- Description: receive a single tryte from the currently connected PORT, and write it to register X.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
-
-#### OUT X
-- Opcode: mIX
-- Length: 1 tryte
-- Description: Send a single tryte, the value of register X, down the currently connected PORT.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
-
-#### OUT t9
-- Opcode: MI. t9
-- Length: 2 trytes
-- Description: Send a single tryte, t9, down the currently connected PORT.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
-
-#### PORT X
-- Opcode: mJX
-- Length: 1 tryte
-- Description: Set current PORT to value of register X
-
-### PORT t9
-- Opcde: MJ. t9
-- Length: 2 trytes
-- Description: Set current PORT to value of immediate t9
 
 ### Arithmetic operations
 
@@ -390,7 +355,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Stack flag: No effect.
 
 #### CPZ X
-- Opcode: mCX t9
+- Opcode: mCX
 - Length: 1 tryte
 - Description: Short form of "CMP X, 0".
 - Compare flag: Set to sign(X).
@@ -616,8 +581,7 @@ $MMM-$Emm : 6561 trytes of general purpose memory (bank switchable)
 $DMM-$dmm : 6561 trytes of general purpose memory
 $eMM-$mMM : PROGRAM memory; assembled code is written here. Use at own risk.
 $mMM-$m0A : stack; stack pointer SP begins at $m00 and decrements as stack grows
-$m00-$mmi : reserved for system use (boot code, etc)
-$mmj      : current PORT
+$m00-$mmj : reserved for system use (boot code, etc)
 $mmk      : current BANK
 $mml      : stack pointer SP
 $mmm      : program counter PC

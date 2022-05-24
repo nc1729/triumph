@@ -4,19 +4,17 @@
 #include <fstream>
 #include <array>
 #include <cstdint>
+#include <cmath>
 
 #include "Screen.h"
 #include "Bank.h"
 #include "Tryte.h"
 
-std::array<uint32_t, 27> Screen::colour_values = 
+std::array<uint32_t, 27> const Screen::colour_values = 
 { 0, 10, 20, 29, 39, 49, 59, 69, 78, 88, 98, 108, 118, 128, 137, 147, 157, 167, 177, 186,
     196, 206, 216, 226, 235, 245, 255 };
 
-Screen::Screen(Bank& tryte_framebuffer, Bank& tilemap, Bank& work_RAM) :
-    tryte_framebuffer{ tryte_framebuffer },
-    tilemap{ tilemap },
-    work_RAM{ work_RAM }
+Screen::Screen()
 {
     // initialise SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -61,35 +59,6 @@ Screen::~Screen()
 
     // quit SDL
     SDL_Quit();
-}
-
-void Screen::test()
-{
-    SDL_FillRect(surface, nullptr, SDL_MapRGB(surface->format, 255, 0, 0));
-    SDL_UpdateWindowSurface(window);
-
-    // event loop
-    SDL_Event e;
-    bool quit = false;
-    while (!quit)
-    {
-        while (SDL_PollEvent(&e))
-        {
-            if (e.type == SDL_QUIT)
-            {
-                quit = true;
-            }
-            if (e.type == SDL_KEYDOWN)
-            {
-                quit = true;
-            }
-            if (e.type == SDL_MOUSEBUTTONDOWN)
-            {
-                quit = true;
-            }
-        }
-    }
-    return;
 }
 
 void Screen::read_tilemap(std::string const& filename)
@@ -149,77 +118,6 @@ void Screen::show_tilemap()
     return;
 }
 
-void Screen::hello_world()
-{
-    // define palette 0
-    work_RAM[PALETTE_START + 39] = Tryte("MMM"); // negative trit pixels will be black
-    work_RAM[PALETTE_START + 40] = Tryte("mmM"); // 0 and + will be bright yellow!
-    work_RAM[PALETTE_START + 41] = Tryte("mmM");
-
-    // cache the palettes
-    regen_palettes();
-
-    // fill tryte framebuffer with black tiles
-    for (size_t j = 0; j < TILE_GRID_WIDTH * TILE_GRID_HEIGHT; j++)
-    {
-        tryte_framebuffer[j] = 0; // #000 - palette 0, tile 0 (centre of tilemap, all - trits)
-    }
-
-    // draw hello world to center row (slightly up from center...)
-    size_t const CENTER_ROW = 26; // kind of
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 20] = 21; // H
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 21] = 45; // e
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 22] = 52; // l
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 23] = 52; // l
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 24] = 55; // o
-    // leave a space...
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 26] = 63; // w
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 27] = 55; // o
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 28] = 58; // r
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 29] = 52; // l
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 30] = 44; // d
-    tryte_framebuffer[(TILE_GRID_WIDTH * CENTER_ROW) + 31] = 94; // !
-
-    // event loop
-    SDL_Event e;
-    bool quit = false;
-    bool red = false;
-    while (!quit)
-    {
-        while (SDL_PollEvent(&e))
-        {
-            regen_palettes();
-            if (e.type == SDL_QUIT)
-            {
-                quit = true;
-            }
-            if (e.type == SDL_KEYDOWN)
-            {
-                if (red)
-                {
-                    // change text colour to yellow
-                    work_RAM[PALETTE_START + 40] = Tryte("mmM");
-                    work_RAM[PALETTE_START + 41] = Tryte("mmM");
-                    red = false;
-                }
-                else
-                {
-                    // change text colour to red
-                    work_RAM[PALETTE_START + 40] = Tryte("mMM");
-                    work_RAM[PALETTE_START + 41] = Tryte("mMM");
-                    red = true;
-                }
-            }
-            write_tryte_fb_to_byte_fb();
-            SDL_UpdateTexture(screen_texture, nullptr, byte_framebuffer.data(), PIXEL_WIDTH * sizeof(uint32_t));
-            SDL_RenderCopy(renderer, screen_texture, nullptr, nullptr);
-            SDL_RenderPresent(renderer);
-            //SDL_Delay(100);
-        }
-    }
-    return;
-}
-
 void Screen::write_tryte_fb_to_byte_fb()
 {
     // loop through tryte framebuffer
@@ -249,16 +147,6 @@ void Screen::write_tile_to_framebuffer(size_t const grid_index_x, size_t const g
     size_t pixel_index_x = 9 * grid_index_x;
     size_t pixel_index_y = 9 * grid_index_y;
 
-#if 0
-    std::cout << "tile location: (" << pixel_index_x << ", " << pixel_index_y << ")\n";
-    std::cout << "tile: ";
-    for (size_t i = 0; i < 9; i++)
-    {
-        std::cout << tile_trytes[i] << ' ';
-    }
-    std::cout << '\n';
-#endif
-
     for (size_t row = 0; row < 9; row++)
     {
         size_t y = pixel_index_y + row;
@@ -268,18 +156,6 @@ void Screen::write_tile_to_framebuffer(size_t const grid_index_x, size_t const g
             byte_framebuffer[(PIXEL_WIDTH * y) + x] = colours[tile_trytes[row][8 - col] + 1];
         }
     }
-#if 0
-    for (size_t i = 0; i < 9; i++)
-    {
-        for (size_t j = 0; j < 9; j++)
-        {
-            size_t x = pixel_index_x + i;
-            size_t y = pixel_index_y + j;
-            size_t index = (PIXEL_WIDTH * y) + x;
-            byte_framebuffer[(PIXEL_WIDTH * y) + x] = colours[tile_trytes[j][i] + 1];
-        }
-    }
-#endif
 }
 
 void Screen::regen_palettes()
@@ -304,88 +180,98 @@ uint32_t Screen::tryte_to_colour(Tryte const& colour_tryte)
 
     return 0xFF000000 | (colour_values[red] << 16) | (colour_values[green] << 8) | colour_values[blue];
 }
-void show_window()
+
+void Screen::run()
 {
-    // initialisation flag
-    bool success = true;
-
-    // define the window
-    SDL_Window* window = nullptr;
-
-    // the surface contained by the window
-    SDL_Surface* screen_surface = nullptr;
-
-    // the image we will load and show on the screen
-    SDL_Surface* hello = nullptr;
-
-
-    // initialise SDL
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    // first, read tilemap's middle tile into tryte_frame_buffer with palette 0
+    for (size_t j = 0; j < 6561; j++)
     {
-        std::cerr << "SDL could not initialise! SDL Error: " << SDL_GetError() << '\n';
-        success = false;
-    }
-    else
-    {
-        // create window
-        window = SDL_CreateWindow("SDL test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 600, 600, SDL_WINDOW_SHOWN);
-        if (window == nullptr)
-        {
-            std::cerr << "Window could not be created! SDL Error: " << SDL_GetError() << '\n';
-            success = false;
-        }
-        else
-        {
-            // get window surface
-            screen_surface = SDL_GetWindowSurface(window);
-        }
+        tryte_framebuffer[j] = 0;
     }
 
-    const char* filename = "./res/chars.bmp";
-    hello = SDL_LoadBMP(filename);
-    if (hello == nullptr)
-    {
-        std::cerr << "Unable to load image " << filename << "! SDL Error: " << SDL_GetError() << '\n';
-        success = false;
-    }
-
-    // apply the image
-    SDL_BlitSurface(hello, nullptr, screen_surface, nullptr);
-
-    // update the surface
-    SDL_UpdateWindowSurface(window);
+    // cache the palettes as a byte array
+    regen_palettes();
 
     // event loop
     SDL_Event e;
-    bool quit = false;
-    while (!quit)
+    while (is_on)
     {
         while (SDL_PollEvent(&e))
         {
+            uint64_t frame_start = SDL_GetPerformanceCounter();
+
+            // handle input
             if (e.type == SDL_QUIT)
             {
-                quit = true;
+                is_on = false;
             }
             if (e.type == SDL_KEYDOWN)
             {
-                quit = true;
+                switch (e.key.keysym.sym)
+                {
+                    case SDLK_f:
+                        dump_bank(tryte_framebuffer);
+                        break;
+                    case SDLK_t:
+                        dump_bank(tilemap);
+                        break;
+                    default:
+                        break;
+                }
             }
             if (e.type == SDL_MOUSEBUTTONDOWN)
             {
-                quit = true;
+                is_on = false;
             }
+
+            regen_palettes();            
+            draw_to_screen();
+            uint64_t frame_end = SDL_GetPerformanceCounter();
+
+            // calculate elapsed time in milliseconds
+            double elapsed_time = static_cast<double>(frame_end - frame_start) * 1000.0 / static_cast<double>(SDL_GetPerformanceFrequency());
+
+            double wait_time = 1000.0 / FPS - elapsed_time;
+            if (wait_time < 0)
+            {
+                wait_time = 0;
+            }
+
+            // cap frame rate at 30 fps
+            SDL_Delay(std::floor(wait_time));
         }
     }
+    return;
+}
 
-    // deallocate surface
-    SDL_FreeSurface(hello);
-    hello = nullptr;
+void Screen::draw_to_screen()
+{
+    // set screen to busy
+    work_RAM[STATUS] = 0;
+    write_tryte_fb_to_byte_fb();
+    SDL_UpdateTexture(screen_texture, nullptr, byte_framebuffer.data(), PIXEL_WIDTH * sizeof(uint32_t));
+    SDL_RenderCopy(renderer, screen_texture, nullptr, nullptr);
+    SDL_RenderPresent(renderer);
+    work_RAM[STATUS] = 1;
+}
 
-    // destroy window
-    SDL_DestroyWindow(window);
-    window = nullptr;
-
-    // quit SDL
-    SDL_Quit();
+void Screen::dump_bank(Bank const& bank)
+{
+    size_t const ROW_LENGTH = 27;
+    Tryte row_start = -9841;
+    Tryte row_end = -9841 + ROW_LENGTH - 1;
+    // draw the top row
+    std::cout << "      M   L   K   J   I   H   G   F   E   D   C   B   A   0   a   b   c";
+    std::cout << "   d   e   f   g   h   i   j   k   l   m     \n";
+    for (size_t i = 0; i < 243; i++)
+    {
+        std::cout << Tryte(row_start + (ROW_LENGTH * i)) << ": ";
+        for (size_t j = 0; j < ROW_LENGTH; j++)
+        {
+            std::cout << bank[ROW_LENGTH * i + j] << ' ';
+        }
+        std::cout << ":" << Tryte(row_end + (ROW_LENGTH * i)) << "\n";
+    }
+    std::cout << "\n\n";
 
 }

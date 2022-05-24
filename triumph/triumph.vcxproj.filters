@@ -24,16 +24,10 @@
     <ClCompile Include="src\Computer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ConsoleOut.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\CPU.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\CPUInstructions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Keyboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
@@ -42,16 +36,13 @@
     <ClCompile Include="src\Memory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Port.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\PortManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Screen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Tryte.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Disk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,31 +56,22 @@
     <ClInclude Include="include\Computer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ConsoleOut.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\CPU.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\GPU.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Keyboard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Memory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Port.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\PortManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Screen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Tryte.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Disk.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BootDisk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

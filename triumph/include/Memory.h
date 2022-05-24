@@ -6,6 +6,7 @@
 
 #include "BankManager.h"
 #include "Tryte.h"
+#include "Disk.h"
 
 class Memory
 {
@@ -16,26 +17,24 @@ private:
 	//void init();
 
 public:
-	Memory(std::vector<Bank> const& banks);
+	Memory(std::vector<Bank*> const& banks, std::vector<Disk>& disks);
 
 	Tryte& operator[](int64_t const addr);
 	Tryte const& operator[](int64_t const addr) const;
 
-	// $mmj - current port
-	static int64_t const PORT = 9838;
 	// $mmk - current memory bank
-	static int64_t const BANK = 9839;
+	static int64_t constexpr BANK = 9839;
 	// $mml - stack pointer
-	static int64_t const SP = 9840;
+	static int64_t constexpr SP = 9840;
 	// $mmm - program counter
-	static int64_t const PC = 9841;
+	static int64_t constexpr PC = 9841;
+	// $MMM - bank memory start
+	static int64_t constexpr BANK_START = -9841;
 	// $Emm - bank memory end
-	static int64_t const BANK_END = (-9841 + 6561);
-	// $m00 - reserved memory start
-	static int64_t const RESERVED_START = (9841 - 365);
+	static int64_t constexpr BANK_END = (-9841 + 6561);
+	// $mmk-mmm - reserved memory
+	static int64_t constexpr RESERVED_START = (9841 - 3);
 
-	// public access to current port
-	Tryte& port();
 	// public access to current bank
 	Tryte& bank();
 	// public access to stack pointer
@@ -45,4 +44,7 @@ public:
 
 	// dump a program into an address and move the program counter to that address, ready to run
 	void load_program(int64_t addr, std::vector<Tryte> const& program);
+
+	// add a bank (if device 'plugged in')
+	void add_bank(Bank* new_bank_ptr);
 };

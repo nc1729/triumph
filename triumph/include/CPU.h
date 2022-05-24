@@ -2,7 +2,6 @@
 
 #include "Tryte.h"
 #include "Memory.h"
-#include "PortManager.h"
 
 #include <string>
 #include <array>
@@ -12,7 +11,7 @@ class CPU
 {
 public:
 	// constructor
-	CPU(Memory& memory, PortManager& ports);
+	CPU(Memory& memory);
 	// turn CPU on
 	void turn_on();
 	// turn CPU off
@@ -23,8 +22,10 @@ public:
 	void cycle();
 	// while CPU is on, run fetch/decode/execute cycle
 	void run();
-	// dump contents of registers and other things to stderr
-	void dump(std::string const& err_msg);
+	// dump contents of registers and other things to stdout
+	void dump();
+	// on crash, dump contents of registers and other things to stderr
+	void crash_dump(std::string const& err_msg);
 
 
 private:
@@ -32,7 +33,7 @@ private:
 	registers
 	*/
 	// define registers and aliases for them
-	std::array<Tryte, 10> regs_;
+	std::array<Tryte, 10> regs_ = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	// store the current instruction at position 0 - other regs follow in positions 1-9
 	Tryte& instr_ = regs_[0];
 
@@ -45,6 +46,7 @@ private:
 	int8_t& CARRY_FLAG = flags_[1];
 	int8_t& SIGN_FLAG = flags_[2];
 	int8_t& STACK_FLAG = flags_[3];
+	int8_t& JUMP_FLAG = flags_[4];
 
 
 	/*
@@ -58,13 +60,6 @@ private:
 	Tryte& sp_ = memory_.sp();
 	// current bank
 	Tryte& bank_ = memory_.bank();
-	// current port
-	Tryte& port_number_ = memory_.port();
-
-	/*
-	external ports
-	*/
-	PortManager& ports_;
 
 	/*
 	clock variables
@@ -79,8 +74,12 @@ private:
 	int64_t cycles_;
 	// maximum number of cycles per second
 	size_t max_frequency_;
+	// instruction size, used for jumping
+	size_t instr_size_;
 	// CPU is being throttled by the emulator
 	bool throttled_;
+
+	bool print = false;
 
 	/*
 	CPU variables and private functions
@@ -107,6 +106,9 @@ private:
 	// set memory bank to Tryte value
 	void set_bank(Tryte const& x);
 
+	// get memory bank
+	void get_bank(Tryte& x);
+
 	// set register equal to register/immediate
 	void set(Tryte& x, Tryte const& y);
 
@@ -121,15 +123,6 @@ private:
 
 	// peek Tryte from top of stack
 	void peek(Tryte& x);
-
-	// receive Tryte from current port
-	void in(Tryte& x);
-
-	// send Tryte out to current port
-	void out(Tryte const& x);
-
-	// set current port to Tryte value
-	void set_port(Tryte const& x);
 
 	// register += register/immediate
 	void add(Tryte& x, Tryte const& y);

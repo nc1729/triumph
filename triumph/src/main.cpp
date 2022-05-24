@@ -3,8 +3,10 @@
 #include <fstream>
 #include <sstream>
 #include <thread>
+#include <stdexcept>
 
 #include "Tryte.h"
+#include "Disk.h"
 #include "Computer.h"
 
 std::vector<Tryte> read_input(std::string const& filename)
@@ -54,8 +56,43 @@ int main(int argc, char* argv[])
     std::cout << memory.pc();
     */
 
-    Computer computer;
+    if (argc < 2)
+    {
+        std::cerr << "Usage: ./triumph [DISK_FILE1] [DISK_FILE2] ...\n";
+        return 1;
+    }
 
+    size_t number_of_disks = argc - 1;
+
+    std::vector<Disk> disks;
+    for (size_t i = 0; i < number_of_disks; i++)
+    {
+        // the first disk in the argument list will be assigned to bank 1, then bank 2 etc
+        try
+        {
+            disks.push_back(Disk(i + 1, argv[i + 1]));
+        }
+        catch (std::runtime_error const& e)
+        {
+            std::cerr << e.what() << '\n';
+            return 1;
+        }
+    }
+    
+    try
+    {
+        Computer computer(disks);
+        computer.turn_on();
+    }
+    catch(std::runtime_error const& e)
+    {
+        std::cerr << e.what() << '\n';
+        return 1;
+    }
+    
+    
+
+    /*
     if (argc != 3)
     {
         std::cerr << "Usage: ./triumph [INPUT_FILENAME] [TILEMAP_FILENAME]\n";
@@ -64,6 +101,7 @@ int main(int argc, char* argv[])
     std::string const input_filename = argv[1];
     std::vector<Tryte> program = read_input(input_filename);
     std::string const tilemap_filename = argv[2];
+    */
     
     // MJ0 00b MI0 00a 000 is the program "PORT 2; OUT 1; HALT"
     //computer.run_program({ Tryte("MJ0"), Tryte("00b"), Tryte("MI0"), Tryte("00a"), Tryte("MMM") });
@@ -76,7 +114,7 @@ int main(int argc, char* argv[])
 
     //std::thread t{&Computer::run_program, &computer, std::ref(program)};
 
-    computer.test(tilemap_filename);
+    //computer.test(tilemap_filename);
     //show_window();
     //t.join();
     //std::cout << '\n';
