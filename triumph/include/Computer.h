@@ -35,6 +35,4 @@ public:
 	void turn_on();
 	void boot();
 	void disk_manager();
-	void test(std::string const& tilemap_filename);
-	void run_program(std::vector<Tryte> const& program);
 };
