@@ -29,7 +29,7 @@ private:
 	std::vector<uint32_t> palettes{ 81, 0 };
 	std::array<uint32_t, 27> static const colour_values;
 
-	const char* window_title = "SDL Test";
+	const char* window_title = "TRIUMPH";
 
 	// convert the tryte framebuffer to byte framebuffer that SDL2 can render to screen
 	void write_tryte_fb_to_byte_fb();
