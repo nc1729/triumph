@@ -121,16 +121,6 @@ void CPU::decode_and_execute()
 		// M - no Tryte register instructions
 		switch (mid)
 		{
-		case -13:
-			// MM. - HALT
-			halt();
-			instr_size_ = 1;
-			break;
-		case 0:
-			// M0. - NOP
-			nop();
-			instr_size_ = 1;
-			break;
 		case 6:
 			// Mf. t9 - PUSH t9
 			push(memory_[pc_ + 1]);
@@ -200,6 +190,11 @@ void CPU::decode_and_execute()
 	case -1:
 		// AXY - SWAP X, Y
 		swap(regs_[mid], regs_[low]);
+		instr_size_ = 1;
+		break;
+	case 0:
+		// 0XY - HALT - maybe debugging instructions here?
+		halt();
 		instr_size_ = 1;
 		break;
 	case 1:
@@ -364,6 +359,4 @@ void CPU::decode_and_execute()
 	}
 	// proceed to next instruction
 	pc_ += instr_size_;
-	// reset jump flag as we didn't jump this cycle
-	JUMP_FLAG = 0;
 }

@@ -39,8 +39,26 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
 	case -12:
 		// jL* - JP $X, $Y, *
 		// L = --0
-		jump(memory_[pc_ + 1], memory_[pc_ + 2], pc_ + 3);
-		instr_size_ = 3;
+        switch (low)
+        {
+        case 10:
+            // jLj - JP $X, $Y, *
+            // example: JP $X, *, $Y => jLj $X $Y
+            jump(memory_[pc_ + 1], memory_[pc_ + 2], pc_ + 3);
+            instr_size_ = 3;
+            break;
+        case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9:
+            // jLX - JPNP $X
+            // shorthand for JP $X, $X, *
+            // if compare flag is not positive, jump to $X
+            jump(memory_[pc_ + 1], memory_[pc_ + 1], pc_ + 2);
+            instr_size_ = 2;
+            break;
+        default:
+            crash_dump("Unrecognised instruction");
+            halt();
+            break;
+        }
 		break;
 	case -11:
 		// jKZ - JP $X, $Y, [Z]
@@ -49,11 +67,29 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
 		instr_size_ = 3;
 		break;
 	case -10:
-		// jJ* - JP $X, $Y, *
-		// J = -0+
-		jump(memory_[pc_ + 1], memory_[pc_ + 2], pc_ + 3);
-		instr_size_ = 3;
-		break;
+        // jJ* - JP $X, *, $Y
+        // J = -0-
+        switch (low)
+        {
+        case 10:
+            // jJj - JP $X, *, $Y
+            // example: JP $X, *, $Y => jJj $X $Y
+            jump(memory_[pc_ + 1], pc_ + 3, memory_[pc_ + 2]);
+            instr_size_ = 3;
+            break;
+        case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9:
+            // jJX - JPNZ $X
+            // shorthand for JP $X, *, $X
+            // if compare flag is not zero, jump to $X
+            jump(memory_[pc_ + 1], pc_ + 2, memory_[pc_ + 1]);
+            instr_size_ = 2;
+            break;
+        default:
+            crash_dump("Unrecognised instruction");
+            halt();
+            break;
+        }
+        break;
 	case -9:
 		// jI* - JP $X, *, *
 		// I = -00
@@ -89,8 +125,25 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
     case -4:
         // jD* - JP *, $X, $Y
         // D = 0--
-        jump(pc_ + 3, memory_[pc_ + 1], memory_[pc_ + 2]);
-        instr_size_ = 3;
+        switch (low)
+        {
+        case 10:
+            // jDj - JP *, $X, $Y
+            jump(pc_ + 3, memory_[pc_ + 1], memory_[pc_ + 2]);
+            instr_size_ = 3;
+            break;
+        case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9:
+            // jDX - JPNN $X
+            // shorthand for JP *, $X, $X
+            // unconditional jump to [X]
+            jump(pc_ + 2, memory_[pc_ + 1], memory_[pc_ + 1]);
+            instr_size_ = 2;
+            break;
+        default:
+            crash_dump("Unrecognised instruction");
+            halt();
+            break;
+        }
         break;
     case -3:
         // jC* - JP *, $X, *
@@ -113,8 +166,8 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
         instr_size_ = 2;
         break;
     case 0:
-        // use this spare space for other ops
-        // would just be nop JP *, *, * anyway...
+        // use this spare space for miscellaneous ops
+        // JP *, *, * would just be a NOP anyway...
         switch (low)
         {
         case -10:
@@ -123,7 +176,7 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
             instr_size_ = 1;
             break;
         case 0:
-            // j00
+            // j00 - NOP
             nop();
             instr_size_ = 1;
             break;
@@ -166,9 +219,26 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
     case 4:
         // jd* - JP *, [X], [Y]
         // d = 0++
-        // example: JP *, [A], [B] => jd0 0ab
-        jump(pc_ + 2, reg_tryte[reg1], reg_tryte[reg2]);
-        instr_size_ = 2;
+        switch (low)
+        {
+        case 10:
+            // jdj - JP *, [X], [Y]
+            // example: JP *, [A], [B] => jdj 0ab
+            jump(pc_ + 2, reg_tryte[reg1], reg_tryte[reg2]);
+            instr_size_ = 2;
+            break;
+        case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9:
+            // jdX - JPNN [X]
+            // shorthand for JP *, [X], [X]
+            // unconditional jump to [X]
+            jump(pc_ + 2, regs_[low], regs_[low]);
+            instr_size_ = 1;
+            break;
+        default:
+            crash_dump("Unrecognised instruction");
+            halt();
+            break;
+        }
         break;
     case 5:
         // jeX - JP [X], $Y, $Z
@@ -205,10 +275,26 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
     case 10:
         // jj* - JP [X], *, [Y]
         // j = +0+
-        // example: JP [A], *, B => jj0 a0b
-        jump(reg_tryte[reg1], pc_ + 2, reg_tryte[reg2]);
-        instr_size_ = 2;
-        break;
+        switch (low)
+        {
+        case 10:
+            // jjj - JP [X], *, [Y]
+            // example: JP [A], *, B => jjj a0b
+            jump(reg_tryte[reg1], pc_ + 2, reg_tryte[reg2]);
+            instr_size_ = 2;
+            break;
+        case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9:
+            // jjX - JPNZ [X]
+            // shorthand for JP [X], *, [X]
+            // unconditional jump to [X]
+            jump(regs_[low], pc_ + 1, regs_[low]);
+            instr_size_ = 1;
+            break;
+        default:
+            crash_dump("Unrecognised instruction");
+            halt();
+            break;
+        }
     case 11:
         // jk* - JP [X], [Y], $Z
         // k = ++-
@@ -219,9 +305,26 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
     case 12:
         // jl* - JP [X], [Y], *
         // l = ++0
-        // example: JP [A], [B], * => jl0 ab0
-        jump(reg_tryte[reg1], reg_tryte[reg2], pc_ + 2);
-        instr_size_ = 2;
+        switch (low)
+        {
+        case 10:
+            // jlj - JP [X], [Y], *
+            // example: JP [X], [Y], * => jLj XY0
+            jump(reg_tryte[reg1], reg_tryte[reg2], pc_ + 2);
+            instr_size_ = 2;
+            break;
+        case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9:
+            // jLX - JPNP [X]
+            // shorthand for JP [X], [X], *
+            // if compare flag is not positive, jump to [X]
+            jump(reg_tryte[low], reg_tryte[low], pc_ + 1);
+            instr_size_ = 1;
+            break;
+        default:
+            crash_dump("Unrecognised instruction");
+            halt();
+            break;
+        }
         break;
     case 13:
         // jm* - JP [X], [Y], [Z]

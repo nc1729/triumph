@@ -175,7 +175,6 @@ void CPU::jump(Tryte const& x, Tryte const& y, Tryte const& z)
 	{
 		pc_ = z;
 	}
-	JUMP_FLAG = 1;
 }
 
 void CPU::jump_and_store(Tryte const& x)
@@ -183,13 +182,11 @@ void CPU::jump_and_store(Tryte const& x)
 	// need to push the program counter to after this JPS $X instruction (two trytes)
 	CPU::push(pc_ + 2);
 	pc_ = x;
-	JUMP_FLAG = 1;
 }
 
 void CPU::pop_and_jump()
 {
 	CPU::pop(pc_);
-	JUMP_FLAG = 1;
 }
 
 void CPU::show(Tryte const& x)

@@ -46,7 +46,6 @@ private:
 	int8_t& CARRY_FLAG = flags_[1];
 	int8_t& SIGN_FLAG = flags_[2];
 	int8_t& STACK_FLAG = flags_[3];
-	int8_t& JUMP_FLAG = flags_[4];
 
 
 	/*
