@@ -13,7 +13,6 @@ class Screen
 private:
 	// SDL2 internals
 	SDL_Window* window = nullptr;
-	SDL_Surface* surface = nullptr; // software rendering
 	SDL_Renderer* renderer = nullptr;
 	SDL_Texture* screen_texture = nullptr;
 	std::vector<uint32_t> byte_framebuffer;

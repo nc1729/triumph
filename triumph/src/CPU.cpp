@@ -108,23 +108,19 @@ void CPU::decode_and_execute()
 	int8_t mid = Tryte::get_mid(instr_);
 	int8_t low = Tryte::get_low(instr_);
 
+	if (high == 10)
+	{
+		// found a jump instruction
+		decode_and_execute_jump(mid, low);
+		return;
+	}
+
 	switch (high)
 	{
-
 	case -13:
 		// M - no Tryte register instructions
 		switch (mid)
 		{
-		case -13:
-			// MM. - HALT
-			halt();
-			instr_size_ = 1;
-			break;
-		case 0:
-			// M0. - NOP
-			nop();
-			instr_size_ = 1;
-			break;
 		case 6:
 			// Mf. t9 - PUSH t9
 			push(memory_[pc_ + 1]);
@@ -145,20 +141,20 @@ void CPU::decode_and_execute()
 		// L - console input/output
 		switch (mid)
 		{
-			case -1:
-			    // LAX - TELL X
-				tell(regs_[low]);
-				instr_size_ = 1;
-				break;
-			case 1:
-				// LaX - SHOW X
-				show(regs_[low]);
-				instr_size_ = 1;
-				break;
-			default:
-				crash_dump("Unrecognised instruction");
-				halt();
-				break;
+		case -1:
+			// LAX - TELL X
+			tell(regs_[low]);
+			instr_size_ = 1;
+			break;
+		case 1:
+			// LaX - SHOW X
+			show(regs_[low]);
+			instr_size_ = 1;
+			break;
+		default:
+			crash_dump("Unrecognised instruction");
+			halt();
+			break;
 		}
 		break;
 	case -11:
@@ -196,6 +192,11 @@ void CPU::decode_and_execute()
 		swap(regs_[mid], regs_[low]);
 		instr_size_ = 1;
 		break;
+	case 0:
+		// 0XY - HALT - maybe debugging instructions here?
+		halt();
+		instr_size_ = 1;
+		break;
 	case 1:
 		// aXY - SET X, Y
 		set(regs_[mid], regs_[low]);
@@ -230,86 +231,6 @@ void CPU::decode_and_execute()
 		// hXY - SH X, Y
 		trit_shift(regs_[mid], regs_[low]);
 		instr_size_ = 1;
-		break;
-	case 10:
-		// j - jump instructions
-		switch (mid)
-		{
-		case -9:
-			// jIX - JPNZ [X]
-			jump_if_not_zero(memory_[regs_[low]]);
-			instr_size_ = 1;
-			break;
-		case -1:
-			// jAX - JPN [X]
-			jump_if_neg(memory_[regs_[low]]);
-			instr_size_ = 1;
-			break;
-		case 1:
-			// jaX - JPP [X]
-			jump_if_pos(memory_[regs_[low]]);
-			instr_size_ = 1;
-			break;
-		case 9:
-			// jiX - JPZ [X]
-			jump_if_zero(memory_[regs_[low]]);
-			instr_size_ = 1;
-			break;
-		case 10:
-			// jj - jump instructions with addresses
-			switch (low)
-			{
-			case -9:
-				// jjI - JPNZ $X
-				jump_if_not_zero(memory_[pc_ + 1]);
-				instr_size_ = 2;
-				break;
-			case -6:
-				// jjF - PJP
-				pop_and_jump();
-				instr_size_ = 1;
-				break;
-			case -1:
-				// jjA - JPN $X
-				jump_if_neg(memory_[pc_ + 1]);
-				instr_size_ = 2;
-				break;
-			case 0:
-				// jj0 - JP $X
-				jump(memory_[pc_ + 1]);
-				instr_size_ = 2;
-				break;
-			case 1:
-				// jja - JPP $X
-				jump_if_pos(memory_[pc_ + 1]);
-				instr_size_ = 2;
-				break;
-			case 6:
-				// jjf - JPS $X
-				jump_and_store(memory_[pc_ + 1]);
-				instr_size_ = 2;
-				break;
-			case 9:
-				// jji - JPZ $X
-				jump_if_zero(memory_[pc_ + 1]);
-				instr_size_ = 2;
-				break;
-			case 10:
-				// jjj - TJP $X, $Y, $Z
-				ternary_jump(memory_[pc_ + 1], memory_[pc_ + 2], memory_[pc_ + 3]);
-				instr_size_ = 4;
-				break;
-			default:
-				crash_dump("Unrecognised instruction");
-				halt();
-				break;
-			}
-			break;
-		default:
-			crash_dump("Unrecognised instruction");
-			halt();
-			break;
-		}
 		break;
 	case 11:
 		// kXY - STAR X, Y
@@ -436,67 +357,6 @@ void CPU::decode_and_execute()
 		halt();
 		break;
 	}
-
-#if 0
-
-	if (current_pos == Tryte("0em"))
-	{
-		std::cout << "Entered copy_to_tilemap\n";
-		print = true;
-	}
-
-	if (current_pos == Tryte("0dC"))
-	{
-		std::cout << "Entered load_page\n";
-		print = false;
-	}
-
-	if (current_pos == Tryte("0eA"))
-	{
-		std::cout << "Leaving load page\n";
-		print = true;
-	}
-
-	if (current_pos == Tryte("0e0"))
-	{
-		print = false;
-	}
-
-	if (current_pos == Tryte("0em"))
-	{
-		std::cout << "Leaving memcpy\n";
-		print = true;
-	}
-
-	if (print)
-	{
-		std::cout << "Program counter: " << current_pos << '\n';
-		std::cout << "This instruction: ";
-		for (size_t i = 0; i < instr_size_; i++)
-		{
-			std::cout << memory_[current_pos + i] << ' ';
-		}
-		std::cout << '\n';
-		std::cout << "Stack pointer: " << sp_ << '\n';
-		std::cout << "Memory bank: " << bank_ << '\n';
-
-		std::cout << "---------REGISTERS---------\n";
-		std::cout << "A : " << regs_[1] << " B : " << regs_[2] << " C : " << regs_[3] << '\n';
-		std::cout << "D : " << regs_[4] << " E : " << regs_[5] << " F : " << regs_[6] << '\n';
-		std::cout << "G : " << regs_[7] << " H : " << regs_[8] << " I : " << regs_[9] << '\n';
-
-		std::cout << "Disk status flag: " << memory_[-3281] << '\n';
-		std::cout << '\n';
-	}
-#endif
-	
-	if (JUMP_FLAG == 0)
-	{
-		pc_ += instr_size_;
-	}
-	else
-	{
-		JUMP_FLAG = 0;
-	}
-
+	// proceed to next instruction
+	pc_ += instr_size_;
 }

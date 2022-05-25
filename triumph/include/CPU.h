@@ -46,7 +46,6 @@ private:
 	int8_t& CARRY_FLAG = flags_[1];
 	int8_t& SIGN_FLAG = flags_[2];
 	int8_t& STACK_FLAG = flags_[3];
-	int8_t& JUMP_FLAG = flags_[4];
 
 
 	/*
@@ -96,6 +95,9 @@ private:
 	/*
 	CPU operations
 	*/
+
+	// all variations of jump instructions
+	void decode_and_execute_jump(int8_t const mid, int8_t const low);
 
 	// load Tryte from memory 
 	void load(Tryte const& x, Tryte& y);
@@ -169,29 +171,14 @@ private:
 	// halt and catch fire
 	void halt();
 
-	// jump if zero
-	void jump_if_zero(Tryte const& x);
+	// ternary jump instruction
+	void jump(Tryte const& x, Tryte const& y, Tryte const& z);
 
-	// jump if not zero
-	void jump_if_not_zero(Tryte const& x);
-
-	// jump if positive
-	void jump_if_pos(Tryte const& x);
-
-	// jump if negative
-	void jump_if_neg(Tryte const& x);
-
-	// jump unconditionally
-	void jump(Tryte const& x);
-
-	// jump and store
+	// store program counter on stack and jump to x
 	void jump_and_store(Tryte const& x);
 
-	// pop and jump
+	// pop from stack and jump to popped address
 	void pop_and_jump();
-
-	// ternary jump
-	void ternary_jump(Tryte const& x, Tryte const& y, Tryte const& z);
 
 	/* for debugging */
 	// push Tryte to stdout

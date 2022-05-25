@@ -64,9 +64,23 @@ I - GP register
 
 in memory, also have the PC (program counter), the SP (stack pointer and the current MB (memory bank).
 
+## Memory map
+
+TRIUMPH can address Tryte memory in the range $MMM-$mmm.
+By default, stack pointer SP begins at $m00.
+
+$MMM-$Emm : 6561 trytes of general purpose memory (bank switchable)
+$DMM-$dmm : 6561 trytes of general purpose memory
+$eMM-$mMM : PROGRAM memory; assembled code is written here. Use at own risk.
+$mMM-$m0A : stack; stack pointer SP begins at $m00 and decrements as stack grows
+$m00-$mmj : reserved for system use (boot code, etc)
+$mmk      : current memory bank MB
+$mml      : stack pointer SP
+$mmm      : program counter PC
+
 ## Instruction set
 
-The following is a list of ternary assembly instructions accepted by TRIUMPH. Each instruction has a unique 1-tryte opcode, with these opcodes being denoted ".XY" (for a 2-register instruction), "..X" (for a 1-register instruction) or "...", where '.' is a valid septavingtesmal character (M-A,0,a-m), and X/Y are 3-trit opcode representations of specific registers, given by the following table:
+The following is a list of ternary assembly instructions accepted by TRIUMPH. Each instruction has a unique 1-tryte opcode (except for certain permissible JP instructions), with these opcodes being denoted "*XY" (for a standard 2-register instruction), "**X" (for a 1-register instruction) or "***", where '*' is a valid septavingtesmal character (M-A,0,a-m), and X/Y are 3-trit opcode representations of specific registers, given by the following table:
 
 A - 00+ ('a')
 B - 0+- ('b')
@@ -78,7 +92,7 @@ G - +-+ ('g')
 H - +0- ('h')
 I - +00 ('i')
 
-For example, the general form of the opcode for "ADD X, Y" is eXY - "ADD A, B" is given by "eab". If instructions require raw memory addresses, these will immediately follow the opcode. For example, the jump instruction "JP $X" assembles to "jj0 X", where X is the raw tryte address of $X.
+For example, the general form of the opcode for "ADD X, Y" is eXY - "ADD A, B" is given by "eab". If instructions require raw memory addresses, these will immediately follow the opcode. For example, the jump instruction "JP $X" assembles to "jMj X", where X is the raw tryte address of $X. If an opcode contains the wildcard character '*', any valid septavingtesmal character is valid there (usually this is chosen to be 0.)
 
 The instructions also permit indirect addressing of memory using registers, denoted by square brackets \[\] - for example, if register A = a00, \[A\] will point to the contents of memory at address $a00. The placeholder 't9' represents a 9-trit immediate value, standing for any value between -9,841 and 9,841. 't3' represents a 3-trit immediate value, standing for any value between -13 and 13. Values outside these ranges will be truncated.
 
@@ -130,7 +144,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Description: Set current BANK to value of register X.
 
 #### BANK t9
-- Opcode: Mj. t9
+- Opcode: Mj* t9
 - Length: 2 trytes
 - Description: Set current BANK to value of immediate t9.
 
@@ -180,8 +194,8 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Stack flag: If after decrementing, SP < mMM, stack flag will be set to '+', indicating overflow.
 
 #### PUSH t9
-- Opcode: Mf.
-- Length: 1 tryte
+- Opcode: Mf* t9
+- Length: 2 trytes
 - Description: decrement the stack pointer SP and write immediate value t9 to that point in memory.
 - Compare flag: No effect.
 - Carry flag: No effect.
@@ -429,7 +443,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 ### Control flow operations
 
 #### NOP
-- Opcode: M0.
+- Opcode: j00
 - Length: 1 tryte
 - Description: Do nothing except increment program counter (PC).
 - Compare flag: No effect.
@@ -438,7 +452,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Stack flag: No effect.
 
 #### HALT
-- Opcode: MM.
+- Opcode: 000
 - Length: 1 tryte
 - Description: Halt and catch fire. Computer will stop.
 - Compare flag: No effect.
@@ -446,142 +460,130 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Sign flag: No effect.
 - Stack flag: No effect.
 
-#### JPZ \[X\]
-- Opcode: jiX
-- Length: 1 tryte
-- Description: check compare flag, and jump to address $X if compare flag == 0.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
+### The ternary jump instruction
 
-#### JPZ $X
-- Opcode: jji $X
+#### JP addr1/null, addr2/null, addr3/null
+
+JP is the mnemonic for the _ternary jump instruction_, where 
+
+- if compare flag < 0, jump to addr1 (or do nothing except to go to next instruction if null)
+- if compare flag == 0, jump to addr2 (or do nothing if null)
+- if compare flag > 0, jump to addr3 (or do nothing if null).
+
+Jump opcodes may be longer than a single Tryte - in general, they have the following pattern. The first tryte is always of the form:
+
+- XXXYYYZZZ
+
+where XXX is +0+ , the septavingtesmal value 'j'; YYY is a sequence of three trits for the three arguments of JP, where
+
+- if Y is +, this argument is an indirect register \[P\]
+- if Y is 0, this argument is null
+- if Y is -, this argument is an immediate address $Q.
+
+The final three trits ZZZ are dependent on the values of YYY - the possible cases are:
+
+- if YYY = --- (opcode jM* ):
+    * instruction is JP $X, $Y, $Z - usually, ZZZ is not used, but if ZZZ = +0+ (opcode jMj) this corresponds to the instruction JP $X - a convenient shorthand for JP $X, $X, $X, i.e. an unconditional jump to the address $X.
+    * only one address is required to follow jMj - for example, JP $AAA would assemble to jMj AAA, rather than jMj AAA AAA AAA.
+- if YYY = 000 (opcode j0* ):
+    * in this case, ZZZ is used to encode several jump instructions; JPS $X, JPS \[X\], PJP, and NOP.
+    * this is done as this space is wasted otherwise; opcode j0* corresponds to JP null, null, null - i.e. do nothing for all possible values of the compare flag.
+- if YYY contains a single + value:
+    * ZZZ then encodes the ternary code for the given register argument.
+    * the address arguments, if any were given, follow in the order $(NEGATIVE_DEST) $(ZERO_DEST) $(POSITIVE_DEST)
+- if YYY contains two + values:
+    * setting ZZZ = 'j' denotes the opcode for two register arguments. The first Tryte of the opcode j*j is followed by a Tryte containing the two register ternary codes, aligned with their positions in the jump instruction. For example, JP \[X\], null, \[Y\] assembles to jjj X0Y - the X and Y map to the first or third triples in the Tryte respectively.
+    * setting ZZZ = 'a'-'i' encodes the special case where X and Y are the same register. For example, in the case where X = Y, JP \[X\], null \[X\] assembles to jjX.
+- if YYY contains two - values:
+    * setting ZZZ = 'j' (j*j) corresponds to a standard jump instruction followed by two address arguments. For example, JP $X, $Y, null assembles to jLj $X $Y.
+    * setting ZZZ = 'J' (j*J) corresponds to a shorthand opcode - for the above example with X = Y, JP $X, $X, null assembles to jLJ $X, rather than jLj $X $X, saving a Tryte.
+- if YYY = +++ (opcode jm* ):
+    * If ZZZ = +0+ (opcode jmj), the instruction is JP \[X\], \[Y\], \[Z\]. The Tryte following jmj will be filled with the three ternary codes for the given registers - for example, JP \[X\], \[Y\], \[Z\] would assemble to jmj XYZ - similar behaviour to the two-register argument case, but with no following address.
+    * Similarly to YYY = ---, a convenient shorthand is given for JP \[X\], \[X\], \[X\] - if ZZZ is a register code (a-i) that register will be used for X. Therefore, JP \[X\] \[X\] \[X\] assembles to jmX. This operation can be written JP \[X\], and is an unconditional jump to the address given by the value of register X.
+
+Special mnemonics are available for common forms of JP - they are described, along with their opcodes, below. The JP instruction has no effect on any flags - the compare flag is NOT reset after it is used.
+
+#### JPZ $X - JP null, $X, null
+- Opcode: jC* $X
 - Length: 2 trytes
-- Description: check compare flag, and jump to address $X if compare flag == 0.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
+- Description: jump to address $X if compare flag == 0.
 
-#### JPNZ \[X\]
-- Opcode: jIX
+#### JPZ \[X\] - JP null, \[X\], null
+- Opcode: jcX
 - Length: 1 tryte
-- Description: check compare flag, and jump to address $X if compare flag != 0.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
+- Description: jump to address stored in register X if compare flag == 0.
 
-#### JPNZ $X
-- Opcode: jjI $X
+#### JPNZ $X - JP $X, null, $X
+- Opcode: jJJ $X
 - Length: 2 trytes
-- Description: check compare flag, and jump to address $X if compare flag != 0.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
+- Description: jump to address $X if compare flag != 0.
 
-#### JPP \[X\]
+#### JPNZ \[X\] - JP \[X\], null, \[X\]
+- Opcode: jjX
+- Length: 1 tryte
+- Description: jump to address stored in register X if compare flag != 0.
+
+#### JPP $X - JP null, null, $X
+- Opcode: jA* $X
+- Length: 2 trytes
+- Description: jump to address $X if compare flag > 0.
+
+#### JPP \[X\] - JP null, \[X\], null
 - Opcode: jaX
 - Length: 1 tryte
-- Description: check compare flag, and jump to address $X if compare flag > 0.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
+- Description: jump to address stored in register X if compare flag > 0.
 
-#### JPP $X
-- Opcode: jja $X
+#### JPNP $X - JP $X, null, $X
+- Opcode: jLJ $X
 - Length: 2 trytes
-- Description: check compare flag, and jump to address $X if compare flag > 0.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
+- Description: jump to address $X if compare flag < 0 or == 0.
 
-#### JPN \[X\]
-- Opcode: jAX
+#### JPNP \[X\] - JP null, \[X\], null
+- Opcode: jjX
 - Length: 1 tryte
-- Description: check compare flag, and jump to address $X if compare flag < 0.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
+- Description: jump to address stored in register X if compare flag < 0 or == 0.
 
-#### JPN $X
-- Opcode: jjA $X
+#### JPN $X - JP $X, null, null
+- Opcode: jI* $X
 - Length: 2 trytes
-- Description: check compare flag, and jump to address $X if compare flag < 0.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
+- Description: jump to address $X if compare flag > 0.
 
-#### JP \[X\]
-- Opcode: j0X
+#### JPN \[X\] - JP \[X\], null, null
+- Opcode: jiX
 - Length: 1 tryte
-- Description: Jump to address $X unconditionally.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
+- Description: jump to address stored in register X if compare flag > 0.
+
+#### JPNN $X - JP null, $X, $X
+- Opcode: jDJ $X
+- Length: 2 trytes
+- Description: jump to address $X if compare flag < 0 or == 0.
+
+#### JPNN \[X\] - JP null, \[X\], \[X\]
+- Opcode: jdX
+- Length: 1 tryte
+- Description: jump to address stored in register X if compare flag < 0 or == 0.
 
 #### JP $X
-- Opcode: jj0 $X
+- Opcode: jMJ $X
 - Length: 2 trytes
-- Description: Jump to address $X unconditionally.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
+- Description: unconditionally jump to $X
 
-#### JPS \[X\]
-- Opcode: jfX
+#### JP \[X\]
+- Opcode: jmX
 - Length: 1 tryte
-- Description: Push the program counter onto the stack, and then jump to address $X. Used by function calls.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: If after decrementing, SP < mMM, stack flag will be set to '+', indicating overflow.
+- Description: unconditionally jump to address stored in register X.
 
 #### JPS $X
-- Opcode: jjf $X
+- Opcode: j0J $X
 - Length: 2 trytes
-- Description: Push the program counter onto the stack, and then jump to address $X. Used by function calls.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: If after decrementing, SP < mMM, stack flag will be set to '+', indicating overflow.
+- Description: store the current program counter (+2 to jump past this instruction!) and jump to address $X. Often used to enter functions.
+
+#### JPS \[X\]
+- Opcode: j0X
+- Length: 1 tryte
+- Description: store the current program counter (+2 to jump past this instruction!) on the stack and jump to address stored in register X. Often used to enter functions.
 
 #### PJP
-- Opcode jjF
+- Opcode: j0j
 - Length: 1 tryte
-- Description: Pop an address off the stack, and then jump to that address.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: If after incrementing, SP > m00, stack flag will be set to '-', indicating underflow.
-
-#### TJP $X, $Y, $Z
-- Opcode: jjj $X $Y $Z
-- Length: 4 trytes
-- Description: Ternary jump instruction. If compare flag < 0, jump to $X; if compare flag == 0, jump to $Y; if compare flag > 0, jump to $Z.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
-
-## Memory map
-
-TRIUMPH can address Tryte memory in the range $MMM-$mmm.
-By default, stack pointer SP begins at $m00.
-
-$MMM-$Emm : 6561 trytes of general purpose memory (bank switchable)
-$DMM-$dmm : 6561 trytes of general purpose memory
-$eMM-$mMM : PROGRAM memory; assembled code is written here. Use at own risk.
-$mMM-$m0A : stack; stack pointer SP begins at $m00 and decrements as stack grows
-$m00-$mmj : reserved for system use (boot code, etc)
-$mmk      : current BANK
-$mml      : stack pointer SP
-$mmm      : program counter PC
+- Description: pop a Tryte off the stack, and jump to the recovered address. Often used to return from functions.

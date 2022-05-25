@@ -123,6 +123,7 @@
     <ClCompile Include="src\Computer.cpp" />
     <ClCompile Include="src\CPU.cpp" />
     <ClCompile Include="src\CPUInstructions.cpp" />
+    <ClCompile Include="src\CPUjump.cpp" />
     <ClCompile Include="src\Disk.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Memory.cpp" />
