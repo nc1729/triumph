@@ -491,8 +491,12 @@ The final three trits ZZZ are dependent on the values of YYY - the possible case
 - if YYY contains a single + value:
     * ZZZ then encodes the ternary code for the given register argument.
     * the address arguments, if any were given, follow in the order $(NEGATIVE_DEST) $(ZERO_DEST) $(POSITIVE_DEST)
-- if YYY contains two + values or two - values:
-    * setting ZZZ = +0+ ('j')
+- if YYY contains two + values:
+    * setting ZZZ = 'j' denotes the opcode for two register arguments. The first Tryte of the opcode j*j is followed by a Tryte containing the two register ternary codes, aligned with their positions in the jump instruction. For example, JP \[X\], null, \[Y\] assembles to jjj X0Y - the X and Y map to the first or third triples in the Tryte respectively.
+    * setting ZZZ = 'a'-'i' encodes the special case where X and Y are the same register. For example, in the case where X = Y, JP \[X\], null \[X\] assembles to jjX.
+- if YYY contains two - values:
+    * setting ZZZ = 'j' (j*j) corresponds to a standard jump instruction followed by two address arguments. For example, JP $X, $Y, null assembles to jLj $X $Y.
+    * setting ZZZ = 'J' (j*J) corresponds to a shorthand opcode - for the above example with X = Y, JP $X, $X, null assembles to jLJ $X, rather than jLj $X $X, saving a Tryte.
 - if YYY = +++ (opcode jm* ):
     * If ZZZ = +0+ (opcode jmj), the instruction is JP \[X\], \[Y\], \[Z\]. The Tryte following jmj will be filled with the three ternary codes for the given registers - for example, JP \[X\], \[Y\], \[Z\] would assemble to jmj XYZ - similar behaviour to the two-register argument case, but with no following address.
     * Similarly to YYY = ---, a convenient shorthand is given for JP \[X\], \[X\], \[X\] - if ZZZ is a register code (a-i) that register will be used for X. Therefore, JP \[X\] \[X\] \[X\] assembles to jmX. This operation can be written JP \[X\], and is an unconditional jump to the address given by the value of register X.
@@ -507,146 +511,79 @@ Special mnemonics are available for common forms of JP - they are described, alo
 #### JPZ \[X\] - JP null, \[X\], null
 - Opcode: jcX
 - Length: 1 tryte
-- Description: jump to address $X if compare flag == 0.
+- Description: jump to address stored in register X if compare flag == 0.
 
 #### JPNZ $X - JP $X, null, $X
-- Opcode: jJX
-- Length: 1 tryte
+- Opcode: jJJ $X
+- Length: 2 trytes
 - Description: jump to address $X if compare flag != 0.
 
-#### JPNZ \[X\] - JP null, \[X\], null
+#### JPNZ \[X\] - JP \[X\], null, \[X\]
 - Opcode: jjX
 - Length: 1 tryte
-- Description: jump to address $X if compare flag == 0.
+- Description: jump to address stored in register X if compare flag != 0.
 
-
-#### JP addr1/null, addr2/null, addr3/null
-- Opcode: many
-- Length: various
-- Description: 
-
-#### JPZ \[X\]
-- Opcode: jiX
-- Length: 1 tryte
-- Description: check compare flag, and jump to address $X if compare flag == 0.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
-
-#### JPZ $X
-- Opcode: jji $X
+#### JPP $X - JP null, null, $X
+- Opcode: jA* $X
 - Length: 2 trytes
-- Description: check compare flag, and jump to address $X if compare flag == 0.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
+- Description: jump to address $X if compare flag > 0.
 
-#### JPNZ \[X\]
-- Opcode: jIX
-- Length: 1 tryte
-- Description: check compare flag, and jump to address $X if compare flag != 0.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
-
-#### JPNZ $X
-- Opcode: jjI $X
-- Length: 2 trytes
-- Description: check compare flag, and jump to address $X if compare flag != 0.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
-
-#### JPP \[X\]
+#### JPP \[X\] - JP null, \[X\], null
 - Opcode: jaX
 - Length: 1 tryte
-- Description: check compare flag, and jump to address $X if compare flag > 0.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
+- Description: jump to address stored in register X if compare flag > 0.
 
-#### JPP $X
-- Opcode: jja $X
+#### JPNP $X - JP $X, null, $X
+- Opcode: jLJ $X
 - Length: 2 trytes
-- Description: check compare flag, and jump to address $X if compare flag > 0.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
+- Description: jump to address $X if compare flag < 0 or == 0.
 
-#### JPN \[X\]
-- Opcode: jAX
+#### JPNP \[X\] - JP null, \[X\], null
+- Opcode: jjX
 - Length: 1 tryte
-- Description: check compare flag, and jump to address $X if compare flag < 0.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
+- Description: jump to address stored in register X if compare flag < 0 or == 0.
 
-#### JPN $X
-- Opcode: jjA $X
+#### JPN $X - JP $X, null, null
+- Opcode: jI* $X
 - Length: 2 trytes
-- Description: check compare flag, and jump to address $X if compare flag < 0.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
+- Description: jump to address $X if compare flag > 0.
 
-#### JP \[X\]
-- Opcode: j0X
+#### JPN \[X\] - JP \[X\], null, null
+- Opcode: jiX
 - Length: 1 tryte
-- Description: Jump to address $X unconditionally.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
+- Description: jump to address stored in register X if compare flag > 0.
+
+#### JPNN $X - JP null, $X, $X
+- Opcode: jDJ $X
+- Length: 2 trytes
+- Description: jump to address $X if compare flag < 0 or == 0.
+
+#### JPNN \[X\] - JP null, \[X\], \[X\]
+- Opcode: jdX
+- Length: 1 tryte
+- Description: jump to address stored in register X if compare flag < 0 or == 0.
 
 #### JP $X
-- Opcode: jj0 $X
+- Opcode: jMJ $X
 - Length: 2 trytes
-- Description: Jump to address $X unconditionally.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
+- Description: unconditionally jump to $X
 
-#### JPS \[X\]
-- Opcode: jfX
+#### JP \[X\]
+- Opcode: jmX
 - Length: 1 tryte
-- Description: Push the program counter onto the stack, and then jump to address $X. Used by function calls.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: If after decrementing, SP < mMM, stack flag will be set to '+', indicating overflow.
+- Description: unconditionally jump to address stored in register X.
 
 #### JPS $X
-- Opcode: jjf $X
+- Opcode: j0J $X
 - Length: 2 trytes
-- Description: Push the program counter onto the stack, and then jump to address $X. Used by function calls.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: If after decrementing, SP < mMM, stack flag will be set to '+', indicating overflow.
+- Description: store the current program counter (+2 to jump past this instruction!) and jump to address $X. Often used to enter functions.
+
+#### JPS \[X\]
+- Opcode: j0X
+- Length: 1 tryte
+- Description: store the current program counter (+2 to jump past this instruction!) on the stack and jump to address stored in register X. Often used to enter functions.
 
 #### PJP
-- Opcode jjF
+- Opcode: j0j
 - Length: 1 tryte
-- Description: Pop an address off the stack, and then jump to that address.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: If after incrementing, SP > m00, stack flag will be set to '-', indicating underflow.
-
-#### TJP $X, $Y, $Z
-- Opcode: jjj $X $Y $Z
-- Length: 4 trytes
-- Description: Ternary jump instruction. If compare flag < 0, jump to $X; if compare flag == 0, jump to $Y; if compare flag > 0, jump to $Z.
-- Compare flag: No effect.
-- Carry flag: No effect.
-- Sign flag: No effect.
-- Stack flag: No effect.
+- Description: pop a Tryte off the stack, and jump to the recovered address. Often used to return from functions.

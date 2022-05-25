@@ -19,8 +19,8 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
 		// M = ---
 		switch (low)
 		{
-		case 10:
-			// jMj - JP $X
+		case -10:
+			// jMJ - JP $X
             // jump unconditionally to $X
 			// special case (shorthand for JP $X, $X, $X)
 			jump(memory_[pc_ + 1], memory_[pc_ + 1], memory_[pc_ + 1]);
@@ -41,18 +41,18 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
 		// L = --0
         switch (low)
         {
+        case -10:
+            // jLJ $X - JPNP $X
+            // shorthand for JP $X, $X, *
+            // if compare flag is not positive, jump to $X
+            jump(memory_[pc_ + 1], memory_[pc_ + 1], pc_ + 2);
+            instr_size_ = 2;
+            break;
         case 10:
             // jLj - JP $X, $Y, *
             // example: JP $X, *, $Y => jLj $X $Y
             jump(memory_[pc_ + 1], memory_[pc_ + 2], pc_ + 3);
             instr_size_ = 3;
-            break;
-        case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9:
-            // jLX - JPNP $X
-            // shorthand for JP $X, $X, *
-            // if compare flag is not positive, jump to $X
-            jump(memory_[pc_ + 1], memory_[pc_ + 1], pc_ + 2);
-            instr_size_ = 2;
             break;
         default:
             crash_dump("Unrecognised instruction");
@@ -71,18 +71,18 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
         // J = -0-
         switch (low)
         {
+        case -10:
+            // jJJ $X - JPNZ $X
+            // shorthand for JP $X, *, $X
+            // if compare flag is not zero, jump to $X
+            jump(memory_[pc_ + 1], pc_ + 2, memory_[pc_ + 1]);
+            instr_size_ = 2;
+            break;
         case 10:
             // jJj - JP $X, *, $Y
             // example: JP $X, *, $Y => jJj $X $Y
             jump(memory_[pc_ + 1], pc_ + 3, memory_[pc_ + 2]);
             instr_size_ = 3;
-            break;
-        case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9:
-            // jJX - JPNZ $X
-            // shorthand for JP $X, *, $X
-            // if compare flag is not zero, jump to $X
-            jump(memory_[pc_ + 1], pc_ + 2, memory_[pc_ + 1]);
-            instr_size_ = 2;
             break;
         default:
             crash_dump("Unrecognised instruction");
@@ -127,17 +127,17 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
         // D = 0--
         switch (low)
         {
-        case 10:
-            // jDj - JP *, $X, $Y
-            jump(pc_ + 3, memory_[pc_ + 1], memory_[pc_ + 2]);
-            instr_size_ = 3;
-            break;
-        case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9:
-            // jDX - JPNN $X
+        case -10:
+            // jDJ $X - JPNN $X
             // shorthand for JP *, $X, $X
             // unconditional jump to [X]
             jump(pc_ + 2, memory_[pc_ + 1], memory_[pc_ + 1]);
             instr_size_ = 2;
+            break;
+        case 10:
+            // jDj - JP *, $X, $Y
+            jump(pc_ + 3, memory_[pc_ + 1], memory_[pc_ + 2]);
+            instr_size_ = 3;
             break;
         default:
             crash_dump("Unrecognised instruction");
@@ -171,9 +171,9 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
         switch (low)
         {
         case -10:
-            // j0J - PJP
-            pop_and_jump();
-            instr_size_ = 1;
+            // j0J - JPS $X
+            jump_and_store(memory_[pc_ + 1]);
+            instr_size_ = 2;
             break;
         case 0:
             // j00 - NOP
@@ -181,9 +181,9 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
             instr_size_ = 1;
             break;
         case 10:
-            // j0j - JPS $X
-            jump_and_store(memory_[pc_ + 1]);
-            instr_size_ = 2;
+            // j0j - PJP
+            pop_and_jump();
+            instr_size_ = 1;
             break;
         case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9:
             // j0X - JPS [X]

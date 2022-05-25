@@ -56,7 +56,7 @@ def main():
     boot_code += "mlc"    # M0k:     INC C
     boot_code += "mld"    # M0l:     INC D
     boot_code += "mLb"    # M0m:     DEC B
-    boot_code += "jMjM0f" # MaM MaL: JP $M0f
+    boot_code += "jMJM0f" # MaM MaL: JP $M0f
     # boot code copy loop ends here
 
     main_code_ptr = "0aK"
@@ -124,7 +124,7 @@ def main():
     #   POP G; POP C; POP A;
     write_to_framebuffer_code += "mFgmFcmFa"
     #   PJP
-    write_to_framebuffer_code += "j0J"
+    write_to_framebuffer_code += "j0j"
     write_to_framebuffer_size = len(write_to_framebuffer_code) // 3
 
     write_to_palette_0_ptr = tryte_tools.add_int_to_tryte(write_to_framebuffer_ptr, write_to_framebuffer_size)
@@ -156,7 +156,7 @@ def main():
     #   POP G; POP C; POP A;
     write_to_palette_0_code += "mFgmFcmFa"
     #   PJP
-    write_to_palette_0_code += "j0J"
+    write_to_palette_0_code += "j0j"
     write_to_palette_0_size = len(write_to_palette_0_code) // 3
     
     
@@ -204,7 +204,7 @@ def main():
     #   POP G; POP D;
     load_page_code += "mFgmFd"
     #   PJP
-    load_page_code += "j0J"
+    load_page_code += "j0j"
     load_page_size = len(load_page_code) // 3
     
 
@@ -233,10 +233,10 @@ def main():
     #   INC B; INC C; DEC D
     memcpy_code += "mlbmlcmLd"
     #   JP loop
-    memcpy_code += "jMj" + loop_ptr
+    memcpy_code += "jMJ" + loop_ptr
     #   !done
     #   PJP
-    memcpy_code += "j0J"
+    memcpy_code += "j0j"
     memcpy_size = len(memcpy_code) // 3
 
     copy_to_tilemap_ptr = tryte_tools.add_int_to_tryte(memcpy_ptr, memcpy_size)
@@ -259,14 +259,14 @@ def main():
     copy_to_tilemap_code += "mjb"
     #   CALL load_page(B, C)
     #   B and C are already in place - just need to JPS to load_page
-    copy_to_tilemap_code += "j0j" + load_page_ptr
+    copy_to_tilemap_code += "j0J" + load_page_ptr
     #   CALL memcpy($MMM, $AMM, 729)
     #   need to PUSH B; PUSH C; PUSH D
     copy_to_tilemap_code += "mfbmfcmfd"
     #   then SET B, #MMM; SET C, #AMM; SET D, #a00
     copy_to_tilemap_code += "mabMMMmacAMMmada00"
     #   then JPS to memcpy
-    copy_to_tilemap_code += "j0j" + memcpy_ptr
+    copy_to_tilemap_code += "j0J" + memcpy_ptr
     #   on function return, recover B, C and D
     #   POP D; POP C; POP B
     copy_to_tilemap_code += "mFdmFcmFb"
@@ -275,7 +275,7 @@ def main():
     #   CALL memcpy($AMM, D, 729)
     copy_to_tilemap_code += "mfbmfcmfd"
     copy_to_tilemap_code += "mabAMMacdmada00"
-    copy_to_tilemap_code += "j0j" + memcpy_ptr
+    copy_to_tilemap_code += "j0J" + memcpy_ptr
     copy_to_tilemap_code += "mFdmFcmFb"
     #   ADD D, 729          # move data pointer to next page in framebuffer
     copy_to_tilemap_code += "meda00"
@@ -290,7 +290,7 @@ def main():
     #   POP G; POP D; POP C; POP B;
     copy_to_tilemap_code += "mFgmFdmFcmFb"
     #   PJP
-    copy_to_tilemap_code += "j0J"
+    copy_to_tilemap_code += "j0j"
     copy_to_tilemap_size = len(copy_to_tilemap_code) // 3
 
     infinite_loop_ptr = tryte_tools.add_int_to_tryte(copy_to_tilemap_ptr, copy_to_tilemap_size)
@@ -298,7 +298,7 @@ def main():
     infinite_loop_code = ""
     # infinite_loop:
     #   JP infinite_loop
-    infinite_loop_code += "jMj" + infinite_loop_ptr
+    infinite_loop_code += "jMJ" + infinite_loop_ptr
     infinite_loop_size = len(infinite_loop_code)
 
     main_code = ""
@@ -309,10 +309,10 @@ def main():
     #   CALL infinite_loop
     #   
     #   CALL func -> JPS $func
-    main_code += "j0j" + copy_to_tilemap_ptr
-    main_code += "j0j" + write_to_palette_0_ptr
-    main_code += "j0j" + write_to_framebuffer_ptr
-    main_code += "j0j" + infinite_loop_ptr
+    main_code += "j0J" + copy_to_tilemap_ptr
+    main_code += "j0J" + write_to_palette_0_ptr
+    main_code += "j0J" + write_to_framebuffer_ptr
+    main_code += "j0J" + infinite_loop_ptr
 
     # put it all together!
     boot_code += (main_code + write_to_framebuffer_code 
