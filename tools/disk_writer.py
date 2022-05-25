@@ -198,7 +198,7 @@ def main():
     #   CPZ D
     load_page_code += "mCd"
     #   JPZ wait_loop       # if D = 0, disk is still busy, go back to wait_loop
-    load_page_code += "jA0" + wait_loop_ptr
+    load_page_code += "jC0" + wait_loop_ptr
     #   BANK G
     load_page_code += "mjg"
     #   POP G; POP D;
@@ -275,7 +275,7 @@ def main():
     #   CALL memcpy($AMM, D, 729)
     copy_to_tilemap_code += "mfbmfcmfd"
     copy_to_tilemap_code += "mabAMMacdmada00"
-    copy_to_tilemap_code += "jjf" + memcpy_ptr
+    copy_to_tilemap_code += "j0j" + memcpy_ptr
     copy_to_tilemap_code += "mFdmFcmFb"
     #   ADD D, 729          # move data pointer to next page in framebuffer
     copy_to_tilemap_code += "meda00"

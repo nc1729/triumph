@@ -75,7 +75,7 @@ void CPU::run()
 			}
 			second_start_ = clock_.now();
 		}
-		dump();
+		//dump();
 	}
 }
 

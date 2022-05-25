@@ -35,6 +35,7 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
             halt();
             break;
 		}
+        break;
 	case -12:
 		// jL* - JP $X, $Y, *
 		// L = --0

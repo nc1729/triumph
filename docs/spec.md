@@ -180,8 +180,8 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Stack flag: If after decrementing, SP < mMM, stack flag will be set to '+', indicating overflow.
 
 #### PUSH t9
-- Opcode: Mf.
-- Length: 1 tryte
+- Opcode: Mf. t9
+- Length: 2 trytes
 - Description: decrement the stack pointer SP and write immediate value t9 to that point in memory.
 - Compare flag: No effect.
 - Carry flag: No effect.
