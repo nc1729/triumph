@@ -4,5 +4,6 @@
 /.vs/*
 /out/*
 /.vscode/*
+/x64/*
 CMakeSettings.json
 /tools/bmp_to_trytes/build/*
