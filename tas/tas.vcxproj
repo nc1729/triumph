@@ -115,9 +115,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\tas.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\CLI11\CLI11.hpp" />
+    <ClInclude Include="include\CLOptions.h" />
     <ClInclude Include="include\constants.h" />
+    <ClInclude Include="include\tas.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
