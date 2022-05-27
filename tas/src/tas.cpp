@@ -2,6 +2,7 @@
 
 #include "CLOptions.h"
 #include "tas.h"
+#include "Tryte.h"
 
 int64_t tas(CLOptions const& options)
 {

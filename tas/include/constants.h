@@ -1,19 +1,24 @@
-#pragma once
-
 #include <vector>
 #include <string>
 #include <map>
 
 namespace constants
 {
-    std::vector<char> const special_chars =
-    {
-        '.', '\n', ';', ':', '$', '#', '!', '"'
-    };
+    std::string const septavingt_chars = "MLKJIHGFEDCBA0abcdefghijklm";
+    std::string const ternary_chars = "-0+";
 
-    std::vector<std::string> const keywords =
+    std::vector<char> const org_chars =
     {
-        ".func", ".data", ".alias", ".end"
+        // block start
+        '{',
+        // block end
+        '}',
+        // newline - ends a statement
+        '\n',
+        // statement end - ends statement without newline
+        ';',
+        // statement continue char - breaks up Tokens in same statement
+        ','
     };
 
     std::vector<std::string> const regs =
@@ -21,11 +26,60 @@ namespace constants
         "A", "B", "C", "D", "E", "F", "G", "H", "I"
     };
 
-    std::vector<std::string> const instructions = 
+    std::vector<std::string> const reg_addrs =
     {
-        "LD", "SV",  "SET", "SWAP", "PUSH", "POP", "IN",  "OUT", "CMP", "JP",
-        "JPZ", "JPNZ", "JPP", "JPN",  "AND",  "OR",  "NOT", "ADD", "ADC", "INC",
-        "DEC", "SH", "NOP", "BANK", "PEEK", "TJP"
+        "[A]", "[B]", "[C]", "[D]", "[E]", "[F]", "[G]", "[H]", "[I]"
+    };
+
+    std::vector<std::string> const instructions =
+    {
+        // memory management
+        "LOAD",
+        "SAVE",
+        "BANK",
+        "GANK",
+        // register management
+        "SET",
+        "SWAP",
+        // stack management
+        "PUSH",
+        "POP",
+        "PEEK",
+        // arithmetic ops
+        "ADD",
+        "ADC",
+        "SUB",
+        "SBB",
+        "SH",
+        "INC",
+        "DEC",
+        "FLIP",
+        "ZERO",
+        // logic ops
+        "CMP",
+        "CPZ",
+        "AND",
+        "OR",
+        "STAR",
+        // control flow
+        "NOP",
+        "HALT",
+        "JP",
+        "JPS",
+        "PJP"
+    };
+
+    std::vector<std::string> const macros =
+    {
+        // equivalent to FLIP
+        "NOT",
+        // 
+        "JPZ",
+        "JPN",
+        "JPP",
+        "JPNZ",
+        "JPNN",
+        "JPNP"
     };
 
     std::map<std::string, char> const instr_ids =

@@ -12,6 +12,6 @@ This project uses the command line parser CLI11 v1.9.1 by Henry Schreiner at htt
 - Multiple files, imports, namespaces? Ignore these for now, focus on single files. Multiple files ought to assemble separately, and would probably need a 'use' statement to require other blocks - but this needs care to avoid circular imports...
 - As a first pass, ignore these complications. Focus on implementing the basic set of instructions and the minimal amount of infrastructure and token types needed for that.
 - Main objects:
-    * Token: has a TokenType and the contents of the token.
+    * Token: has a TokenType and the contents of the token, and the line it was found on.
     * Statement: a list of Tokens, a StatementType, and a line number.
     * Block: have a list of Statements, a name, and an address, which will be figured out at link time.

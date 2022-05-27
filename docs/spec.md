@@ -96,7 +96,7 @@ For example, the general form of the opcode for "ADD X, Y" is eXY - "ADD A, B" i
 
 The instructions also permit indirect addressing of memory using registers, denoted by square brackets \[\] - for example, if register A = a00, \[A\] will point to the contents of memory at address $a00. The placeholder 't9' represents a 9-trit immediate value, standing for any value between -9,841 and 9,841. 't3' represents a 3-trit immediate value, standing for any value between -13 and 13. Values outside these ranges will be truncated.
 
-### LOAD instructions
+### Memory management instructions
 
 #### LOAD $X, Y
 - Opcode: mdY $X
@@ -116,8 +116,6 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Sign flag: No effect.
 - Stack flag: No effect.
 
-### SAVE instructions
-
 #### SAVE X, $Y
 - Opcode: mDX $Y
 - Length: 2 trytes
@@ -135,8 +133,6 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Carry flag: No effect.
 - Sign flag: No effect.
 - Stack flag: No effect.
-
-### Memory bank management
 
 #### BANK X
 - Opcode: mjX
