@@ -29,18 +29,20 @@ enum class TokenType
 	REG_ADDR,
 
 	/*
-	basic value types
+	basic value type
 	these assemble to single Trytes
+	these can be written as
+	integer literals, e.g. 729
+	septavingt literals - valid Trytes prepended with 0s, e.g. 0sMMM
+	ternary literals - e.g. 0t+++000---
+	all these are converted into "VAL" token type
 	they can be valid statements on their own, to fill space or use as data
 	*/
-	// integer literal - e.g 729
-	INT,
-	// address literal, starting with $
+	VAL,
+
+	// address type
+	// address literal, starting with $, e.g. $MMM
 	ADDR,
-	// septavingt literal, starting with 0s - e.g. 0sMMM, 0s00a
-	SV_CONST,
-	// balanced ternary literal, starting with 0t - e.g. 0t+++000++-
-	TN_CONST,
 
 	// assembly mnemonic - e.g. SET, ADD, LOAD etc
 	INSTR,
@@ -58,21 +60,18 @@ enum class TokenType
 	NAME
 };
 
-class Token
-{
-private:
-	// from a string, infer the type of the token
-	TokenType infer_type(std::string const& word);
-public:
-	std::string word;
-	TokenType type{ TokenType::INVALID };
-	size_t line_number{ 0 };
+std::ostream& operator<<(std::ostream& os, TokenType const& tokentype);
 
-	Token(std::string const& word, size_t const& line_number) :
-		word{ word }, line_number{ line_number } 
-	{
-		type = infer_type(word);
-	};
+struct Token
+{
+	// the line number the Token was on - for error messages etc
+	size_t line_number{ 0 };
+	// the type of the Token
+	TokenType type{ TokenType::INVALID };
+	// the Token after preprocessing (removing special chars etc)
+	std::string value;
+
+	Token(std::string const& word, size_t const& line_number);
 
 	// for debugging
 	friend std::ostream& operator<<(std::ostream& os, Token const& token);
