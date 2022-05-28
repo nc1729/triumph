@@ -42,6 +42,8 @@ target_sources(tas PUBLIC
                 tas/src/tas.cpp
                 tas/src/Token.cpp
                 tas/src/util.cpp
+                tas/src/tokenize.cpp
+                common/src/FileIO.cpp
                 common/src/Tryte.cpp
                 )
 
