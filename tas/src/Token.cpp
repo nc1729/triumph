@@ -6,6 +6,62 @@
 #include "util.hpp"
 #include "Token.h"
 
+std::ostream& operator<<(std::ostream& os, TokenType const& tokentype)
+{
+	if (tokentype == TokenType::INSTR)
+	{
+		os << "INSTR";
+	}
+	else if (tokentype == TokenType::BLOCK_START)
+	{
+		os << "BLOCK_START";
+	}
+	else if (tokentype == TokenType::BLOCK_END)
+	{
+		os << "BLOCK_END";
+	}
+	else if (tokentype == TokenType::NEWLINE)
+	{
+		os << "NEWLINE";
+	}
+	else if (tokentype == TokenType::STATEMENT_END)
+	{
+		os << "STATEMENT_END";
+	}
+	else if (tokentype == TokenType::REG)
+	{
+		os << "REG";
+	}
+	else if (tokentype == TokenType::REG_ADDR)
+	{
+		os << "REG_ADDR";
+	}
+	else if (tokentype == TokenType::VAL)
+	{
+		os << "VAL";
+	}
+	else if (tokentype == TokenType::ADDR)
+	{
+		os << "ADDR";
+	}
+	else if (tokentype == TokenType::JUMP_LABEL)
+	{
+		os << "JUMP_LABEL";
+	}
+	else if (tokentype == TokenType::STRING)
+	{
+		os << "STRING";
+	}
+	else if (tokentype == TokenType::NAME)
+	{
+		os << "STRING";
+	}
+	else
+	{
+		os << "INVALID";
+	}
+	return os;
+}
 Token::Token(std::string const& word, size_t const& line_number) :
 	line_number{line_number}
 {

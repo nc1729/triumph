@@ -8,6 +8,9 @@ enum class TokenType
 	// default
 	INVALID,
 
+	// assembly mnemonic - e.g. SET, ADD, LOAD etc
+	INSTR,
+
 	/*
 	code organisation types
 	*/
@@ -43,9 +46,6 @@ enum class TokenType
 	// address type
 	// address literal, starting with $, e.g. $MMM
 	ADDR,
-
-	// assembly mnemonic - e.g. SET, ADD, LOAD etc
-	INSTR,
 
 	// jump label, starting with !
 	// a placeholder for an address in a JP statement, set at link time
