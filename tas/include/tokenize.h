@@ -7,6 +7,6 @@
 
 namespace tokenize
 {
-	void remove_comments(std::vector<std::string> file_contents);
+	std::vector<std::string> remove_comments(std::vector<std::string> const& file_lines);
 	std::vector<Token> tokenize(std::vector<std::string> file_contents);
 }
