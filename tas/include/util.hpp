@@ -31,6 +31,8 @@ namespace util
 	bool string_is_septavingt(std::string const& word);
 	// return true if string is a ternary const (e.g. 0t+++0+--0)
 	bool string_is_ternary(std::string const& word);
+	// return true if string is a char const (e.g. 'x')
+	bool string_is_char(std::string const& word);
 	// return true if string begins with $ and is followed by 
 	bool string_is_addr(std::string const& word);
 	// return true if string begins with !

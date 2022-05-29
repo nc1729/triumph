@@ -13,10 +13,14 @@ int tas(CLOptions const& options)
 {
 	for (auto const& input_filename : options.input_filenames)
 	{
-		std::vector<std::string> file_contents = IO::read_lines(input_filename);
+		std::string file_string = IO::read_file(input_filename);
 		try
 		{
-			std::vector<Token> file_tokens = tokenize::tokenize(file_contents);
+			std::vector<Token> file_tokens = tokenize::tokenize(file_string);
+			for (Token const& token : file_tokens)
+			{
+				std::cout << token << '\n';
+			}
 		}
 		catch (std::runtime_error const& e)
 		{

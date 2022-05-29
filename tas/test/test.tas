@@ -1,26 +1,16 @@
 
-.data t
-{
-    #00a #00b #00c #00d
-}
-
-.func func1 $00D
-{
-    .data trytes
-    {
-        #aaa #000 #b0B
-    }
-    inc a
-    add a, t(2)
-}
-
-.func main $000
-{
-    alias MINUS_EIGHT -8
-    set a, 6 // 2 trytes
-    add a, MINUS_EIGHT // 2 trytes
-    cmp a, 0
-    jpp !print
-    call func1
-    !print out a // 1 tryte
+hello {
+    JPS copy_to_tilemap
+    JPS write_to_palette_0 // test out comments
+    /*
+    more comments
+    */
+    JPS write_to_framebuffer "hi"
+    LOAD A, $000
+    SET A, [A]
+    SET B, 'g'; ADD A, B; // yes, this works
+    AND B, 0sMMM
+    SET C, B
+    OR C, 0t---000++0
+    "Some text that will assemble!" "this is \" a string too"
 }

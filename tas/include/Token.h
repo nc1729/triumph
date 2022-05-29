@@ -38,6 +38,7 @@ enum class TokenType
 	integer literals, e.g. 729
 	septavingt literals - valid Trytes prepended with 0s, e.g. 0sMMM
 	ternary literals - e.g. 0t+++000---
+	char literals - e.g. 'a'
 	all these are converted into "VAL" token type
 	they can be valid statements on their own, to fill space or use as data
 	*/
@@ -71,7 +72,7 @@ struct Token
 	// the Token after preprocessing (removing special chars etc)
 	std::string value;
 
-	Token(std::string const& word, size_t const& line_number);
+	Token(std::string const& word, size_t const& line_number, TokenType const& type = TokenType::INVALID);
 
 	// for debugging
 	friend std::ostream& operator<<(std::ostream& os, Token const& token);

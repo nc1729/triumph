@@ -64,6 +64,22 @@ bool util::string_is_ternary(std::string const& word)
 		[](char c) {return constants::ternary_chars.find(c) != std::string::npos; });
 }
 
+bool util::string_is_char(std::string const& word)
+{
+	if (word.length() != 3)
+	{
+		return false;
+	}
+	else if (!(word[0] == '\'' && word[2] == '\''))
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+
 bool util::string_is_addr(std::string const& word)
 {
 	if (word[0] != '$') return false;

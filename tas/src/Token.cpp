@@ -54,7 +54,7 @@ std::ostream& operator<<(std::ostream& os, TokenType const& tokentype)
 	}
 	else if (tokentype == TokenType::NAME)
 	{
-		os << "STRING";
+		os << "NAME";
 	}
 	else
 	{
@@ -62,9 +62,16 @@ std::ostream& operator<<(std::ostream& os, TokenType const& tokentype)
 	}
 	return os;
 }
-Token::Token(std::string const& word, size_t const& line_number) :
-	line_number{line_number}
+Token::Token(std::string const& word, size_t const& line_number, TokenType const& tokentype) :
+	line_number{line_number}, type{tokentype}
 {
+	if (type != TokenType::INVALID)
+	{
+		// already defined TokenType with constructor, no need to infer it
+		value = word;
+		return;
+	}
+
 	// check if Token is an instruction mnemonic
 	if (util::is_in(constants::instructions, word))
 	{
@@ -102,11 +109,6 @@ Token::Token(std::string const& word, size_t const& line_number) :
 		// discard the [brackets]
 		value = word.substr(1, 1);
 	}
-	else if (util::string_is_int(word))
-	{
-		type = TokenType::VAL;
-		value = Tryte::get_str(Tryte(std::stoi(word)));
-	}
 	else if (util::string_is_septavingt(word))
 	{
 		type = TokenType::VAL;
@@ -140,6 +142,16 @@ Token::Token(std::string const& word, size_t const& line_number) :
 			power_of_3 *= 3;
 		}
 		value = Tryte::get_str(Tryte(tryte_int));
+	}
+	else if (util::string_is_int(word))
+	{
+		type = TokenType::VAL;
+		value = Tryte::get_str(Tryte(std::stoi(word)));
+	}	
+	else if (util::string_is_char(word))
+	{
+		type = TokenType::VAL;
+		value = Tryte::get_str(Tryte(static_cast<int>(word[1])));
 	}
 	else if (util::string_is_addr(word))
 	{
