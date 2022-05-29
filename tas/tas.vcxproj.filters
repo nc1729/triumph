@@ -36,6 +36,9 @@
     <ClCompile Include="src\tokenize.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\error.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\constants.h">
@@ -63,6 +66,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\include\FileIO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\error.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

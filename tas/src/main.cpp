@@ -25,6 +25,5 @@ int main(int argc, char** argv) {
     CLI11_PARSE(app, argc, argv);
 
     // run assembler
-    int64_t out_code = tas(options);
-    return static_cast<int>(out_code);
+    return tas(options);
 }

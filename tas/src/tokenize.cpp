@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 
+#include "error.h"
 #include "tokenize.h"
 
 std::vector<std::string> tokenize::remove_comments(std::vector<std::string> const& file_lines)
@@ -100,6 +101,16 @@ std::vector<std::string> tokenize::remove_comments(std::vector<std::string> cons
 	}
 
 	// if in block comment or string at end of file, throw an error
+	if (in_string)
+	{
+		// strings must be terminated at the end of the file
+		error(new_lines[line_number - 1], "Unexpected end of file - string is not terminated.", line_number - 1);
+	}
+	if (in_block_comment)
+	{
+		// block comments must be terminated at the end of the file
+		error(new_lines[line_number - 1], "Unexpected end of file - block comment is not terminated.", line_number - 1);
+	}
 
 	return new_lines;
 	
@@ -107,10 +118,7 @@ std::vector<std::string> tokenize::remove_comments(std::vector<std::string> cons
 
 std::vector<Token> tokenize::tokenize(std::vector<std::string> file_contents)
 {
-	for (auto const& line : file_contents)
-	{
-		std::cout << line << '\n';
-	}
+	file_contents = remove_comments(file_contents);
 	std::vector<Token> plums;
 	return plums;
 }

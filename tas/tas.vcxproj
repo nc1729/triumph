@@ -116,6 +116,7 @@
   <ItemGroup>
     <ClCompile Include="..\common\src\FileIO.cpp" />
     <ClCompile Include="..\common\src\Tryte.cpp" />
+    <ClCompile Include="src\error.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\tas.cpp" />
     <ClCompile Include="src\Token.cpp" />
@@ -128,6 +129,7 @@
     <ClInclude Include="include\CLI11\CLI11.hpp" />
     <ClInclude Include="include\CLOptions.h" />
     <ClInclude Include="include\constants.h" />
+    <ClInclude Include="include\error.h" />
     <ClInclude Include="include\tas.h" />
     <ClInclude Include="include\Token.h" />
     <ClInclude Include="include\tokenize.h" />
