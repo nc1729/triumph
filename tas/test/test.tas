@@ -18,3 +18,13 @@ hello {
     CALL func x, y
     // should assemble to PUSH B; PUSH C; SET B, x; SET C, y; JPS func; POP C; POP B;
 }
+
+data
+{
+    0sAAA; 0sBBB; 0sCCC;
+}
+
+test
+{
+    "Hello!"
+}

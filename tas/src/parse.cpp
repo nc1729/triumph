@@ -28,7 +28,8 @@ std::vector<Block> parse::make_blocks(std::vector<Token> const& tokens)
 		{
 			if (this_token.type == TokenType::NAME)
 			{
-				if (index + 1 < tokens.size())
+				// found a block name, keep skipping newlines until we find its start {
+				while (index + 1 < tokens.size())
 				{
 					Token const& next_token = tokens[index + 1];
 					if (next_token.type == TokenType::BLOCK_START)
@@ -39,16 +40,27 @@ std::vector<Block> parse::make_blocks(std::vector<Token> const& tokens)
 						block_statements.clear();
 						block_name = this_token.value;
 						index++;
+						break;
+					}
+					else if (next_token.type == TokenType::NEWLINE)
+					{
+						index++;
 					}
 					else
 					{
+						// there shouldn't be anything other than names outside of blocks
 						throw TASError("Expected block start token {", line_number);
 					}
 				}
-				else
-				{
-					throw TASError("Unexpected end of file.", line_number);
-				}
+			}
+			else if (this_token.type == TokenType::NEWLINE)
+			{
+				// do nothing but move forward to next token
+			}
+			else
+			{
+				// there shouldn't be anything other than names outside of blocks
+				throw TASError("Expected block start token {", line_number);
 			}
 		}
 		else
