@@ -98,8 +98,8 @@ The instructions also permit indirect addressing of memory using registers, deno
 
 ### Memory management instructions
 
-#### LOAD $X, Y
-- Opcode: mdY $X
+#### LOAD X, $Y
+- Opcode: mdX $Y
 - Length: 2 trytes
 - Description: Load register Y with contents of address $X.
 - Compare flag: No effect.
@@ -107,7 +107,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Sign flag: No effect.
 - Stack flag: No effect.
 
-#### LOAD \[X\], Y
+#### LOAD X, \[Y\]
 - Opcode: dXY
 - Length: 1 tryte
 - Description: Load register Y with contents of indirect address given by register X.
