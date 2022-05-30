@@ -116,8 +116,11 @@
   <ItemGroup>
     <ClCompile Include="..\common\src\FileIO.cpp" />
     <ClCompile Include="..\common\src\Tryte.cpp" />
+    <ClCompile Include="src\Block.cpp" />
     <ClCompile Include="src\error.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\parse.cpp" />
+    <ClCompile Include="src\Statement.cpp" />
     <ClCompile Include="src\tas.cpp" />
     <ClCompile Include="src\Token.cpp" />
     <ClCompile Include="src\tokenize.cpp" />
@@ -126,10 +129,13 @@
   <ItemGroup>
     <ClInclude Include="..\common\include\FileIO.h" />
     <ClInclude Include="..\common\include\Tryte.h" />
+    <ClInclude Include="include\Block.h" />
     <ClInclude Include="include\CLI11\CLI11.hpp" />
     <ClInclude Include="include\CLOptions.h" />
     <ClInclude Include="include\constants.h" />
     <ClInclude Include="include\error.h" />
+    <ClInclude Include="include\parse.h" />
+    <ClInclude Include="include\Statement.h" />
     <ClInclude Include="include\tas.h" />
     <ClInclude Include="include\Token.h" />
     <ClInclude Include="include\tokenize.h" />

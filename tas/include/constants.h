@@ -62,27 +62,34 @@ namespace constants
         "STAR",
         // control flow
         "NOP",
-        "HALT",
+        "HALT"
+    };
+
+    std::vector<std::string> const jump_instructions =
+    {
         "JP",
         "JPS",
-        "PJP"
+        "PJP",
+        "JPN",
+        "JPZ",
+        "JPP",
+        "JPNN",
+        "JPNZ",
+        "JPNP"
     };
 
     std::vector<std::string> const macros =
     {
-        // equivalent to FLIP
+        // equivalent to FLIP X
         "NOT",
-        // JPZ $X equivalent to JP *, $X, *
-        "JPZ",
-        // JPN $X equivalent to JP $X, *, *
-        "JPN",
-        // JPP $X equivalent to JP *, *, $X
-        "JPP",
-        // JPNZ $X equivalent to JP $X, *, $X
-        "JPNZ",
-        // JPNN $X equivalent to JP *, $X, $X
-        "JPNN",
-        // JPNP $X equivalent to JP $X, $X, *
-        "JPNP"
+        // CALL addr, arg1, arg2 ...
+        // should expand to PUSH B, PUSH C, ... (equal to number of arguments, up to 8)
+        // SET B, arg1; SET C, arg2; SET D, arg3, ...
+        // JPS addr
+        // POP I, POP H, ... POP C, POP B (depending on how many arguments)
+        "CALL",
+        // equivalent to PJP, but more obviously a return
+        // although will only work if the local stack has been cleared!
+        "RET"
     };
 }

@@ -1,7 +1,17 @@
 #pragma once
 
 #include <string>
+#include <stdexcept>
 
-// error handling for tas
-// takes the line of the file the error was found on, an error message, and the line number
-void error(std::string const& line, std::string const& err_msg, size_t line_number);
+// TASError
+// inherits from std::runtime_error, but passes the line number the error occurred on back up too
+class TASError : public std::runtime_error
+{
+public:
+	size_t line_number;
+	TASError(std::string const& err_msg, size_t const line_number)
+		: std::runtime_error(err_msg.c_str()), line_number{ line_number }
+	{
+
+	};
+};

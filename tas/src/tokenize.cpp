@@ -81,7 +81,7 @@ std::string tokenize::remove_comments(std::string const& file_string)
 				// to have long strings need to start a new string on the next like
 				// "just like"
 				// "this."
-				error(new_line, "Unexpected end of line - string is not terminated", line_number);
+				throw TASError("Unexpected end of line - string is not terminated", line_number);
 			}
 			else
 			{
@@ -139,7 +139,7 @@ std::string tokenize::remove_comments(std::string const& file_string)
 	// block comments must be terminated
 	if (in_block_comment)
 	{
-		error(new_line, "Unexpected end of file - block comment is not terminated.", line_number);
+		throw TASError("Unexpected end of file - block comment is not terminated.", line_number);
 	}
 
 	return new_file_string;
@@ -343,20 +343,7 @@ std::vector<Token> tokenize::make_tokens(std::string const& file_string,
 std::vector<Token> tokenize::tokenize(std::string& file_string)
 {
 	file_string = remove_comments(file_string);
-	std::cout << "After removing comments:\n";
-	std::cout << file_string << '\n';
-	std::cout << "===================================\n";
 	std::vector<std::string> stored_strings = store_strings(file_string);
-	std::cout << "Stored strings:\n";
-	for (auto const& str : stored_strings)
-	{
-		std::cout << str << '\n';
-	}
-	std::cout << "===================================\n";
-	std::cout << "After storing strings:\n";
-	std::cout << file_string << '\n';
-	std::cout << "===================================\n";
 	std::vector<Token> tokens = make_tokens(file_string, stored_strings);
-	std::cout << "Final tokens: \n";
 	return tokens;
 }

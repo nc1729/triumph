@@ -12,6 +12,14 @@ std::ostream& operator<<(std::ostream& os, TokenType const& tokentype)
 	{
 		os << "INSTR";
 	}
+	else if (tokentype == TokenType::JUMP_INSTR)
+	{
+		os << "JUMP_INSTR";
+	}
+	else if (tokentype == TokenType::MACRO)
+	{
+		os << "MACRO";
+	}
 	else if (tokentype == TokenType::BLOCK_START)
 	{
 		os << "BLOCK_START";
@@ -44,6 +52,10 @@ std::ostream& operator<<(std::ostream& os, TokenType const& tokentype)
 	{
 		os << "ADDR";
 	}
+	else if (tokentype == TokenType::JUMP_PLACEHOLDER)
+	{
+		os << "JUMP_PLACEHOLDER";
+	}
 	else if (tokentype == TokenType::JUMP_LABEL)
 	{
 		os << "JUMP_LABEL";
@@ -63,7 +75,7 @@ std::ostream& operator<<(std::ostream& os, TokenType const& tokentype)
 	return os;
 }
 Token::Token(std::string const& word, size_t const& line_number, TokenType const& tokentype) :
-	line_number{line_number}, type{tokentype}
+	line_number{ line_number }, type{ tokentype }, word{ word }
 {
 	if (type != TokenType::INVALID)
 	{
@@ -76,6 +88,16 @@ Token::Token(std::string const& word, size_t const& line_number, TokenType const
 	if (util::is_in(constants::instructions, word))
 	{
 		type = TokenType::INSTR;
+		value = word;
+	}
+	else if (util::is_in(constants::jump_instructions, word))
+	{
+		type = TokenType::JUMP_INSTR;
+		value = word;
+	}
+	else if (util::is_in(constants::macros, word))
+	{
+		type = TokenType::MACRO;
 		value = word;
 	}
 	else if (word == "{")
@@ -97,6 +119,11 @@ Token::Token(std::string const& word, size_t const& line_number, TokenType const
 	{
 		type = TokenType::STATEMENT_END;
 		value = ";";
+	}
+	else if (word == "*")
+	{
+		type = TokenType::JUMP_PLACEHOLDER;
+		value = "*";
 	}
 	else if (util::is_in(constants::regs, word))
 	{

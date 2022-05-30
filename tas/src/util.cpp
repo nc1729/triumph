@@ -6,6 +6,25 @@
 #include "constants.h"
 #include "util.hpp"
 
+std::vector<std::string> util::break_file_into_lines(std::string const& file_string)
+{
+	std::vector<std::string> lines;
+	std::string line;
+	for (char c : file_string)
+	{
+		if (c == '\n')
+		{
+			lines.push_back(line);
+			line = "";
+		}
+		else
+		{
+			line += c;
+		}
+	}
+	return lines;
+}
+
 std::string util::to_upper(std::string const& word)
 {
 	std::string out;

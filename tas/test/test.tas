@@ -13,4 +13,8 @@ hello {
     SET C, B
     OR C, 0t---000++0
     "Some text that will assemble!" "this is \" a string too"
+    JP *, $000, [D]; JPN copy_to_tilemap; JP *, *, *;
+    // macro test
+    CALL func x, y
+    // should assemble to PUSH B; PUSH C; SET B, x; SET C, y; JPS func; POP C; POP B;
 }

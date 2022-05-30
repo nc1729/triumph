@@ -18,6 +18,8 @@ namespace util
 		return std::find(vec.begin(), vec.end(), v) != vec.end();
 	}
 
+	std::vector<std::string> break_file_into_lines(std::string const& file_string);
+
 	// convert string to upper case
 	std::string to_upper(std::string const& word);
 	// convert int to Tryte string

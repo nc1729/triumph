@@ -8,8 +8,12 @@ enum class TokenType
 	// default
 	INVALID,
 
-	// assembly mnemonic - e.g. SET, ADD, LOAD etc
+	// assembly mnemonic - e.g. SET, ADD, LOAD etc - excluding JP, JPZ, etc
 	INSTR,
+	// jump instruction - JP, JPZ, etc.
+	JUMP_INSTR,
+	// macro - CALL, NOT, etc
+	MACRO,
 
 	/*
 	code organisation types
@@ -47,6 +51,8 @@ enum class TokenType
 	// address type
 	// address literal, starting with $, e.g. $MMM
 	ADDR,
+	// jump placeholder, a '*' char - JP *, *, *
+	JUMP_PLACEHOLDER,
 
 	// jump label, starting with !
 	// a placeholder for an address in a JP statement, set at link time
@@ -69,11 +75,13 @@ struct Token
 	size_t line_number{ 0 };
 	// the type of the Token
 	TokenType type{ TokenType::INVALID };
+	// the raw token before preprocessing (useful for printing)
+	std::string word;
 	// the Token after preprocessing (removing special chars etc)
 	std::string value;
 
 	Token(std::string const& word, size_t const& line_number, TokenType const& type = TokenType::INVALID);
 
-	// for debugging
-	friend std::ostream& operator<<(std::ostream& os, Token const& token);
 };
+
+std::ostream& operator<<(std::ostream& os, Token const& token);
