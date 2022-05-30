@@ -8,7 +8,6 @@
 #include "parse.h"
 #include "Token.h"
 #include "Block.h"
-#include "Tryte.h"
 #include "FileIO.h"
 #include "util.hpp"
 #include "tas.h"
