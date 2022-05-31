@@ -100,16 +100,28 @@ Token::Token(std::string const& word, size_t const& line_number, TokenType const
 	if (util::is_in(constants::instructions, word))
 	{
 		type = TokenType::INSTR;
+		if (util::is_lowercase(word))
+		{
+			value = util::to_upper(word);
+		}
 		value = word;
 	}
 	else if (util::is_in(constants::jump_instructions, word))
 	{
 		type = TokenType::JUMP_INSTR;
+		if (util::is_lowercase(word))
+		{
+			value = util::to_upper(word);
+		}
 		value = word;
 	}
 	else if (util::is_in(constants::macros, word))
 	{
 		type = TokenType::MACRO;
+		if (util::is_lowercase(word))
+		{
+			value = util::to_upper(word);
+		}
 		value = word;
 	}
 	else if (word == "{")
@@ -140,13 +152,23 @@ Token::Token(std::string const& word, size_t const& line_number, TokenType const
 	else if (util::is_in(constants::regs, word))
 	{
 		type = TokenType::REG;
+		// internally, regs match to lower case in trytes
+		if (util::is_uppercase(word))
+		{
+			value = util::to_lower(word);
+		}
 		value = word;
 	}
 	else if (util::is_in(constants::reg_addrs, word))
 	{
 		type = TokenType::REG_ADDR;
 		// discard the [brackets]
-		value = word.substr(1, 1);
+		std::string reg = word.substr(1, 1);
+		// internally, regs match to lower case in trytes
+		if (util::is_uppercase(reg))
+		{
+			value = util::to_lower(reg);
+		}
 	}
 	else if (util::string_is_septavingt(word))
 	{
@@ -208,6 +230,16 @@ Token::Token(std::string const& word, size_t const& line_number, TokenType const
 		// store the word for error messages
 		value = word;
 	}
+}
+
+bool Token::operator==(Token const& other)
+{
+	return (this->value == other.value && this->type == other.type && this->line_number == other.line_number);
+}
+
+bool Token::operator!=(Token const& other)
+{
+	return !(*this == other);
 }
 
 std::ostream& operator<<(std::ostream& os, Token const& token)

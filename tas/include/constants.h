@@ -22,74 +22,76 @@ namespace constants
 
     std::vector<std::string> const regs =
     {
-        "A", "B", "C", "D", "E", "F", "G", "H", "I"
+        "A", "B", "C", "D", "E", "F", "G", "H", "I",
+        "a", "b", "c", "d", "e", "f", "g", "h", "i"
     };
 
     std::vector<std::string> const reg_addrs =
     {
-        "[A]", "[B]", "[C]", "[D]", "[E]", "[F]", "[G]", "[H]", "[I]"
+        "[A]", "[B]", "[C]", "[D]", "[E]", "[F]", "[G]", "[H]", "[I]",
+        "[a]", "[b]", "[c]", "[d]", "[e]", "[f]", "[g]", "[h]", "[i]"
     };
 
     std::vector<std::string> const instructions =
     {
         // memory management
-        "LOAD",
-        "SAVE",
-        "BANK",
-        "GANK",
+        "LOAD", "load",
+        "SAVE", "save",
+        "BANK", "bank",
+        "GANK", "gank",
         // register management
-        "SET",
-        "SWAP",
+        "SET", "set",
+        "SWAP", "swap",
         // stack management
-        "PUSH",
-        "POP",
-        "PEEK",
+        "PUSH", "push",
+        "POP", "pop",
+        "PEEK", "peek",
         // arithmetic ops
-        "ADD",
-        "ADC",
-        "SUB",
-        "SBB",
-        "SH",
-        "INC",
-        "DEC",
-        "FLIP",
-        "ZERO",
+        "ADD", "add",
+        "ADC", "adc",
+        "SUB", "sub",
+        "SBB", "sbb",
+        "SH", "sh",
+        "INC", "inc",
+        "DEC", "dec",
+        "FLIP", "flip",
+        "ZERO", "zero",
         // logic ops
-        "CMP",
-        "CPZ",
-        "AND",
-        "OR",
-        "STAR",
+        "CMP", "cmp",
+        "CPZ", "cpz",
+        "AND", "and",
+        "OR", "or",
+        "STAR", "star",
         // control flow
-        "NOP",
-        "HALT"
+        "NOP", "nop",
+        "HALT", "halt"
     };
 
     std::vector<std::string> const jump_instructions =
     {
-        "JP",
-        "JPS",
-        "PJP",
-        "JPN",
-        "JPZ",
-        "JPP",
-        "JPNN",
-        "JPNZ",
-        "JPNP"
+        "JP", "jp",
+        "PJP", "pjp",
+        "JPS", "jps", 
+        "JPN", "jpn",
+        "JPZ", "jpz",
+        "JPP", "jpp",
+        "JPNN", "jpnn",
+        "JPNZ", "jpnz",
+        "JPNP", "jpnp"
     };
 
     std::vector<std::string> const macros =
     {
         // equivalent to FLIP X
-        "NOT",
+        "NOT", "not",
         // CALL addr, arg1, arg2 ...
         // should expand to PUSH B, PUSH C, ... (equal to number of arguments, up to 8)
         // SET B, arg1; SET C, arg2; SET D, arg3, ...
         // JPS addr
         // POP I, POP H, ... POP C, POP B (depending on how many arguments)
-        "CALL",
+        "CALL", "call",
         // equivalent to PJP, but more obviously a return
         // although will only work if the local stack has been cleared!
-        "RET"
+        "RET", "ret"
     };
 }

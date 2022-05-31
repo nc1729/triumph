@@ -23,7 +23,7 @@ struct Statement
 	size_t line_number;
 	Tryte address = 0;
 	size_t length = 0;
-	std::string assembly;
+	std::vector<std::string> assembled_trytes;
 
 	Statement(std::vector<Token> const& tokens);
 	Token& operator[](size_t const i);

@@ -69,18 +69,23 @@ enum class TokenType
 
 std::ostream& operator<<(std::ostream& os, TokenType const& tokentype);
 
-struct Token
+class Token
 {
+private:
+	// the raw token before preprocessing (useful for printing)
+	std::string word;
+public:
 	// the line number the Token was on - for error messages etc
 	size_t line_number{ 0 };
 	// the type of the Token
 	TokenType type{ TokenType::INVALID };
-	// the raw token before preprocessing (useful for printing)
-	std::string word;
 	// the Token after preprocessing (removing special chars etc)
 	std::string value;
 
 	Token(std::string const& word, size_t const& line_number, TokenType const& type = TokenType::INVALID);
+
+	bool operator==(Token const& other);
+	bool operator!=(Token const& other);
 
 	bool is_data_type() const;
 	bool is_addr_type() const;

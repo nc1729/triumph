@@ -20,8 +20,15 @@ namespace util
 
 	std::vector<std::string> break_file_into_lines(std::string const& file_string);
 
+	// check if string is all in upper case
+	bool is_uppercase(std::string const& word);
+	// check if string is all in lower case
+	bool is_lowercase(std::string const& word);
+
 	// convert string to upper case
 	std::string to_upper(std::string const& word);
+	// convert string to lower case
+	std::string to_lower(std::string const& word);
 	// convert int to Tryte string
 	std::string int_to_tryte_str(int64_t const& n);
 

@@ -479,8 +479,8 @@ where XXX is +0+ , the septavingtesmal value 'j'; YYY is a sequence of three tri
 The final three trits ZZZ are dependent on the values of YYY - the possible cases are:
 
 - if YYY = --- (opcode jM* ):
-    * instruction is JP $X, $Y, $Z - usually, ZZZ is not used, but if ZZZ = +0+ (opcode jMj) this corresponds to the instruction JP $X - a convenient shorthand for JP $X, $X, $X, i.e. an unconditional jump to the address $X.
-    * only one address is required to follow jMj - for example, JP $AAA would assemble to jMj AAA, rather than jMj AAA AAA AAA.
+    * instruction is JP $X, $Y, $Z - usually, ZZZ is not used, but if ZZZ = -0- (opcode jMJ) this corresponds to the instruction JP $X - a convenient shorthand for JP $X, $X, $X, i.e. an unconditional jump to the address $X.
+    * only one address is required to follow jMJ - for example, JP $AAA would assemble to jMJ AAA, rather than jMJ AAA AAA AAA.
 - if YYY = 000 (opcode j0* ):
     * in this case, ZZZ is used to encode several jump instructions; JPS $X, JPS \[X\], PJP, and NOP.
     * this is done as this space is wasted otherwise; opcode j0* corresponds to JP null, null, null - i.e. do nothing for all possible values of the compare flag.
@@ -529,13 +529,13 @@ Special mnemonics are available for common forms of JP - they are described, alo
 - Length: 1 tryte
 - Description: jump to address stored in register X if compare flag > 0.
 
-#### JPNP $X - JP $X, null, $X
+#### JPNP $X - JP $X, $X, null
 - Opcode: jLJ $X
 - Length: 2 trytes
 - Description: jump to address $X if compare flag < 0 or == 0.
 
 #### JPNP \[X\] - JP null, \[X\], null
-- Opcode: jjX
+- Opcode: jlX
 - Length: 1 tryte
 - Description: jump to address stored in register X if compare flag < 0 or == 0.
 

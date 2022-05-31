@@ -25,6 +25,16 @@ std::vector<std::string> util::break_file_into_lines(std::string const& file_str
 	return lines;
 }
 
+bool util::is_uppercase(std::string const& word)
+{
+	return std::all_of(word.begin(), word.end(), [](char c) {return c >= 'A' && c <= 'Z'; });
+}
+
+bool util::is_lowercase(std::string const& word)
+{
+	return std::all_of(word.begin(), word.end(), [](char c) {return c >= 'a' && c <= 'z'; });
+}
+
 std::string util::to_upper(std::string const& word)
 {
 	std::string out;
@@ -34,6 +44,17 @@ std::string util::to_upper(std::string const& word)
 	}
 	return out;
 }
+
+std::string util::to_lower(std::string const& word)
+{
+	std::string out;
+	for (char c : word)
+	{
+		out += std::tolower(c);
+	}
+	return out;
+}
+
 bool util::string_is_int(std::string const& word)
 {
 	try
