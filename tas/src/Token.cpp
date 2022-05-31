@@ -6,6 +6,18 @@
 #include "util.hpp"
 #include "Token.h"
 
+bool Token::is_data_type() const
+{
+	return (type == TokenType::VAL || type == TokenType::ADDR || type == TokenType::STRING);
+}
+
+bool Token::is_addr_type() const
+{
+	return (type == TokenType::ADDR || 
+			type == TokenType::REG_ADDR || 
+			type == TokenType::NAME);
+}
+
 std::ostream& operator<<(std::ostream& os, TokenType const& tokentype)
 {
 	if (tokentype == TokenType::INSTR)

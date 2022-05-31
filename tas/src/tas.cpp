@@ -6,6 +6,7 @@
 #include "error.h"
 #include "tokenize.h"
 #include "parse.h"
+#include "assemble.h"
 #include "Token.h"
 #include "Block.h"
 #include "FileIO.h"
@@ -22,10 +23,7 @@ int tas(CLOptions const& options)
 		{
 			std::vector<Token> file_tokens = tokenize::tokenize(file_string);
 			std::vector<Block> file_blocks = parse::parse(file_tokens);
-			for (Block const& block : file_blocks)
-			{
-				std::cout << block << '\n';
-			}
+			std::vector<Block> assembled_blocks = assemble::assemble(file_blocks);
 		}
 		catch (TASError const& e)
 		{

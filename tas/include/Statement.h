@@ -12,7 +12,8 @@ enum class StatementType
 	INSTR,
 	MACRO,
 	DATA,
-	JUMP
+	JUMP,
+	JUMP_LABEL
 };
 
 struct Statement
@@ -28,6 +29,11 @@ struct Statement
 	Token& operator[](size_t const i);
 	Token const& operator[](size_t const i) const;
 	size_t size() const;
+
+	std::vector<Token>::iterator begin();
+	std::vector<Token>::iterator end();
+	std::vector<Token>::const_iterator begin() const;
+	std::vector<Token>::const_iterator end() const;
 };
 
 std::ostream& operator<<(std::ostream& os, Statement const& statement);

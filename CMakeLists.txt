@@ -38,11 +38,16 @@ add_executable(tas)
 target_include_directories(tas PUBLIC "tas/include")
 target_include_directories(tas PUBLIC "common/include")
 target_sources(tas PUBLIC
+                tas/src/assemble.cpp
+                tas/src/Block.cpp
+                tas/src/error.cpp
                 tas/src/main.cpp
+                tas/src/parse.cpp
+                tas/src/Statement.cpp
                 tas/src/tas.cpp
                 tas/src/Token.cpp
-                tas/src/util.cpp
                 tas/src/tokenize.cpp
+                tas/src/util.cpp
                 common/src/FileIO.cpp
                 common/src/Tryte.cpp
                 )

@@ -18,6 +18,11 @@ struct Block
 
 	Block(std::string const& name, std::vector<Statement> const& statements) :
 		name{ name }, statements{ statements } {};
+	
+	std::vector<Statement>::iterator begin();
+	std::vector<Statement>::iterator end();
+	std::vector<Statement>::const_iterator begin() const;
+	std::vector<Statement>::const_iterator end() const;
 };
 
 std::ostream& operator<<(std::ostream& os, Block const& block);

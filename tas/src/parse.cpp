@@ -74,6 +74,13 @@ std::vector<Block> parse::make_blocks(std::vector<Token> const& tokens)
 					in_block = false;
 					blocks.emplace_back(block_name, block_statements);
 				}
+				else if (this_token.type == TokenType::JUMP_LABEL)
+				{
+					// isolate jump labels into their own statements, even if they're not line separated
+					statement_tokens.clear();
+					statement_tokens.push_back(this_token);
+					block_statements.emplace_back(statement_tokens);
+				}
 				else if (this_token.type == TokenType::NEWLINE || this_token.type == TokenType::STATEMENT_END)
 				{
 					// skip this token, empty statement
@@ -205,7 +212,7 @@ std::vector<Block>& parse::handle_macros(std::vector<Block>& blocks)
 	for (Block& block : blocks)
 	{
 		std::vector<Statement> new_statements;
-		for (Statement const& statement : block.statements)
+		for (Statement const& statement : block)
 		{
 			if (statement.type == StatementType::MACRO)
 			{

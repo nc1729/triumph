@@ -82,6 +82,8 @@ struct Token
 
 	Token(std::string const& word, size_t const& line_number, TokenType const& type = TokenType::INVALID);
 
+	bool is_data_type() const;
+	bool is_addr_type() const;
 };
 
 std::ostream& operator<<(std::ostream& os, Token const& token);
