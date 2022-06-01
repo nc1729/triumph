@@ -92,6 +92,18 @@ namespace constants
         "CALL", "call",
         // equivalent to PJP, but more obviously a return
         // although will only work if the local stack has been cleared!
-        "RET", "ret"
+        "RET", "ret",
+        // JPN addr - equivalent to JP addr, *, *
+        "JPN", "jpn",
+        // JPZ addr - equivalent to JP *, addr, *
+        "JPZ", "jpz",
+        // JPP addr - equivalent to JP *, *, addr
+        "JPP", "jpp",
+        // JPNN addr - equivalent to JP *, addr, addr
+        "JPNN", "jpnn",
+        // JPNZ addr - equivalent to JP addr, *, addr
+        "JPNZ", "jpnz",
+        // JPNP addr - equivalent to JP *, addr, addr
+        "JPNP", "jpnp"
     };
 }

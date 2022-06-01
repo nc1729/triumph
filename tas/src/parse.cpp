@@ -128,11 +128,11 @@ std::vector<Statement> parse::expand_macro(Statement const& macro)
 	std::vector<Statement> new_statements;
 	if (macro[0].value == "NOT")
 	{
-		if (macro.size() != 2 || macro[1].type != TokenType::REG)
+		if (macro.size() != 2)
 		{
-			throw TASError("NOT macro takes 1 register argument", macro.line_number);
+			throw TASError("NOT macro takes 1 argument", macro.line_number);
 		}
-		// "NOT X" is equivalent to "FLIP X"
+		// NOT reg => FLIP reg
 		new_statements.push_back(Statement({ Token("FLIP", macro.line_number, TokenType::INSTR), macro[1] }));
 	}
 	else if (macro[0].value == "RET")
@@ -141,8 +141,92 @@ std::vector<Statement> parse::expand_macro(Statement const& macro)
 		{
 			throw TASError("RET macro takes no arguments", macro.line_number);
 		}
-		// RET is equivalent to PJP
+		// RET => PJP
 		new_statements.push_back(Statement({ Token("PJP", macro.line_number, TokenType::INSTR) }));
+	}
+	else if (macro[0].value == "JPN")
+	{
+		if (macro.size() != 2)
+		{
+			throw TASError("JPN macro takes 1 argument", macro.line_number);
+		}
+		// JPN addr => JP addr, *, *
+		new_statements.push_back(
+			Statement({ Token("JP", macro.line_number, TokenType::INSTR),
+					   macro[1],
+					   Token("*", macro.line_number, TokenType::JUMP_PLACEHOLDER),
+					   Token("*", macro.line_number, TokenType::JUMP_PLACEHOLDER) })
+		);
+	}
+	else if (macro[0].value == "JPZ")
+	{
+		if (macro.size() != 2)
+		{
+			throw TASError("JPZ macro takes 1 argument", macro.line_number);
+		}
+		// JPZ addr => JP *, addr, *
+		new_statements.push_back(
+			Statement({ Token("JP", macro.line_number, TokenType::INSTR),
+					   Token("*", macro.line_number, TokenType::JUMP_PLACEHOLDER),
+					   macro[1],
+					   Token("*", macro.line_number, TokenType::JUMP_PLACEHOLDER) })
+		);
+	}
+	else if (macro[0].value == "JPP")
+	{
+		if (macro.size() != 2)
+		{
+			throw TASError("JPP macro takes 1 argument", macro.line_number);
+		}
+		// JPP addr => JP *, *, addr
+		new_statements.push_back(
+			Statement({ Token("JP", macro.line_number, TokenType::INSTR),
+					   Token("*", macro.line_number, TokenType::JUMP_PLACEHOLDER),
+					   Token("*", macro.line_number, TokenType::JUMP_PLACEHOLDER),
+					   macro[1]})
+		);
+	}
+	else if (macro[0].value == "JPNN")
+	{
+		if (macro.size() != 2)
+		{
+			throw TASError("JPNN macro takes 1 argument", macro.line_number);
+		}
+		// JPNN addr => JP *, addr, addr
+		new_statements.push_back(
+			Statement({ Token("JP", macro.line_number, TokenType::INSTR),
+						Token("*", macro.line_number, TokenType::JUMP_PLACEHOLDER),
+						macro[1],
+						macro[1] })
+		);
+	}
+	else if (macro[0].value == "JPNZ")
+	{
+		if (macro.size() != 2)
+		{
+			throw TASError("JPNZ macro takes 1 argument", macro.line_number);
+		}
+		// JPNZ addr => JP addr, *, addr
+		new_statements.push_back(
+			Statement({ Token("JP", macro.line_number, TokenType::INSTR),
+						macro[1],
+						Token("*", macro.line_number, TokenType::JUMP_PLACEHOLDER),
+						macro[1] })
+		);
+	}
+	else if (macro[0].value == "JPNP")
+	{
+		if (macro.size() != 2)
+		{
+			throw TASError("JPNP macro takes 1 argument", macro.line_number);
+		}
+		// JPNP addr => JP addr, addr, *
+		new_statements.push_back(
+			Statement({ Token("JP", macro.line_number, TokenType::INSTR),
+						macro[1],
+						macro[1],
+						Token("*", macro.line_number, TokenType::JUMP_PLACEHOLDER) })
+		);
 	}
 	else if (macro[0].value == "CALL")
 	{
