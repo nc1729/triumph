@@ -109,7 +109,8 @@ void handle::jp(Statement& statement)
             if (statement[1] == statement[2] && statement[2] == statement[3])
             {
                 // special case - JP $X, $X, $X assembles to JP $X
-                third_char = 'J';
+                // jMj $X
+                third_char = 'j';
                 statement.assembled_trytes.push_back(opcode);
                 statement.assembled_trytes.push_back(statement[1].value);
                 statement.length = 2;
@@ -118,6 +119,7 @@ void handle::jp(Statement& statement)
             else
             {
                 // general case
+                // jM0 $X $Y $Z
                 statement.assembled_trytes.push_back(opcode);
                 statement.assembled_trytes.push_back(statement[1].value);
                 statement.assembled_trytes.push_back(statement[2].value);
@@ -134,7 +136,8 @@ void handle::jp(Statement& statement)
             if (statement[1] == statement[2])
             {
                 // special case - JP $X, $X, * assembles to JPNP $X
-                third_char = 'J';
+                // jLj $X
+                third_char = 'j';
                 statement.assembled_trytes.push_back(opcode);
                 statement.assembled_trytes.push_back(statement[1].value);
                 statement.length = 2;
@@ -143,12 +146,142 @@ void handle::jp(Statement& statement)
             else
             {
                 // general case
+                // jL0 $X $Y
                 statement.assembled_trytes.push_back(opcode);
                 statement.assembled_trytes.push_back(statement[1].value);
                 statement.assembled_trytes.push_back(statement[2].value);
                 statement.length = 3;
                 return;
             }
+        }
+        else if (code_char == 'K')
+        {
+            // --+
+            // JP $X, $Y, [Z]
+            // jKZ $X $Y
+            third_char = statement[3].value[0];
+            statement.assembled_trytes.push_back(opcode);
+            statement.assembled_trytes.push_back(statement[1].value);
+            statement.assembled_trytes.push_back(statement[2].value);
+            statement.length = 3;
+            return;
+        }
+        else if (code_char == 'J')
+        {
+            // -0-
+            // JP $X, *, $Y
+            if (statement[1] == statement[3])
+            {
+                // special case
+                // JP $X, *, $X assembles to JPNZ $X
+                // jJj $X
+                third_char = 'j';
+                statement.assembled_trytes.push_back(opcode);
+                statement.assembled_trytes.push_back(statement[1].value);
+                statement.length = 2;
+                return;
+            }
+            else
+            {
+                // general case
+                // JP $X, *, $Y
+                // jJ0 $X $Y
+                statement.assembled_trytes.push_back(opcode);
+                statement.assembled_trytes.push_back(statement[1].value);
+                statement.assembled_trytes.push_back(statement[3].value);
+                statement.length = 3;
+                return;
+            }
+        }
+        else if (code_char == 'I')
+        {
+            // -00
+            // JP $X, *, *
+            // jI0 $X
+            statement.assembled_trytes.push_back(opcode);
+            statement.assembled_trytes.push_back(statement[1].value);
+            statement.length = 2;
+            return;
+        }
+        else if (code_char == 'H')
+        {
+            // -0+
+            // JP $X, *, [Y]
+            // jHY $X
+            third_char = statement[3].value[0];
+            statement.assembled_trytes.push_back(opcode);
+            statement.assembled_trytes.push_back(statement[1].value);
+            statement.length = 2;
+            return;
+        }
+        else if (code_char == 'G')
+        {
+            // -+-
+            // JP $X, [Y], $Z
+            // jGY $X $Z
+            third_char = statement[2].value[0];
+            statement.assembled_trytes.push_back(opcode);
+            statement.assembled_trytes.push_back(statement[1].value);
+            statement.assembled_trytes.push_back(statement[3].value);
+            statement.length = 3;
+            return;
+        }
+        else if (code_char == 'F')
+        {
+            // -+0
+            // JP $X, [Y], *
+            // jFY $X
+            third_char = statement[2].value[0];
+            statement.assembled_trytes.push_back(opcode);
+            statement.assembled_trytes.push_back(statement[1].value);
+            statement.length = 2;
+            return;
+        }
+        else if (code_char == 'E')
+        {
+            // -++
+            // JP $X, [Y], [Z]
+            // jE0 0YZ $X
+            std::string reg_tryte = "000";
+            reg_tryte[1] = statement[2].value[0];
+            reg_tryte[2] = statement[3].value[0];
+            statement.assembled_trytes.push_back(opcode);
+            statement.assembled_trytes.push_back(reg_tryte);
+            statement.assembled_trytes.push_back(statement[1].value);
+            statement.length = 3;
+            return;
+        }
+        else if (code_char == 'D')
+        {
+            // 0--
+            // JP *, $X, $Y
+            if (statement[2] == statement[3])
+            {
+                // special case
+                // JP *, $X, $X
+                // jDj $X
+                third_char = 'j';
+                statement.assembled_trytes.push_back(opcode);
+                statement.assembled_trytes.push_back(statement[2].value);
+                statement.length = 2;
+                return;
+            }
+            else
+            {
+                // general case
+                // JP *, $X, $Y
+                // jD0 $X $Y
+                statement.assembled_trytes.push_back(opcode);
+                statement.assembled_trytes.push_back(statement[2].value);
+                statement.assembled_trytes.push_back(statement[3].value);
+                statement.length = 3;
+                return;
+            }
+        }
+        else if (code_char == 'C')
+        {
+            // 0-0
+            // JP *, $X, *
         }
     }
 }

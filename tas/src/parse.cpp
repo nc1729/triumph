@@ -38,7 +38,8 @@ std::vector<Block> parse::make_blocks(std::vector<Token> const& tokens)
 						in_block = true;
 						statement_tokens.clear();
 						block_statements.clear();
-						block_name = this_token.value;
+						// token names start with underscores, so cut that away
+						block_name = this_token.value.substr(1);
 						index++;
 						break;
 					}
@@ -125,7 +126,7 @@ std::vector<Block> parse::make_blocks(std::vector<Token> const& tokens)
 std::vector<Statement> parse::expand_macro(Statement const& macro)
 {
 	std::vector<Statement> new_statements;
-	if (macro[0].word == "NOT")
+	if (macro[0].value == "NOT")
 	{
 		if (macro.size() != 2 || macro[1].type != TokenType::REG)
 		{
@@ -134,7 +135,7 @@ std::vector<Statement> parse::expand_macro(Statement const& macro)
 		// "NOT X" is equivalent to "FLIP X"
 		new_statements.push_back(Statement({ Token("FLIP", macro.line_number, TokenType::INSTR), macro[1] }));
 	}
-	else if (macro[0].word == "RET")
+	else if (macro[0].value == "RET")
 	{
 		if (macro.size() != 1)
 		{
@@ -143,7 +144,7 @@ std::vector<Statement> parse::expand_macro(Statement const& macro)
 		// RET is equivalent to PJP
 		new_statements.push_back(Statement({ Token("PJP", macro.line_number, TokenType::INSTR) }));
 	}
-	else if (macro[0].word == "CALL")
+	else if (macro[0].value == "CALL")
 	{
 		// check number of arguments
 		if (macro.size() == 1)

@@ -227,8 +227,8 @@ Token::Token(std::string const& word, size_t const& line_number, TokenType const
 	else
 	{
 		type = TokenType::NAME;
-		// store the word for error messages
-		value = word;
+		// append name with underscore, useful for assembly
+		value = "_" + word;
 	}
 }
 

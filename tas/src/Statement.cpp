@@ -96,11 +96,11 @@ std::ostream& operator<<(std::ostream& os, Statement const& statement)
 	{
 		if (token.type == TokenType::STRING)
 		{
-			os << '\"' << token.word << '\"' << ' ';
+			os << '\"' << token.value << '\"' << ' ';
 		}
 		else
 		{
-			os << token.word << ' ';
+			os << token.value << ' ';
 		}
 	}
 	return os;

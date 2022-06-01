@@ -39,6 +39,7 @@ target_include_directories(tas PUBLIC "tas/include")
 target_include_directories(tas PUBLIC "common/include")
 target_sources(tas PUBLIC
                 tas/src/assemble.cpp
+                tas/src/assemble_instr.cpp
                 tas/src/Block.cpp
                 tas/src/error.cpp
                 tas/src/main.cpp
