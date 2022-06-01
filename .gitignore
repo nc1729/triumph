@@ -1,8 +1,10 @@
 /build/*
 /bin/*
 /CMakeFiles/*
+/Debug/*
 /.vs/*
 /out/*
+/x64/*
 /.vscode/*
 CMakeSettings.json
 /tools/bmp_to_trytes/build/*

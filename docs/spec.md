@@ -96,10 +96,10 @@ For example, the general form of the opcode for "ADD X, Y" is eXY - "ADD A, B" i
 
 The instructions also permit indirect addressing of memory using registers, denoted by square brackets \[\] - for example, if register A = a00, \[A\] will point to the contents of memory at address $a00. The placeholder 't9' represents a 9-trit immediate value, standing for any value between -9,841 and 9,841. 't3' represents a 3-trit immediate value, standing for any value between -13 and 13. Values outside these ranges will be truncated.
 
-### LOAD instructions
+### Memory management instructions
 
-#### LOAD $X, Y
-- Opcode: mdY $X
+#### LOAD X, $Y
+- Opcode: mdX $Y
 - Length: 2 trytes
 - Description: Load register Y with contents of address $X.
 - Compare flag: No effect.
@@ -107,7 +107,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Sign flag: No effect.
 - Stack flag: No effect.
 
-#### LOAD \[X\], Y
+#### LOAD X, \[Y\]
 - Opcode: dXY
 - Length: 1 tryte
 - Description: Load register Y with contents of indirect address given by register X.
@@ -115,8 +115,6 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Carry flag: No effect.
 - Sign flag: No effect.
 - Stack flag: No effect.
-
-### SAVE instructions
 
 #### SAVE X, $Y
 - Opcode: mDX $Y
@@ -135,8 +133,6 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Carry flag: No effect.
 - Sign flag: No effect.
 - Stack flag: No effect.
-
-### Memory bank management
 
 #### BANK X
 - Opcode: mjX
@@ -480,28 +476,25 @@ where XXX is +0+ , the septavingtesmal value 'j'; YYY is a sequence of three tri
 - if Y is 0, this argument is null
 - if Y is -, this argument is an immediate address $Q.
 
-The final three trits ZZZ are dependent on the values of YYY - the possible cases are:
+The final three trits ZZZ are dependent on the number of register arguments:
+- If there are no register arguments, ZZZ is either '0' or 'j':
+    * '0' if the address arguments do not match, i.e. the general case. "JP $X, *, $Y" assembles to "jJ0 $X $Y"
+    * 'j' if all the address arguments match. In this case, a shorthand is possible: "JP $X, *, $X" assembles to "jJj $X".
+- A slightly special case applies for YYY = '0' - i.e. if all three arguments are null. In this case the instruction would be "JP *, *, *", a no-op. Different values of ZZZ then encode various special operations, namely JPS, PJP, and NOP.
+- If there is a single register argument, the trits ZZZ encode the register used in the operation. For example, for the instruction "JP \[X\], $Y, $Z" the opcode is constructed in the following way:
+    * XXX = 'j' as this is a jump instruction
+    * YYY = +-- = 'e' as we have one register and two address arguments
+    * ZZZ = the register code for the register X
+therefore, for "JP \[B\], $000, $aaa" we have the assembled instruction "jeb 000 aaa".
+- If there are two register arguments, then the value of ZZZ depends on whether those two registers match or not.
+    * If they match, then ZZZ encodes the register used in the operation, and the opcode is followed by an address argument, if it exists. For example, "JP \[A\], $X, \[A\]" assembles to "jga $X".
+    * If they don't match, then ZZZ = '0', and the opcode tryte is followed by a special 'register' tryte, which holds the registers used in the order they occurred in the jump instruction.
+    * For example, "JP \[A\], \[B\], $X" assembles to "jk0 ab0 $X". "JP \[G\], $X, \[E\]" assembles to "jg0 g0e $X".
+- If there are three register arguments:
+    * If all three registers match - ZZZ encodes the register used. For example, "JP \[A\], \[A\], \[A\]" (which can be written as "JP \[A\]") assembles to "jma".
+    * Otherwise, ZZZ = '0', and the registers are encoded in a 'register' tryte, following the opcode. For example, "JP \[D\], \[A\], \[F\]" assembles to "jm0 daf".
 
-- if YYY = --- (opcode jM* ):
-    * instruction is JP $X, $Y, $Z - usually, ZZZ is not used, but if ZZZ = +0+ (opcode jMj) this corresponds to the instruction JP $X - a convenient shorthand for JP $X, $X, $X, i.e. an unconditional jump to the address $X.
-    * only one address is required to follow jMj - for example, JP $AAA would assemble to jMj AAA, rather than jMj AAA AAA AAA.
-- if YYY = 000 (opcode j0* ):
-    * in this case, ZZZ is used to encode several jump instructions; JPS $X, JPS \[X\], PJP, and NOP.
-    * this is done as this space is wasted otherwise; opcode j0* corresponds to JP null, null, null - i.e. do nothing for all possible values of the compare flag.
-- if YYY contains a single + value:
-    * ZZZ then encodes the ternary code for the given register argument.
-    * the address arguments, if any were given, follow in the order $(NEGATIVE_DEST) $(ZERO_DEST) $(POSITIVE_DEST)
-- if YYY contains two + values:
-    * setting ZZZ = 'j' denotes the opcode for two register arguments. The first Tryte of the opcode j*j is followed by a Tryte containing the two register ternary codes, aligned with their positions in the jump instruction. For example, JP \[X\], null, \[Y\] assembles to jjj X0Y - the X and Y map to the first or third triples in the Tryte respectively.
-    * setting ZZZ = 'a'-'i' encodes the special case where X and Y are the same register. For example, in the case where X = Y, JP \[X\], null \[X\] assembles to jjX.
-- if YYY contains two - values:
-    * setting ZZZ = 'j' (j*j) corresponds to a standard jump instruction followed by two address arguments. For example, JP $X, $Y, null assembles to jLj $X $Y.
-    * setting ZZZ = 'J' (j*J) corresponds to a shorthand opcode - for the above example with X = Y, JP $X, $X, null assembles to jLJ $X, rather than jLj $X $X, saving a Tryte.
-- if YYY = +++ (opcode jm* ):
-    * If ZZZ = +0+ (opcode jmj), the instruction is JP \[X\], \[Y\], \[Z\]. The Tryte following jmj will be filled with the three ternary codes for the given registers - for example, JP \[X\], \[Y\], \[Z\] would assemble to jmj XYZ - similar behaviour to the two-register argument case, but with no following address.
-    * Similarly to YYY = ---, a convenient shorthand is given for JP \[X\], \[X\], \[X\] - if ZZZ is a register code (a-i) that register will be used for X. Therefore, JP \[X\] \[X\] \[X\] assembles to jmX. This operation can be written JP \[X\], and is an unconditional jump to the address given by the value of register X.
-
-Special mnemonics are available for common forms of JP - they are described, along with their opcodes, below. The JP instruction has no effect on any flags - the compare flag is NOT reset after it is used.
+Special macro mnemonics are available for common forms of JP - they are described, along with their opcodes, below. The JP instruction has no effect on any flags - the compare flag is NOT reset after it is used.
 
 #### JPZ $X - JP null, $X, null
 - Opcode: jC* $X
@@ -528,23 +521,23 @@ Special mnemonics are available for common forms of JP - they are described, alo
 - Length: 2 trytes
 - Description: jump to address $X if compare flag > 0.
 
-#### JPP \[X\] - JP null, \[X\], null
+#### JPP \[X\] - JP null, null, \[X\]
 - Opcode: jaX
 - Length: 1 tryte
 - Description: jump to address stored in register X if compare flag > 0.
 
-#### JPNP $X - JP $X, null, $X
+#### JPNP $X - JP $X, $X, null
 - Opcode: jLJ $X
 - Length: 2 trytes
 - Description: jump to address $X if compare flag < 0 or == 0.
 
-#### JPNP \[X\] - JP null, \[X\], null
-- Opcode: jjX
+#### JPNP \[X\] - JP \[X\], \[X\], null
+- Opcode: jlX
 - Length: 1 tryte
 - Description: jump to address stored in register X if compare flag < 0 or == 0.
 
 #### JPN $X - JP $X, null, null
-- Opcode: jI* $X
+- Opcode: jIJ $X
 - Length: 2 trytes
 - Description: jump to address $X if compare flag > 0.
 

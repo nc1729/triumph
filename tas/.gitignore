@@ -4,5 +4,9 @@
 /.vs/*
 /out/*
 /.vscode/*
+/Debug/*
+/x64/*
 CMakeSettings.json
-/tools/bmp_to_trytes/build/*
+tas.vcxproj
+tas.vcxproj.filters
+tas.vcxproj.user
