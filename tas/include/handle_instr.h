@@ -13,12 +13,6 @@ namespace handle
 	void jp(Statement& statement);
 	void pjp(Statement& statement);
 	void jps(Statement& statement);
-	void jpn(Statement& statement);
-	void jpz(Statement& statement);
-	void jpp(Statement& statement);
-	void jpnn(Statement& statement);
-	void jpnz(Statement& statement);
-	void jpnp(Statement& statement);
 	void load(Statement& statement);
 	void save(Statement& statement);
 	void bank(Statement& statement);
