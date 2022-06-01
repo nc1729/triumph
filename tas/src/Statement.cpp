@@ -70,6 +70,11 @@ size_t Statement::size() const
 	return tokens.size();
 }
 
+size_t Statement::tryte_length() const
+{
+	return assembled_trytes.size();
+}
+
 std::vector<Token>::iterator Statement::begin()
 {
 	return tokens.begin();

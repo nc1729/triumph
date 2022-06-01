@@ -29,6 +29,7 @@ struct Statement
 	Token& operator[](size_t const i);
 	Token const& operator[](size_t const i) const;
 	size_t size() const;
+	size_t tryte_length() const;
 
 	std::vector<Token>::iterator begin();
 	std::vector<Token>::iterator end();
