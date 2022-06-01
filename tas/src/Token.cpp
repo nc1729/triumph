@@ -104,7 +104,11 @@ Token::Token(std::string const& word, size_t const& line_number, TokenType const
 		{
 			value = util::to_upper(word);
 		}
-		value = word;
+		else
+		{
+			value = word;
+		}
+		
 	}
 	else if (util::is_in(constants::jump_instructions, word))
 	{
@@ -113,7 +117,10 @@ Token::Token(std::string const& word, size_t const& line_number, TokenType const
 		{
 			value = util::to_upper(word);
 		}
-		value = word;
+		else
+		{
+			value = word;
+		}
 	}
 	else if (util::is_in(constants::macros, word))
 	{
@@ -122,7 +129,11 @@ Token::Token(std::string const& word, size_t const& line_number, TokenType const
 		{
 			value = util::to_upper(word);
 		}
-		value = word;
+		else
+		{
+			value = word;
+		}
+		
 	}
 	else if (word == "{")
 	{
@@ -157,7 +168,10 @@ Token::Token(std::string const& word, size_t const& line_number, TokenType const
 		{
 			value = util::to_lower(word);
 		}
-		value = word;
+		else
+		{
+			value = word;
+		}
 	}
 	else if (util::is_in(constants::reg_addrs, word))
 	{
@@ -168,6 +182,10 @@ Token::Token(std::string const& word, size_t const& line_number, TokenType const
 		if (util::is_uppercase(reg))
 		{
 			value = util::to_lower(reg);
+		}
+		else
+		{
+			value = word;
 		}
 	}
 	else if (util::string_is_septavingt(word))

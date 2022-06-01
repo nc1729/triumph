@@ -85,7 +85,7 @@ void handle::jp(Statement& statement)
             }
             else
             {
-                std::string err_string = "Argument " + std::to_string(i + 1) " of 3 in JP statement must be of ADDR type";
+                std::string err_string = "Argument " + std::to_string(i + 1) + " of 3 in JP statement must be of ADDR type";
                 throw TASError(err_string, statement.line_number);
             }
         }

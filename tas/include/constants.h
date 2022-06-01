@@ -71,13 +71,7 @@ namespace constants
     {
         "JP", "jp",
         "PJP", "pjp",
-        "JPS", "jps", 
-        "JPN", "jpn",
-        "JPZ", "jpz",
-        "JPP", "jpp",
-        "JPNN", "jpnn",
-        "JPNZ", "jpnz",
-        "JPNP", "jpnp"
+        "JPS", "jps"
     };
 
     std::vector<std::string> const macros =

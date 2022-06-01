@@ -150,7 +150,7 @@ void handle::bank(Statement& statement)
     size_t number_of_arguments = statement.size() - 1;
     if (number_of_arguments == 1)
     {
-        if (statement[1].type != TokenType::REG || statement[1].type != TokenType::VAL)
+        if (statement[1].type != TokenType::REG && statement[1].type != TokenType::VAL)
         {
             std::string err_string = "Argument 1 in BANK statement must be of REG or VAL type";
             throw TASError(err_string, statement.line_number);
@@ -214,7 +214,7 @@ void handle::set(Statement& statement)
             std::string err_string = "Argument 1 in SET statement must be of REG type";
             throw TASError(err_string, statement.line_number);
         }
-        if (statement[2].type != TokenType::REG || statement[2].type != TokenType::VAL)
+        if (statement[2].type != TokenType::REG && statement[2].type != TokenType::VAL)
         {
             std::string err_string = "Argument 2 in SET statement must be of REG or VAL type";
             throw TASError(err_string, statement.line_number);
@@ -282,7 +282,7 @@ void handle::push(Statement& statement)
     size_t number_of_arguments = statement.size() - 1;
     if (number_of_arguments == 1)
     {
-        if (statement[1].type != TokenType::REG || statement[1].type != TokenType::VAL)
+        if (statement[1].type != TokenType::REG && statement[1].type != TokenType::VAL)
         {
             std::string err_string = "Argument 1 in PUSH statement must be of REG or VAL type";
             throw TASError(err_string, statement.line_number);
@@ -371,7 +371,7 @@ void handle::add(Statement& statement)
             std::string err_string = "Argument 1 in ADD statement must be of REG type";
             throw TASError(err_string, statement.line_number);
         }
-        if (statement[2].type != TokenType::REG || statement[2].type != TokenType::VAL)
+        if (statement[2].type != TokenType::REG && statement[2].type != TokenType::VAL)
         {
             std::string err_string = "Argument 2 in ADD statement must be of REG or VAL type";
             throw TASError(err_string, statement.line_number);
@@ -413,7 +413,7 @@ void handle::adc(Statement& statement)
             std::string err_string = "Argument 1 in ADC statement must be of REG type";
             throw TASError(err_string, statement.line_number);
         }
-        if (statement[2].type != TokenType::REG || statement[2].type != TokenType::VAL)
+        if (statement[2].type != TokenType::REG && statement[2].type != TokenType::VAL)
         {
             std::string err_string = "Argument 2 in ADC statement must be of REG or VAL type";
             throw TASError(err_string, statement.line_number);
@@ -455,7 +455,7 @@ void handle::sub(Statement& statement)
             std::string err_string = "Argument 1 in SUB statement must be of REG type";
             throw TASError(err_string, statement.line_number);
         }
-        if (statement[2].type != TokenType::REG || statement[2].type != TokenType::VAL)
+        if (statement[2].type != TokenType::REG && statement[2].type != TokenType::VAL)
         {
             std::string err_string = "Argument 2 in SUB statement must be of REG or VAL type";
             throw TASError(err_string, statement.line_number);
@@ -497,7 +497,7 @@ void handle::sbb(Statement& statement)
             std::string err_string = "Argument 1 in SBB statement must be of REG type";
             throw TASError(err_string, statement.line_number);
         }
-        if (statement[2].type != TokenType::REG || statement[2].type != TokenType::VAL)
+        if (statement[2].type != TokenType::REG && statement[2].type != TokenType::VAL)
         {
             std::string err_string = "Argument 2 in SBB statement must be of REG or VAL type";
             throw TASError(err_string, statement.line_number);
@@ -539,7 +539,7 @@ void handle::sh(Statement& statement)
             std::string err_string = "Argument 1 in SH statement must be of REG type";
             throw TASError(err_string, statement.line_number);
         }
-        if (statement[2].type != TokenType::REG || statement[2].type != TokenType::VAL)
+        if (statement[2].type != TokenType::REG && statement[2].type != TokenType::VAL)
         {
             std::string err_string = "Argument 2 in SH statement must be of REG or VAL type";
             throw TASError(err_string, statement.line_number);
@@ -682,7 +682,7 @@ void handle::cmp(Statement& statement)
             std::string err_string = "Argument 1 in CMP statement must be of REG type";
             throw TASError(err_string, statement.line_number);
         }
-        if (statement[2].type != TokenType::REG || statement[2].type != TokenType::VAL)
+        if (statement[2].type != TokenType::REG && statement[2].type != TokenType::VAL)
         {
             std::string err_string = "Argument 2 in CMP statement must be of REG or VAL type";
             throw TASError(err_string, statement.line_number);
@@ -749,7 +749,7 @@ void handle::and_instr(Statement& statement)
             std::string err_string = "Argument 1 in AND statement must be of REG type";
             throw TASError(err_string, statement.line_number);
         }
-        if (statement[2].type != TokenType::REG || statement[2].type != TokenType::VAL)
+        if (statement[2].type != TokenType::REG && statement[2].type != TokenType::VAL)
         {
             std::string err_string = "Argument 2 in AND statement must be of REG or VAL type";
             throw TASError(err_string, statement.line_number);
@@ -791,7 +791,7 @@ void handle::or_instr(Statement& statement)
             std::string err_string = "Argument 1 in OR statement must be of REG type";
             throw TASError(err_string, statement.line_number);
         }
-        if (statement[2].type != TokenType::REG || statement[2].type != TokenType::VAL)
+        if (statement[2].type != TokenType::REG && statement[2].type != TokenType::VAL)
         {
             std::string err_string = "Argument 2 in OR statement must be of REG or VAL type";
             throw TASError(err_string, statement.line_number);
@@ -833,7 +833,7 @@ void handle::star(Statement& statement)
             std::string err_string = "Argument 1 in STAR statement must be of REG type";
             throw TASError(err_string, statement.line_number);
         }
-        if (statement[2].type != TokenType::REG || statement[2].type != TokenType::VAL)
+        if (statement[2].type != TokenType::REG && statement[2].type != TokenType::VAL)
         {
             std::string err_string = "Argument 2 in STAR statement must be of REG or VAL type";
             throw TASError(err_string, statement.line_number);

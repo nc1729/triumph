@@ -5,6 +5,7 @@
 #include "Block.h"
 #include "Statement.h"
 #include "error.h"
+#include "handle_instr.h"
 #include "assemble.h"
 
 Statement& assemble::assemble(Statement& statement)
@@ -33,12 +34,17 @@ Statement& assemble::assemble(Statement& statement)
             }
         }
         statement.assembled_trytes = assembled_trytes;
-        statement.length = statement.assembled_trytes.size();
     }
-    else if (statement.type == StatementType::JUMP)
+    else if (statement.type == StatementType::JUMP_LABEL)
     {
-        // can't assemble these now, but can compute their length
-        statement.length = jump_statement_length(statement);
+        // do nothing - handle these later
+    }
+    else {
+        // statement is a JUMP or a INSTR
+        // assemble this statement
+        std::string instr = statement[0].value;
+        auto handle = handle_instr.at(instr);
+        handle(statement);
     }
     return statement;
 }
@@ -54,24 +60,27 @@ std::vector<std::string> assemble::assemble_string(Token const& token)
     return string_trytes;
 }
 
-size_t assemble::jump_statement_length(Statement const& statement)
+void assemble::find_jump_label_offsets(Block& block)
 {
-    std::string instr = statement[0].value;
-    if (instr == "JP")
+    size_t offset = 0;
+    for (Statement const& statement : block)
     {
-        if (statement.size() == 2)
+        if (statement.type == StatementType::JUMP_LABEL)
         {
-            // either JP [X] or JP $X
-            if (statement[1].type == TokenType::REG_ADDR)
+            if (block.jump_label_offsets.find(statement[0].value) != block.jump_label_offsets.end())
             {
-                // JP [X]
-                return 1;
+                // redeclaration of jump label, throw an error
+                std::string err_msg = "Redeclaration of jump label " + statement[0].value;
+                throw TASError(err_msg, statement.line_number);
             }
             else
             {
-                // JP $X
-                return 2;
+                block.jump_label_offsets[statement[0].value] = offset;
             }
+        }
+        else
+        {
+            offset += statement.tryte_length();
         }
     }
 }
@@ -80,10 +89,16 @@ std::vector<Block>& assemble::assemble(std::vector<Block>& blocks)
 {
     for (Block& block : blocks)
     {
+        // assemble statements in block
         for (Statement& statement : block)
         {
             assemble(statement);
         }
+
+        // populate jump offset table
+        find_jump_label_offsets(block);
+        // compute length of blocks
+        block.compute_tryte_length();
     }
     return blocks;
 }

@@ -40,3 +40,12 @@ std::string IO::read_file(std::string const& input_filename)
         throw std::runtime_error("File " + input_filename + " could not be read.");
     }
 }
+
+void IO::write_file(std::string const& output_filename, std::string const& file_string)
+{
+    std::ofstream output_file(output_filename);
+    if (output_file)
+    {
+        output_file << file_string;
+    }
+}

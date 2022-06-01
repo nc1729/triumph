@@ -8,7 +8,7 @@
 #include "error.h"
 #include "parse.h"
 
-std::vector<Block> parse::make_blocks(std::vector<Token> const& tokens)
+std::vector<Block> parse::make_blocks(std::vector<Token> const& tokens, std::string const& filename)
 {
 	bool in_block = false;
 	bool in_statement = false;
@@ -73,7 +73,7 @@ std::vector<Block> parse::make_blocks(std::vector<Token> const& tokens)
 				{
 					// found the end of a block
 					in_block = false;
-					blocks.emplace_back(block_name, block_statements);
+					blocks.emplace_back(block_name, filename, block_statements);
 				}
 				else if (this_token.type == TokenType::JUMP_LABEL)
 				{
@@ -85,6 +85,11 @@ std::vector<Block> parse::make_blocks(std::vector<Token> const& tokens)
 				else if (this_token.type == TokenType::NEWLINE || this_token.type == TokenType::STATEMENT_END)
 				{
 					// skip this token, empty statement
+				}
+				else if (this_token.type == TokenType::BLOCK_START)
+				{
+					// can't start a new block in the middle of one already
+					throw TASError("Unexpected block start token {", line_number);
 				}
 				else
 				{
@@ -103,13 +108,18 @@ std::vector<Block> parse::make_blocks(std::vector<Token> const& tokens)
 					in_statement = false;
 					in_block = false;
 					block_statements.emplace_back(statement_tokens);
-					blocks.emplace_back(block_name, block_statements);
+					blocks.emplace_back(block_name, filename, block_statements);
 				}
 				else if (this_token.type == TokenType::NEWLINE || this_token.type == TokenType::STATEMENT_END)
 				{
 					// found the end of a statement
 					in_statement = false;
 					block_statements.emplace_back(statement_tokens);
+				}
+				else if (this_token.type == TokenType::BLOCK_START)
+				{
+					// can't start a new block in the middle of one already
+					throw TASError("Unexpected block start token {", line_number);
 				}
 				else
 				{
@@ -317,9 +327,9 @@ std::vector<Block>& parse::handle_macros(std::vector<Block>& blocks)
 	return blocks;
 }
 
-std::vector<Block> parse::parse(std::vector<Token> const& tokens)
+std::vector<Block> parse::parse(std::vector<Token> const& tokens, std::string const& filename)
 {
-	std::vector<Block> blocks = make_blocks(tokens);
+	std::vector<Block> blocks = make_blocks(tokens, filename);
 	blocks = handle_macros(blocks);
 	return blocks;
 }

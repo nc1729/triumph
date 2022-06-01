@@ -23,6 +23,31 @@ std::vector<Statement>::const_iterator Block::end() const
 	return statements.cend();
 }
 
+void Block::compute_tryte_length()
+{
+	length = 0;
+	for (Statement& statement : statements)
+	{
+		if (statement.type != StatementType::JUMP_LABEL)
+		{
+			length += statement.tryte_length();
+		}
+	}
+}
+
+std::string Block::get_assembly() const
+{
+	std::string output;
+	for (Statement const& statement : statements)
+	{
+		for (std::string const& tryte : statement.assembled_trytes)
+		{
+			output += tryte;
+		}
+	}
+	return output;
+}
+
 std::ostream& operator<<(std::ostream& os, Block const& block)
 {
 	os << block.name << " {\n";

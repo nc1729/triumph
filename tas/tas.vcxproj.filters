@@ -51,10 +51,13 @@
     <ClCompile Include="src\assemble.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\check_syntax.cpp">
+    <ClCompile Include="src\handle_instr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\assemble_instr.cpp">
+    <ClCompile Include="src\handle_jump.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\link.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -101,7 +104,10 @@
     <ClInclude Include="include\assemble.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\assemble_instr.h">
+    <ClInclude Include="include\handle_instr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\link.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

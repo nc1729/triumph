@@ -16,13 +16,12 @@ enum class StatementType
 	JUMP_LABEL
 };
 
-struct Statement
+class Statement
 {
+public:
 	StatementType type;
 	std::vector<Token> tokens;
 	size_t line_number;
-	Tryte address = 0;
-	size_t length = 0;
 	std::vector<std::string> assembled_trytes;
 
 	Statement(std::vector<Token> const& tokens);
