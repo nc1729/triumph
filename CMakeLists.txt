@@ -38,11 +38,12 @@ add_executable(tas)
 target_include_directories(tas PUBLIC "tas/include")
 target_include_directories(tas PUBLIC "common/include")
 target_sources(tas PUBLIC
+                tas/src/Block.cpp
+                tas/src/error.cpp
                 tas/src/assemble.cpp
                 tas/src/handle_instr.cpp
                 tas/src/handle_jump.cpp
-                tas/src/Block.cpp
-                tas/src/error.cpp
+                tas/src/link.cpp
                 tas/src/main.cpp
                 tas/src/parse.cpp
                 tas/src/Statement.cpp
