@@ -1,0 +1,15 @@
+main
+{
+    JPZ $aaa
+    JPZ [A]
+    JPNZ $aaa
+    JPNZ [B]
+    JPP $aaa
+    JPP [C]
+    JPNP $aaa
+    JPNP [D]
+    JPN $aaa
+    JPN [E]
+    JPNN $aaa
+    JPNN [F]
+}

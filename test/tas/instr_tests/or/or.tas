@@ -1,0 +1,5 @@
+main
+{
+    OR A, B
+    OR A, 'a'
+}

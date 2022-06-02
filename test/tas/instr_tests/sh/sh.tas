@@ -1,0 +1,7 @@
+main
+{
+    SH A, B
+    SH A, 3
+    SH A, 730
+    SH A, -8
+}

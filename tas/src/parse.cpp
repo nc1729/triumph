@@ -267,16 +267,20 @@ std::vector<Statement> parse::expand_macro(Statement const& macro)
 			new_statements.push_back(
 				Statement({
 				Token("PUSH", macro.line_number, TokenType::INSTR),
-				Token(constants::regs[i + 1], macro.line_number, TokenType::REG) }));
+				Token(constants::regs[i + 1], macro.line_number) }));
 		}
 		// now set registers B, C etc to be the values (or regs) given by the reg/value arguments
 		for (size_t i = 0; i < number_of_func_args; i++)
 		{
-			new_statements.push_back(
+			Token reg_token = Token(constants::regs[i + 1], macro.line_number);
+			// check that we're not adding redundant ops like SET B, B that do nothing
+			if (reg_token != macro[i + 2])
+			{
+				new_statements.push_back(
 				Statement({
 				Token("SET", macro.line_number, TokenType::INSTR),
-				Token(constants::regs[i + 1], macro.line_number, TokenType::REG),
-				macro[i + 2] }));
+				reg_token, macro[i + 2] }));
+			}
 		}
 		// next, jump and store to the function argument
 		new_statements.push_back(
@@ -292,7 +296,7 @@ std::vector<Statement> parse::expand_macro(Statement const& macro)
 			new_statements.push_back(
 				Statement({
 					Token("POP", macro.line_number, TokenType::INSTR),
-					Token(constants::regs[number_of_func_args - i], macro.line_number, TokenType::REG) }));
+					Token(constants::regs[number_of_func_args - i], macro.line_number) }));
 		}
 		// after all this, something like CALL func B, 72, 'a' should become
 		// PUSH B; PUSH C; PUSH D; SET B, B (nop?); SET C, 72; SET D, 'a'; JPS func; POP D; POP C; POP B

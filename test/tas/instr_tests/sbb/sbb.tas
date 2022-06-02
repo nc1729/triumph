@@ -1,0 +1,5 @@
+main
+{
+    SBB A, B
+    SBB C, 0t0000000++
+}

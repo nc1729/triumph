@@ -49,8 +49,8 @@ std::map<std::string, Tryte> link::arrange_blocks(std::vector<Block>& blocks)
 	Block& main_block = blocks[0];
 
 	// set main's starting address
-	// this is fixed at $0MM for now
-	main_block.address = Tryte("0MM");
+	// this is fixed at $DMM for now, the first address after the bank memory
+	main_block.address = Tryte("DMM");
 
 	// collect lengths of blocks
 	std::vector<size_t> block_lengths(blocks.size());

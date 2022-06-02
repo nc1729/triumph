@@ -1,0 +1,21 @@
+main
+{
+    // test single args
+    JP $000
+    JP [A]
+
+    // test three args
+    JP *, *, *
+    JP $aaa, $bbb, $ccc
+    JP [A], *, data
+
+    !label
+    JP $000, label, *
+    JP $aaa $aaa $aaa
+    JP [A], [B], $aaa
+}
+
+data
+{
+    "a string"
+}
