@@ -1,0 +1,6 @@
+main
+{
+    SUB A, B;
+    SUB E, 0sAAA;
+    SUB g, 55;
+}

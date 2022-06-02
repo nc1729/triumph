@@ -1,0 +1,4 @@
+main
+{
+    POP A; POP D; POP I
+}

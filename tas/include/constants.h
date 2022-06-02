@@ -1,8 +1,11 @@
+#pragma once
+
 #include <vector>
 #include <string>
 
 namespace constants
 {
+    std::string const start_address = "DMM";
     std::string const septavingt_chars = "MLKJIHGFEDCBA0abcdefghijklm";
     std::string const ternary_chars = "-0+";
 

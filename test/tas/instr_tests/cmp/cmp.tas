@@ -1,0 +1,5 @@
+main
+{
+    CMP A, B
+    CMP C, 20
+}

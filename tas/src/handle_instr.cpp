@@ -567,7 +567,6 @@ void handle::sh(Statement& statement)
         opcode[1] = statement[1].value[0];
         opcode[2] = statement[2].value[2]; // third char in value - truncate value to t3 (-13 <= x <= 13)
         statement.assembled_trytes.push_back(opcode);
-        statement.assembled_trytes.push_back(statement[2].value);
     }
 }
 

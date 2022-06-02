@@ -1,0 +1,48 @@
+main
+{
+    /*
+    CALL func
+    expands to JPS func
+    assembles to j0J DLH (main begins at $DMM)
+    */
+    CALL func
+
+    /*
+    CALL func, 5
+    expands to PUSH B; SET B, 5; JPS func; POP B
+    assembles to mfb mab 00e j0J DLH mFb
+    */
+    CALL func, 5
+
+    /*
+    CALL func, B, C
+    expands to PUSH B; PUSH C; JPS func; POP C; POP B;
+    assembles to mfb mfc j0J DLH mFc mFb
+    */
+    CALL func, B, C
+
+    /*
+    CALL func, 'a', 'b', 'c', 'd'
+    expands to PUSH B; PUSH C; PUSH D; PUSH E;
+               SET B, 'a'; SET C, 'b'; SET D, 'c'; SET E, 'd';
+               JPS func
+               POP E; POP D; POP C; POP B;
+    assembles to
+    mfb mfc mfd mfe mab 0dK mac 0dJ mad 0dI mae 0dH j0J DLH mFe mFd mFc mFb
+    */
+    CALL func, 'a', 'b', 'c', 'd'
+
+}
+
+func // $DLH
+{
+    SET A, B // aab
+    RET // PJP - j0j
+}
+
+func2
+{
+    SET B, 7 // mab 00g
+    SET C, 22 // mac 0aa
+    RET // j0j
+}

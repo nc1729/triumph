@@ -188,7 +188,8 @@ void handle::jp(Statement& statement)
             // -00
             // JP $X, *, *
             // JPN $X
-            // jI0 $X
+            // jIj $X
+            third_char = 'j';
             statement.assembled_trytes.push_back(opcode);
             statement.assembled_trytes.push_back(statement[1].value);
         }
@@ -275,7 +276,8 @@ void handle::jp(Statement& statement)
             // 0-0
             // JP *, $X, *
             // JPZ $X
-            // jC0 $X
+            // jCj $X
+            third_char = 'j';
             statement.assembled_trytes.push_back(opcode);
             statement.assembled_trytes.push_back(statement[2].value);
         }
@@ -293,7 +295,8 @@ void handle::jp(Statement& statement)
             // 00-
             // JP *, *, $X
             // JPP $X
-            // jA0 $X
+            // jAj $X
+            third_char = 'j';
             statement.assembled_trytes.push_back(opcode);
             statement.assembled_trytes.push_back(statement[3].value);
         }

@@ -1,0 +1,6 @@
+main
+{
+    PUSH A;
+    PUSH E;
+    PUSH 1458;
+}

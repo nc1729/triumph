@@ -1,0 +1,5 @@
+main
+{
+    ADC A, C
+    ADC B, 0sAAA
+}

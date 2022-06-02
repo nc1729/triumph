@@ -1,0 +1,5 @@
+main
+{
+    DEC D;
+    DEC A;
+}

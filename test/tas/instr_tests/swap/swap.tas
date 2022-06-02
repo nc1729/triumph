@@ -1,0 +1,5 @@
+main
+{
+    SWAP A, B;
+    SWAP F, H;
+}

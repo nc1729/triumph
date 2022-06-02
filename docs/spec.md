@@ -497,7 +497,7 @@ therefore, for "JP \[B\], $000, $aaa" we have the assembled instruction "jeb 000
 Special macro mnemonics are available for common forms of JP - they are described, along with their opcodes, below. The JP instruction has no effect on any flags - the compare flag is NOT reset after it is used.
 
 #### JPZ $X - JP null, $X, null
-- Opcode: jC* $X
+- Opcode: jCj $X
 - Length: 2 trytes
 - Description: jump to address $X if compare flag == 0.
 
@@ -507,7 +507,7 @@ Special macro mnemonics are available for common forms of JP - they are describe
 - Description: jump to address stored in register X if compare flag == 0.
 
 #### JPNZ $X - JP $X, null, $X
-- Opcode: jJJ $X
+- Opcode: jJj $X
 - Length: 2 trytes
 - Description: jump to address $X if compare flag != 0.
 
@@ -517,7 +517,7 @@ Special macro mnemonics are available for common forms of JP - they are describe
 - Description: jump to address stored in register X if compare flag != 0.
 
 #### JPP $X - JP null, null, $X
-- Opcode: jA* $X
+- Opcode: jAj $X
 - Length: 2 trytes
 - Description: jump to address $X if compare flag > 0.
 
@@ -527,7 +527,7 @@ Special macro mnemonics are available for common forms of JP - they are describe
 - Description: jump to address stored in register X if compare flag > 0.
 
 #### JPNP $X - JP $X, $X, null
-- Opcode: jLJ $X
+- Opcode: jLj $X
 - Length: 2 trytes
 - Description: jump to address $X if compare flag < 0 or == 0.
 
@@ -537,7 +537,7 @@ Special macro mnemonics are available for common forms of JP - they are describe
 - Description: jump to address stored in register X if compare flag < 0 or == 0.
 
 #### JPN $X - JP $X, null, null
-- Opcode: jIJ $X
+- Opcode: jIj $X
 - Length: 2 trytes
 - Description: jump to address $X if compare flag > 0.
 
@@ -547,7 +547,7 @@ Special macro mnemonics are available for common forms of JP - they are describe
 - Description: jump to address stored in register X if compare flag > 0.
 
 #### JPNN $X - JP null, $X, $X
-- Opcode: jDJ $X
+- Opcode: jDj $X
 - Length: 2 trytes
 - Description: jump to address $X if compare flag < 0 or == 0.
 
@@ -557,7 +557,7 @@ Special macro mnemonics are available for common forms of JP - they are describe
 - Description: jump to address stored in register X if compare flag < 0 or == 0.
 
 #### JP $X
-- Opcode: jMJ $X
+- Opcode: jMj $X
 - Length: 2 trytes
 - Description: unconditionally jump to $X
 

@@ -1,0 +1,7 @@
+main
+{
+    ADD A, B
+    ADD G, D
+    ADD I, 27
+    ADD E, 0s000
+}

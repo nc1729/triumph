@@ -1,0 +1,11 @@
+main
+{
+    LOAD A, $000
+    LOAD E, func
+    LOAD B, [A]
+}
+
+func
+{
+    "Hey"
+}

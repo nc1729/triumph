@@ -14,7 +14,7 @@ namespace link
 	std::vector<std::string> check_block_names(std::vector<Block> const& blocks);
 	// arrange the blocks in memory, starting from address of main (by default $0MM)
 	// the main block is sent to the front of the blocks
-	std::map<std::string, Tryte> arrange_blocks(std::vector<Block>& blocks);
+	std::map<std::string, Tryte> arrange_blocks(std::vector<Block>& blocks, Tryte const& main_address);
 	// using the address in memory of the blocks, resolve the placeholder names inside
 	// each block in turn
 	std::vector<Block>& link_blocks(std::vector<Block>& blocks,

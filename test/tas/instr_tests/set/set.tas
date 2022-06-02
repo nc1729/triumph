@@ -1,0 +1,7 @@
+main {
+    SET A, B
+    SET H, E
+    SET B, 5
+    SET C, 82
+    SET D, 'a'
+}
