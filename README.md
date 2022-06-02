@@ -27,8 +27,7 @@ Additionally, /docs contains the specifications for the computer and opcodes, an
 ## Build
 
 ### Windows
-Currently, only TRIUMPH is buildable. Build files for Visual Studio and CMake are included. To build on Windows, open the `triumph.sln` project file in Visual Studio. (Currently building on Visual Studio 2022, but 2019 should work...) SDL2 is a prerequisite, so this library will need to be downloaded and linked in order for TRIUMPH to build. A handy guide for doing this is [here](https://lazyfoo.net/tutorials/SDL/01_hello_SDL/windows/msvc2019/index.php).
-TRIUMPH will need to have the helloworld disk at /triumph/res/helloworld.td given to it as a command line argument - in VS, go to Project/Properties/Debugging, and set "Command Arguments" to `$(ProjectDir)/res/helloworld.td`.
+TRIUMPH and tas are buildable in Visual Studio using its CMake extension. SDL2 libraries need to be installed and a "sdl2-config.cmake" file needs to be added to the library's install directory - this file is included in the root of this repository.
 
 ### MacOS and Linux
 To build on MacOS and Linux, install CMake (using `brew install cmake` on MacOS and your favourite package manager on Linux) and the libraries and headers for SDL2. Put the header files and library files where your compiler/IDE can see them, and then build TRIUMPH by running the following in the top level of your working copy of this repository:

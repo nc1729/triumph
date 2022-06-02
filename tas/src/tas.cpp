@@ -70,6 +70,7 @@ int tas(CLOptions const& options)
 	
 	// finally, print ternary assembly to a file (and do padding if required)
 	IO::write_file(options.output_filename, output_string);
+	std::cout << output_string;
 
 	return 0;
 }
