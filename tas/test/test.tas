@@ -2,6 +2,7 @@
 main {
     JPZ data;
     LOAD A, $aaa
+    SET B, 0t---000+++
 }
 
 data

@@ -215,7 +215,7 @@ Token::Token(std::string const& word, size_t const& line_number, TokenType const
 			}
 			else
 			{
-				sign = 1;
+				sign = -1;
 			}
 			tryte_int += (power_of_3 * sign);
 			power_of_3 *= 3;
