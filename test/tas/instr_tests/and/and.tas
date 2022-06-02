@@ -1,0 +1,5 @@
+main
+{
+    AND A, B
+    AND F, 0t---000+++
+}

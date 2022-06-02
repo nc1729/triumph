@@ -1,0 +1,5 @@
+main
+{
+    SET A, 6; SAVE A, $000
+    SET B, 0sMMM; SAVE A, [B]
+}
