@@ -238,7 +238,7 @@ void Screen::run()
             }
 
             // cap frame rate at 30 fps
-            SDL_Delay(std::floor(wait_time));
+            SDL_Delay(static_cast<uint32_t>(std::floor(wait_time)));
         }
     }
     return;

@@ -214,9 +214,10 @@ void handle::set(Statement& statement)
             std::string err_string = "Argument 1 in SET statement must be of REG type";
             throw TASError(err_string, statement.line_number);
         }
-        if (statement[2].type != TokenType::REG && statement[2].type != TokenType::VAL)
+        if (statement[2].type != TokenType::REG && statement[2].type != TokenType::VAL
+            && statement[2].type != TokenType::NAME)
         {
-            std::string err_string = "Argument 2 in SET statement must be of REG or VAL type";
+            std::string err_string = "Argument 2 in SET statement must be of REG, VAL or NAME type";
             throw TASError(err_string, statement.line_number);
         }
     }

@@ -18,10 +18,10 @@ private:
 	std::vector<uint32_t> byte_framebuffer;
 
 	// screen size
-	uint64_t const TILE_GRID_WIDTH = 54;
-	uint64_t const TILE_GRID_HEIGHT = 54;
-	uint64_t const PIXEL_WIDTH = TILE_GRID_WIDTH * 9;
-	uint64_t const PIXEL_HEIGHT = TILE_GRID_HEIGHT * 9;
+	int const TILE_GRID_WIDTH = 54;
+	int const TILE_GRID_HEIGHT = 54;
+	int const PIXEL_WIDTH = TILE_GRID_WIDTH * 9;
+	int const PIXEL_HEIGHT = TILE_GRID_HEIGHT * 9;
 	
 	// palettes are stored at start of work_RAM - 27 palettes, 81 Trytes
 	// 3 colours per palette, each colour is a tryte (high - R, mid - G, low - B)

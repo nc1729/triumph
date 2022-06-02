@@ -15,12 +15,12 @@ disk header layout is:
 */
 namespace BootDisk
 {
-	size_t constexpr SIGNATURE_ADDR = 0;
-	size_t constexpr SIGNATURE_SIZE = 9;
-	size_t constexpr NAME_ADDR = 9;
-	size_t constexpr SIZE_ADDR = 36;
-	size_t constexpr RW_ADDR = 37;
-	size_t constexpr TILEMAP_PAGE_ADDR = 38;
-	size_t constexpr BOOTCODE_PTR_ADDR = 39;
-	size_t constexpr PALETTE_ARRAY_ADDR = 40;
+	int64_t constexpr SIGNATURE_ADDR = 0;
+	int64_t constexpr SIGNATURE_SIZE = 9;
+	int64_t constexpr NAME_ADDR = 9;
+	int64_t constexpr SIZE_ADDR = 36;
+	int64_t constexpr RW_ADDR = 37;
+	int64_t constexpr TILEMAP_PAGE_ADDR = 38;
+	int64_t constexpr BOOTCODE_PTR_ADDR = 39;
+	int64_t constexpr PALETTE_ARRAY_ADDR = 40;
 }

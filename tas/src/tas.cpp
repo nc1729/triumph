@@ -87,6 +87,7 @@ Tryte const fetch_address(std::string const& tryte_string)
 	}
 	catch(const std::exception& e)
 	{
+		(void)e;
 		return constants::start_address;
 	}
 	
