@@ -33,7 +33,7 @@ std::vector<std::string> link::check_block_names(std::vector<Block> const& block
 	return block_names;
 }
 
-std::map<std::string, Tryte> link::arrange_blocks(std::vector<Block>& blocks)
+std::map<std::string, Tryte> link::arrange_blocks(std::vector<Block>& blocks, Tryte const& main_address)
 {
 	// find main block and swap it into the first position in blocks
 	size_t index = 0;
@@ -49,8 +49,7 @@ std::map<std::string, Tryte> link::arrange_blocks(std::vector<Block>& blocks)
 	Block& main_block = blocks[0];
 
 	// set main's starting address
-	// this is fixed at $DMM for now, the first address after the bank memory
-	main_block.address = Tryte("DMM");
+	main_block.address = main_address;
 
 	// collect lengths of blocks
 	std::vector<size_t> block_lengths(blocks.size());
