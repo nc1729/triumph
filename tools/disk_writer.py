@@ -52,7 +52,7 @@ def main():
     # boot code copy loop begins here
     boot_code += "mCb"    # M0f:     CPZ B - set compare flag to sign(B)
     boot_code += "jCjDMM" # M0g M0h: JPZ $DMM - if B == 0, go to new block and begin execution of boot code proper
-    boot_code += "dca"    # M0i:     LOAD [C], A
+    boot_code += "dac"    # M0i:     LOAD A, [C]
     boot_code += "Dad"    # M0j:     SAVE A, [D]
     boot_code += "mlc"    # M0k:     INC C
     boot_code += "mld"    # M0l:     INC D

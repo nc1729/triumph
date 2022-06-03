@@ -20,5 +20,8 @@ namespace link
 	std::vector<Block>& link_blocks(std::vector<Block>& blocks,
 		std::map<std::string, Tryte> const& block_addresses);
 	// with everything linked and ready, output a final string of all the assembled ternary
-	std::string output_assembly(std::vector<Block>& blocks);
+	std::string output_assembly(std::vector<Block> const& blocks);
+
+	// for debugging, print the assembled trytes with annotations
+	std::string output_verbose_assembly(std::vector<Block> const& blocks);
 }

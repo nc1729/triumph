@@ -3,7 +3,7 @@ main
     CALL copy_to_tilemap
     CALL write_to_palette_0
     CALL write_to_framebuffer
-    CALL infinite_loop
+    JP main
 }
 
 /*
@@ -22,6 +22,7 @@ copy_to_tilemap
         CALL load_page B, C
         CALL memcpy 0sMMM, 0sAMM, 729
         BANK -2
+        CALL memcpy 0sAMM, D, 729
         ADD D, 729
         INC C
         CMP C, 10
@@ -50,9 +51,11 @@ write_to_palette_0
     // negative trits - black
     SET B, 0sMMM
     SAVE B, [C]; INC C
-    // zero and positive trits - yellow
-    SET B, 0smmM
+    // zero trits - black
+    SET B, 0sMMM
     SAVE B, [C]; INC C
+    // positive trits - yellow
+    SET B, 0smmM
     SAVE B, [C]
 
     // leave
@@ -133,8 +136,8 @@ load_page
         JPZ wait_loop // if D == 0, disk is still busy, keep waiting
     
     // leave
-    BANK G; POP G
     POP D
+    BANK G; POP G
     RET
 }
 
@@ -161,9 +164,4 @@ memcpy
     !done
         POP E
         RET
-}
-
-infinite_loop
-{
-    JP infinite_loop
 }

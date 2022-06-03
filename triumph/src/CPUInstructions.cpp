@@ -158,6 +158,7 @@ void CPU::nop()
 void CPU::halt()
 {
 	// stop execution, will need to be turned back on
+	dump();
 	on_ = false;
 }
 

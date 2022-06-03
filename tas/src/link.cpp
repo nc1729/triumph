@@ -3,6 +3,7 @@
 #include <map>
 #include <stdexcept>
 #include <algorithm>
+#include <sstream>
 
 #include "Tryte.h"
 #include "Block.h"
@@ -59,16 +60,16 @@ std::map<std::string, Tryte> link::arrange_blocks(std::vector<Block>& blocks, Tr
 		block_lengths[i] = blocks[i].length;
 	}
 
-	// check total size of output is less than maximum (13*729 Trytes)
+	// check total size of output is less than maximum (17*729 Trytes)
 	// maybe replace this with a warning?
 	size_t total_size = 0;
 	for (auto const& block_length : block_lengths)
 	{
 		total_size += block_length;
 	}
-	if (total_size > (13 * 729))
+	if (total_size > (17 * 729))
 	{
-		throw std::runtime_error("Total size of generated assembly greater than 9,477 Trytes");
+		throw std::runtime_error("Total size of generated assembly greater than 12,393 Trytes");
 	}
 
 	// using the block lengths, arrange blocks in memory starting at main
@@ -135,7 +136,7 @@ std::vector<Block>& link::link_blocks(std::vector<Block>& blocks,
 	return blocks;
 }
 
-std::string link::output_assembly(std::vector<Block>& blocks)
+std::string link::output_assembly(std::vector<Block> const& blocks)
 {
 	std::string output;
 	for (Block const& block : blocks)
@@ -143,4 +144,34 @@ std::string link::output_assembly(std::vector<Block>& blocks)
 		output += block.get_assembly();
 	}
 	return output;
+}
+
+std::string link::output_verbose_assembly(std::vector<Block> const& blocks)
+{
+	std::stringstream output;
+	for (Block const& block : blocks)
+	{
+		Tryte addr = block.address;
+		output << block.name << '\n';
+		for (Statement const& statement : block)
+		{
+			if (statement.type != StatementType::JUMP_LABEL)
+			{
+				output << Tryte::get_str(addr) << ": ";
+				output << statement << ": ";
+				for (Tryte const& tryte : statement.assembled_trytes)
+				{
+					output << tryte << ' ';
+				}
+				output << '\n';
+				addr += statement.tryte_length();
+			}
+			else
+			{
+				output << "!" << statement << '\n';
+			}
+		}
+		output << "\n\n";
+	}
+	return output.str();
 }
