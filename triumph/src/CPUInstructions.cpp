@@ -3,9 +3,9 @@
 
 #include <iostream> // for show/tell
 
-void CPU::load(Tryte const& x, Tryte& y)
+void CPU::load(Tryte& x, Tryte const& y)
 {
-	y = memory_[x];
+	x = memory_[y];
 }
 
 void CPU::save(Tryte& x, Tryte const& y)

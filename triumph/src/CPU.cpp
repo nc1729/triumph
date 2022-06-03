@@ -213,7 +213,7 @@ void CPU::decode_and_execute()
 		instr_size_ = 1;
 		break;
 	case 4:
-		// dXY - LOAD [X], Y
+		// dXY - LOAD X, [Y]
 		load(regs_[mid], regs_[low]);
 		instr_size_ = 1;
 		break;
@@ -307,8 +307,8 @@ void CPU::decode_and_execute()
 			instr_size_ = 2;
 			break;
 		case 4:
-			// mdY $X - LOAD $X, Y
-			load(memory_[pc_ + 1], regs_[low]);
+			// mdX $y - LOAD X, $Y
+			load(regs_[low], memory_[pc_ + 1]);
 			instr_size_ = 2;
 			break;
 		case 5:

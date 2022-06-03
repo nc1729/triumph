@@ -100,7 +100,7 @@ private:
 	void decode_and_execute_jump(int8_t const mid, int8_t const low);
 
 	// load Tryte from memory 
-	void load(Tryte const& x, Tryte& y);
+	void load(Tryte& x, Tryte const& y);
 
 	// save Tryte to memory
 	void save(Tryte& x, Tryte const& y);
