@@ -21,6 +21,7 @@ target_sources(triumph PUBLIC
                 triumph/src/Bank.cpp
                 triumph/src/BankManager.cpp
                 triumph/src/Computer.cpp
+                triumph/src/Console.cpp
                 triumph/src/CPU.cpp
                 triumph/src/CPUInstructions.cpp
                 triumph/src/CPUjump.cpp

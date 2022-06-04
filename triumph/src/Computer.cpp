@@ -6,6 +6,8 @@
 #include <thread>
 
 #include "Tryte.h"
+#include "Bank.h"
+#include "Console.h"
 #include "Computer.h"
 
 void Computer::turn_on()
@@ -52,6 +54,9 @@ void Computer::boot()
 	// start disk manager in new thread
 	std::thread disk_thread{ &Computer::disk_manager, this };
 
+	// start console manager in new thread
+	std::thread console_thread{ &Computer::console_manager, this };
+
 	// start CPU in new thread
 	std::thread cpu_thread{ &CPU::run, &(this->cpu) };
 
@@ -64,6 +69,7 @@ void Computer::boot()
 	cpu_thread.join();
 	this->is_on = false;
 	disk_thread.join();
+	console_thread.join();
 
 }
 
@@ -109,6 +115,34 @@ void Computer::disk_manager()
 				// reset write request flag
 				memory[Disk::DISK_STATE_ADDR][Disk::WRITE_REQUEST_FLAG] = 0;
 
+			}
+		}
+	}
+}
+
+void Computer::console_manager()
+{
+	while (this->is_on)
+	{
+		// check if console is being accessed
+		if (memory.bank() == Tryte(Console::CONSOLE_BANK))
+		{
+			// check for an out request
+			if (memory[Console::CONSOLE_STATE_ADDR][Console::OUT_REQUEST_FLAG] == 1)
+			{
+				// the CPU has requested to flush the buffer, so flush it
+				console.flush_to_out();
+				// and reset the console out flag
+				memory[Console::CONSOLE_STATE_ADDR][Console::OUT_REQUEST_FLAG] = 0;
+			}
+
+			// check for an in request
+			if (memory[Console::CONSOLE_STATE_ADDR][Console::IN_REQUEST_FLAG] == 1)
+			{
+				// the CPU has requested input from stdin
+				console.read_from_in();
+				// reset console input flag
+				memory[Console::CONSOLE_STATE_ADDR][Console::IN_REQUEST_FLAG] = 0;
 			}
 		}
 	}
