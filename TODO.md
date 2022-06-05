@@ -13,6 +13,7 @@
 ## tas
 - Fix a bug with chars - currently '\n' and other control characters will not be parsed as CHAR tokens.
 - When debugger is working, add "BREAK" instruction so that debugging mode can be activated
+- C style preprocessor - #include, #define, #ifdef, and so on (either roll our own or borrow from gcc or something)
 
 ## General
 - Write test programs! Some ideas:

@@ -232,6 +232,26 @@ Token::Token(std::string const& word, size_t const& line_number, TokenType const
 		type = TokenType::VAL;
 		value = Tryte::get_str(Tryte(static_cast<int>(word[1])));
 	}
+	else if (util::string_is_control_char(word))
+	{
+		type = TokenType::VAL;
+		if (word[2] == 'a')
+		{
+			value = Tryte::get_str(Tryte(static_cast<int64_t>('\a')));
+		}
+		else if (word[2] == 'n')
+		{
+			value = Tryte::get_str(Tryte(static_cast<int64_t>('\n')));
+		}
+		else if (word[2] == 'r')
+		{
+			value = Tryte::get_str(Tryte(static_cast<int64_t>('\r')));
+		}
+		else if (word[2] == 't')
+		{
+			value = Tryte::get_str(Tryte(static_cast<int64_t>('\t')));
+		}
+	}
 	else if (util::string_is_addr(word))
 	{
 		type = TokenType::ADDR;

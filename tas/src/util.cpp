@@ -19,7 +19,7 @@ std::vector<std::string> util::break_file_into_lines(std::string const& file_str
 		}
 		else
 		{
-			line += c;
+		line += c;
 		}
 	}
 	return lines;
@@ -57,7 +57,7 @@ std::string util::to_lower(std::string const& word)
 
 bool util::string_is_int(std::string const& word)
 {
-    return (word.find_first_not_of("0123456789") == std::string::npos);
+	return (word.find_first_not_of("0123456789") == std::string::npos);
 }
 
 bool util::string_is_tryte(std::string const& word)
@@ -101,9 +101,9 @@ bool util::string_is_char(std::string const& word)
 	{
 		return false;
 	}
-	else if (!(word[0] == '\'' && word[2] == '\''))
+	else if (word[0] != '\'' || word[2] != '\''))
 	{
-		return false;
+	return false;
 	}
 	else
 	{
@@ -111,6 +111,25 @@ bool util::string_is_char(std::string const& word)
 	}
 }
 
+bool util::string_is_control_char(std::string const& word)
+{
+	if (word.length() != 4)
+	{
+		return false;
+	}
+	else if (word[0] != '\'' || word[3] != '\'')
+	{
+		return false;
+	}
+	else
+	{
+		if (word[2] == 'a' || word[2] == 't' || word[2] == 'r' || word[2] == 'n')
+		{
+			return true;
+		}
+		return false;
+	}
+}
 bool util::string_is_addr(std::string const& word)
 {
 	if (word[0] != '$') return false;

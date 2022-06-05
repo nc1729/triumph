@@ -42,6 +42,8 @@ namespace util
 	bool string_is_ternary(std::string const& word);
 	// return true if string is a char const (e.g. 'x')
 	bool string_is_char(std::string const& word);
+	// return true if string is a special char const (e.g. \n, \t etc)
+	bool string_is_control_char(std::string const& word);
 	// return true if string begins with $ and is followed by 
 	bool string_is_addr(std::string const& word);
 	// return true if string begins with !
