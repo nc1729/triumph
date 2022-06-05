@@ -52,9 +52,8 @@ Disk::Disk(size_t const disk_number, std::string const& disk_path) :
 	// set bootcode ptr
 	bootcode_addr = buffer[BootDisk::BOOTCODE_PTR_ADDR];
 
-	// set page number to page 0 (as unsigned Tryte -9841)
-	page_number = -9841;
-	buffer[CACHE_PAGE_ADDR + 9841] = page_number;
+	// set default page number to page 0
+	buffer[CACHE_PAGE_ADDR + 9841] = 0;
 
 	// set disk status to 1 - disk is ready
 	disk_status = 1;
@@ -249,7 +248,4 @@ void Disk::refresh_metadata()
 
 	// refresh bootcode ptr
 	buffer[CACHE_BCODE_ADDR + 9841] = bootcode_addr;
-
-	// refresh page number
-	buffer[CACHE_PAGE_ADDR + 9841] = page_number;
 }

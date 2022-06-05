@@ -1,0 +1,67 @@
+main
+{
+    BANK -4; // switch bank to console
+    CALL read_from_input // get input into cin buffer
+
+    LOAD B, $Emk // get length of input into B
+
+    CALL write_to_output B // write B characters into output
+    
+    !infinite_loop
+    JP infinite_loop // loop forever
+
+}
+
+/*
+read_from_input
+
+Read a series of integers into input buffer
+*/
+read_from_input
+{
+    SET A, 1
+    SAVE A, $Eml // set console display mode to 'INT'
+
+    LOAD A, $Emm
+    OR A, 9 // request input from input stream
+    SAVE A, $Emm
+
+    // stay in a loop until input stream has some input
+    !wait_for_input
+    LOAD A, $Emm
+    STAR A, 1
+    CPZ A
+    JPZ wait_for_input // if A = 0 we're still waiting for input
+
+    RET
+}
+
+/*
+write_to_output
+
+Read from the input buffer, increment every Tryte in it by one, and send
+to output buffer
+*/
+write_to_output
+{
+    SET C, 0sLMM // point C to input buffer
+    SET D, 0sMMM // point D to output buffer
+    ZERO I;
+    !write_loop
+    LOAD A, [C]
+    INC A; // add 1 to the output
+    SAVE A, [D]
+    INC I; INC C; INC D;
+    CMP I, B // compare I to length of input, if equal, stop reading
+    JPZ finished
+    JP write_loop
+
+    !finished
+    // now write to the output
+    SAVE B, $Emj // send length of output to console
+    LOAD A, $Emm // get console status
+    OR A, 3 // request flush to output
+    SAVE A, $Emm
+
+    RET;
+}

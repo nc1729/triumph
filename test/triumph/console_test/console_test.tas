@@ -1,0 +1,34 @@
+main
+{
+    BANK -4; // switch bank to console
+    SET C, 0sMMM; // point C to beginning of cout buffer
+    SET D, print_this;
+    SET E, D 
+    ADD E, 4 // E now points to the end of print_this
+
+    !write_to_cout
+    LOAD A, [D]
+    SAVE A, [C]
+    INC C; INC D;
+    CMP D, E;
+    JPZ finished
+    JP write_to_cout
+
+    !finished
+    SET A, 4
+    SAVE A, $Emj
+    SET A, 2
+    SAVE A, $Eml // set console display mode to 'CHAR'
+    LOAD A, $Emm
+    OR A, 3
+    SAVE A, $Emm
+    
+    !infinite_loop
+    JP infinite_loop // loop forever
+
+}
+
+print_this
+{
+    "Hey!"
+}
