@@ -121,9 +121,9 @@ void Screen::show_tilemap()
 void Screen::write_tryte_fb_to_byte_fb()
 {
     // loop through tryte framebuffer
-    for (size_t i = 0; i < TILE_GRID_HEIGHT; i++)
+    for (int64_t i = 0; i < TILE_GRID_HEIGHT; i++)
     {
-        for (size_t j = 0; j < TILE_GRID_WIDTH; j++)
+        for (int64_t j = 0; j < TILE_GRID_WIDTH; j++)
         {
             Tryte& t = tryte_framebuffer[(TILE_GRID_WIDTH * i) + j];
             size_t palette_index = Tryte::get_high(t) + 13;

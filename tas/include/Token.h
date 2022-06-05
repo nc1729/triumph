@@ -77,10 +77,10 @@ private:
 public:
 	// the line number the Token was on - for error messages etc
 	size_t line_number{ 0 };
-	// the type of the Token
-	TokenType type{ TokenType::INVALID };
 	// the Token after preprocessing (removing special chars etc)
 	std::string value;
+        // the type of the Token
+	TokenType type{ TokenType::INVALID };
 
 	Token(std::string const& word, size_t const& line_number, TokenType const& type = TokenType::INVALID);
 

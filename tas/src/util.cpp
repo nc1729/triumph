@@ -57,16 +57,7 @@ std::string util::to_lower(std::string const& word)
 
 bool util::string_is_int(std::string const& word)
 {
-	try
-	{
-		int x = std::stoi(word);
-		x = 1; // just to lose 'x is unused' error!
-	}
-	catch (std::invalid_argument)
-	{
-		return false;
-	}
-	return true;
+    return (word.find_first_not_of("0123456789") == std::string::npos);
 }
 
 bool util::string_is_tryte(std::string const& word)

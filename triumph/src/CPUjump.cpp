@@ -319,6 +319,7 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
             halt();
             break;
         }
+	break;
     case 11:
         // jk* - JP [X], [Y], $Z
         // k = ++-
@@ -384,6 +385,7 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
             halt();
             break;
         }
+	break;
     default:
         crash_dump("Unrecognised instruction");
         halt();

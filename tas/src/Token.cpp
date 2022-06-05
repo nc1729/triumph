@@ -87,7 +87,7 @@ std::ostream& operator<<(std::ostream& os, TokenType const& tokentype)
 	return os;
 }
 Token::Token(std::string const& word, size_t const& line_number, TokenType const& tokentype) :
-	line_number{ line_number }, type{ tokentype }, word{ word }
+    word{ word }, line_number{ line_number }, type{ tokentype }
 {
 	if (type != TokenType::INVALID)
 	{
