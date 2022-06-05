@@ -159,7 +159,7 @@ std::string link::output_verbose_assembly(std::vector<Block> const& blocks)
 			{
 				output << Tryte::get_str(addr) << ": ";
 				output << statement << ": ";
-				for (Tryte const& tryte : statement.assembled_trytes)
+				for (std::string const& tryte : statement.assembled_trytes)
 				{
 					output << tryte << ' ';
 				}
