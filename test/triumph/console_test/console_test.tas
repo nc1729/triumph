@@ -14,13 +14,17 @@ main
     JPZ finished
     JP write_to_cout
 
+    !finished
     SET A, 4
     SAVE A, $Emj
+    SET A, 2
+    SAVE A, $Eml // set console display mode to 'CHAR'
     LOAD A, $Emm
     OR A, 3
     SAVE A, $Emm
-    !finished
-    JP finished // loop forever
+    
+    !infinite_loop
+    JP infinite_loop // loop forever
 
 }
 

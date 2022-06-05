@@ -27,7 +27,8 @@ private:
 	// init CPU
 	CPU cpu{ memory };
 	
-
+	void disk_manager();
+	void console_manager();
 public:
 	Computer(std::vector<Disk>& disks) :
 	console{std::cout, std::cin},
@@ -38,6 +39,6 @@ public:
 	bool is_on = false;
 	void turn_on();
 	void boot();
-	void disk_manager();
-	void console_manager();
+	// disk and console run in the same thread to prevent race conditions
+	void IO_manager();
 };
