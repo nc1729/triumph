@@ -7,7 +7,7 @@
 - Add real-time keyboard input, through the screen (SDL has KEY_IN events and already pressing 'F' dumps the framebuffer to std::cout and 'T' dumps the tilemap)
 - System resolution - currently fixed at 486x486 (486 = 54 tiles * 9 pixels per tile). Look into SDL2 options to allow resizing and automatic rescaling of screen.
 - Use CLI11 for triumph as well for command line options. Some possibilties:
-   * Option forrunning a .tri file directly from $DMM, rather than loading it from a disk
+   * Option for running a .tri file directly from $DMM, rather than loading it from a disk
    * Run in console-only mode, no screen (maybe even compile in console-only mode?)
 
 ## tas
