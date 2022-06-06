@@ -890,3 +890,16 @@ void handle::halt(Statement& statement)
 
     statement.assembled_trytes.push_back("000");
 }
+
+void handle::break_instr(Statement& statement)
+{
+    // BREAK
+    size_t number_of_arguments = statement.size() - 1;
+    if (number_of_arguments != 0)
+    {
+        std::string err_string = "BREAK expected 0 arguments but found " + std::to_string(number_of_arguments);
+        throw TASError(err_string, statement.line_number);
+    }
+
+    statement.assembled_trytes.push_back("MMM");
+}

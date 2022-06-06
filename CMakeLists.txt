@@ -25,10 +25,12 @@ target_sources(triumph PUBLIC
                 triumph/src/CPU.cpp
                 triumph/src/CPUInstructions.cpp
                 triumph/src/CPUjump.cpp
+                triumph/src/CPUdebugger.cpp
                 triumph/src/Disk.cpp
                 triumph/src/Memory.cpp
                 triumph/src/Screen.cpp
                 common/src/Tryte.cpp
+                common/src/util.cpp
                 )
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
@@ -51,9 +53,9 @@ target_sources(tas PUBLIC
                 tas/src/tas.cpp
                 tas/src/Token.cpp
                 tas/src/tokenize.cpp
-                tas/src/util.cpp
                 common/src/FileIO.cpp
                 common/src/Tryte.cpp
+                common/src/util.cpp
                 )
 
 # set up multithreading (for Linux, clang on MacOS doesn't seem to need this)

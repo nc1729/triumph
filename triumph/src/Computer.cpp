@@ -48,7 +48,7 @@ void Computer::boot()
 	memory.bank() = boot_disk_number;
 
 	// set stack pointer and program counter
-	memory.sp() = Tryte("m00");
+	memory.sp() = Memory::STACK_BOTTOM;
 	memory.pc() = boot_disk.buffer[BootDisk::BOOTCODE_PTR_ADDR]; // usually M00
 
 	// start IO in new thread

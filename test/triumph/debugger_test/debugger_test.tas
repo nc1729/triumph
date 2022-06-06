@@ -1,0 +1,7 @@
+main
+{
+    SET A, 5;
+    SET C, 8;
+    BREAK;
+    HALT;
+}

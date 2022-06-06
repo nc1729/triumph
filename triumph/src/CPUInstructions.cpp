@@ -39,7 +39,7 @@ void CPU::push(Tryte const& x)
 {
 	sp_ += -1;
 	memory_[sp_] = x;
-	if (sp_ < Tryte("mMM"))
+	if (sp_ < Memory::STACK_TOP)
 	{
 		// stack has overflowed
 		STACK_FLAG = 1;
@@ -50,7 +50,7 @@ void CPU::pop(Tryte& x)
 {
 	x = memory_[sp_];
 	sp_ += 1;
-	if (sp_ > Tryte("m00"))
+	if (sp_ > Memory::STACK_BOTTOM)
 	{
 		// stack has underflowed
 		STACK_FLAG = -1;
@@ -190,12 +190,7 @@ void CPU::pop_and_jump()
 	CPU::pop(pc_);
 }
 
-void CPU::show(Tryte const& x)
+void CPU::enter_debug()
 {
-	std::cout << x;
-}
-
-void CPU::tell(Tryte& x)
-{
-	std::cin >> x;
+	debug_mode_ = true;
 }

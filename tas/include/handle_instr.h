@@ -39,6 +39,7 @@ namespace handle
 	void star(Statement& statement);
 	void nop(Statement& statement);
 	void halt(Statement& statement);
+	void break_instr(Statement& statement);
 }
 
 std::map<std::string, std::function<void(Statement&)>> const handle_instr =
@@ -70,5 +71,6 @@ std::map<std::string, std::function<void(Statement&)>> const handle_instr =
 	{"OR", &handle::or_instr},
 	{"STAR", &handle::star},
 	{"NOP", &handle::nop},
-	{"HALT", &handle::halt}
+	{"HALT", &handle::halt},
+	{"BREAK", &handle::break_instr}
 };
