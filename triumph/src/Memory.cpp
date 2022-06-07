@@ -49,7 +49,7 @@ Tryte& Memory::operator[](Tryte const& addr)
 	if (addr < Memory::BANK_END)
 	{
 		// accessing memory bank
-		return banks_(Tryte::get_int(Memory::BANK), addr);
+		return banks_(Tryte::get_int(this->bank()), addr);
 	}
 	else
 	{
@@ -62,7 +62,7 @@ Tryte const& Memory::operator[](Tryte const& addr) const
 	if (addr < Memory::BANK_END)
 	{
 		// accessing memory bank
-		return banks_(Tryte::get_int((*this)[Memory::BANK]), addr);
+		return banks_(Tryte::get_int(this->bank()), addr);
 	}
 	else
 	{
