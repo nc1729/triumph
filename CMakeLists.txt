@@ -29,6 +29,7 @@ target_sources(triumph PUBLIC
                 triumph/src/Disk.cpp
                 triumph/src/Memory.cpp
                 triumph/src/Screen.cpp
+                common/src/FileIO.cpp
                 common/src/Tryte.cpp
                 common/src/util.cpp
                 )

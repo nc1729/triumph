@@ -45,7 +45,7 @@ public:
 	Tryte& pc();
 
 	// dump a program into an address and move the program counter to that address, ready to run
-	void load_program(int64_t addr, std::vector<Tryte> const& program);
+	void load_program(Tryte const& addr, std::vector<Tryte> const& program);
 
 	// add a bank (if device 'plugged in')
 	void add_bank(Bank* new_bank_ptr);

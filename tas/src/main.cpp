@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "CLI11/CLI11.hpp"
-#include "CLOptions.h"
+#include "TASCLOptions.h"
 #include "tas.h"
 
 
@@ -9,7 +9,7 @@ int main(int argc, char** argv) {
     CLI::App app{ "Converts a collection of ternary assembly (.tas) files \
      into a ternary machine code file (.tri)" };
 
-    CLOptions options;
+    TASCLOptions options;
 
     // input files
     app.add_option("-i,--input_files,input", options.input_filenames, "One or more input files (relative to current directory)");

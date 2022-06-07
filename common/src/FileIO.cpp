@@ -49,3 +49,29 @@ void IO::write_file(std::string const& output_filename, std::string const& file_
         output_file << file_string;
     }
 }
+
+std::vector<Tryte> IO::read_trytes_from_file(std::string const& filename)
+{
+    std::vector<Tryte> program;
+    std::string schars = "MLKJIHGFEDCBA0abcdefghijklm";
+    char c;
+    std::string tryte_str;
+    std::ifstream input_file{filename};
+    while (input_file >> c)
+    {
+        // ignore any non-septavingt chars
+        if (schars.find(c) != std::string::npos)
+        {
+            // c is a valid septavingt char
+            tryte_str += c;
+            if (tryte_str.size() == 3)
+            {
+                // found a whole Tryte, add it to program
+                program.emplace_back(tryte_str);
+                tryte_str.clear();
+            }
+        }
+    }
+
+    return program;
+}

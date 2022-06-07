@@ -1,8 +1,8 @@
 #pragma once
 
-#include "CLOptions.h"
+#include "TASCLOptions.h"
 #include "Tryte.h"
 
-int tas(CLOptions const& options);
+int tas(TASCLOptions const& options);
 
 Tryte const fetch_address(std::string const& tryte_string);

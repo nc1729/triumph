@@ -8,6 +8,7 @@
 #include "Tryte.h"
 #include "Bank.h"
 #include "Console.h"
+#include "FileIO.h"
 #include "Computer.h"
 
 void Computer::turn_on()
@@ -15,6 +16,7 @@ void Computer::turn_on()
 	is_on = true;
 	boot();
 }
+
 void Computer::boot()
 {
 	// can't boot if the computer is switched off...
@@ -24,49 +26,89 @@ void Computer::boot()
 	}
 
 	// find a bootable disk
-	size_t boot_disk_number = 0;
-	for (auto& disk : disks)
+	if (disks.size() > 0)
 	{
-		if (disk.is_bootable)
+		size_t boot_disk_number = 0;
+		for (auto& disk : disks)
 		{
-			// boot from first bootable disk found
-			boot_disk_number = disk.number;
-			break;
+			if (disk.is_bootable)
+			{
+				// boot from first bootable disk found
+				boot_disk_number = disk.number;
+				break;
+			}
+		}
+
+		// if no bootable disk found, throw error
+		if (!boot_disk_number)
+		{
+			throw std::runtime_error("No bootable disk found!");
+		}
+
+		// disks start counting from 0, disk numbers (as bank numbers) start from 1
+		Disk& boot_disk = disks[boot_disk_number - 1];
+
+		// now set memory bank to boot disk
+		memory.bank() = boot_disk_number;
+
+		// set stack pointer and program counter
+		memory.sp() = Memory::STACK_BOTTOM;
+		memory.pc() = boot_disk.buffer[BootDisk::BOOTCODE_PTR_ADDR]; // usually M00
+	}
+	else
+	{
+		// no disk inserted - check if there was a .tri file given
+		if (options.input_trifile.empty())
+		{
+			// no program to run
+			throw std::runtime_error("No bootable disk or .tri file found!");
+		}
+
+		// fetch trytes from .tri file
+		std::vector<Tryte> input_trytes = IO::read_trytes_from_file(options.input_trifile);
+
+		// fetch addr from start_addr and load program to that address
+		try
+		{
+			memory.bank() = 0;
+			Tryte addr = Tryte(options.start_addr);
+			memory.load_program(addr, input_trytes);
+			memory.pc() = addr;
+			memory.sp() = Memory::STACK_BOTTOM;
+		}
+		catch(const std::invalid_argument& e)
+		{
+			(void)e;
+			Tryte addr{"M00"};
+			memory.load_program(addr, input_trytes);
+			memory.pc() = addr;
+			memory.sp() = Memory::STACK_BOTTOM;
 		}
 	}
-
-	// if no bootable disk found, throw error
-	if (!boot_disk_number)
-	{
-		throw std::runtime_error("No bootable disk found!");
-	}
-
-	// disks start counting from 0, disk numbers (as bank numbers) start from 1
-	Disk& boot_disk = disks[boot_disk_number - 1];
-
-	// now set memory bank to boot disk
-	memory.bank() = boot_disk_number;
-
-	// set stack pointer and program counter
-	memory.sp() = Memory::STACK_BOTTOM;
-	memory.pc() = boot_disk.buffer[BootDisk::BOOTCODE_PTR_ADDR]; // usually M00
 
 	// start IO in new thread
 	std::thread IO_thread{ &Computer::IO_manager, this };
 
-	// start CPU in new thread
-	std::thread cpu_thread{ &CPU::run, &(this->cpu) };
 
-	// turn screen on in main thread
-	screen.is_on = true;
-	screen.run();
-
-	// when screen is switched off, stop the CPU
-	cpu.turn_off();
-	cpu_thread.join();
+	if (options.console_mode)
+	{
+		// start CPU in this thread
+		cpu.run();
+	}
+	else
+	{
+		// start CPU in new thread
+		std::thread cpu_thread{ &CPU::run, &(this->cpu) };
+		// and run screen in main thread
+		screen.is_on = true;
+		screen.run();
+		// when screen is switched off, stop the CPU
+		cpu.turn_off();
+		cpu_thread.join();
+	}
+	
 	this->is_on = false;
 	IO_thread.join();
-
 }
 
 void Computer::disk_manager()
@@ -144,6 +186,9 @@ void Computer::IO_manager()
 	while (this->is_on)
 	{
 		console_manager();
-		disk_manager();
+		if (disks.size() > 0)
+		{
+			disk_manager();
+		}
 	}
 }

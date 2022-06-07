@@ -3,7 +3,7 @@
 #include <string>
 #include <stdexcept>
 
-#include "CLOptions.h"
+#include "TASCLOptions.h"
 #include "error.h"
 #include "constants.h"
 #include "tokenize.h"
@@ -16,7 +16,7 @@
 #include "util.hpp"
 #include "tas.h"
 
-int tas(CLOptions const& options)
+int tas(TASCLOptions const& options)
 {
 	std::vector<Block> code_blocks;
 

@@ -5,6 +5,7 @@
 #include <array>
 #include <algorithm>
 
+#include "constants.h"
 #include "Tryte.h"
 
 std::map<char, int64_t> const Tryte::schar_to_val =
@@ -42,6 +43,47 @@ Tryte::Tryte(int64_t n)
 		trits_[i] = rem;
 	}
 }
+
+// string constructor
+Tryte::Tryte(std::string const& s)
+{
+	if (s.find_first_not_of(constants::septavingt_chars) == std::string::npos && s.length() == 3)
+	{
+		// s was a valid Tryte string
+		int64_t n = 729 * schar_to_val.at(s[0]) + 27 * schar_to_val.at(s[1]) + schar_to_val.at(s[2]);
+		// fill internal trit array
+		for (size_t i = 0; i < 9; i++)
+		{
+			int8_t rem = static_cast<int8_t>(n % 3);
+			n /= 3;
+			// deal with carry
+			if (rem == 2)
+			{
+				rem = -1;
+				n++;
+			}
+			else if (rem == -2)
+			{
+				rem = 1;
+				n--;
+			}
+			trits_[i] = rem;
+		}
+	}
+	else
+	{
+		std::string err_str = s + " is not a valid Tryte";
+		throw std::invalid_argument(err_str);
+	}
+}
+/*
+Tryte(std::string const& s)
+{
+	if 
+}
+		//
+	//{};
+*/
 
 // ternary array constructor
 Tryte::Tryte(std::array<int8_t, 9> const& arr)

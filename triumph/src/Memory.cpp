@@ -33,7 +33,7 @@ void Memory::add_bank(Bank* new_bank_ptr)
 	banks_.add_bank(new_bank_ptr);
 }
 
-void Memory::load_program(int64_t addr, std::vector<Tryte> const& program)
+void Memory::load_program(Tryte const& addr, std::vector<Tryte> const& program)
 {
 	this->sp() = Memory::STACK_BOTTOM;
 	this->pc() = addr;
