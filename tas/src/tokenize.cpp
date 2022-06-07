@@ -292,7 +292,7 @@ std::vector<Token> tokenize::make_tokens(std::string const& file_string,
 				}
 				else
 				{
-					tokens.emplace_back(token_word.substr(0, token_word.size() - 1), line_number);
+					tokens.emplace_back(token_word, line_number);
 					token_word = "";
 					in_token = false;
 				}

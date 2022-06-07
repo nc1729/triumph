@@ -68,7 +68,7 @@ namespace constants
         "STAR", "star",
         // control flow
         "NOP", "nop",
-        "HALT", "halt"
+        "HALT", "halt",
         "BREAK", "break"
     };
 
