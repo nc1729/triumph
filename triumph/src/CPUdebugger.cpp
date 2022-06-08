@@ -80,6 +80,10 @@ void CPU::debug()
             }
             std::cout << Memory::STACK_BOTTOM << ": " << memory_[stack_start] << "\n\n";
         }
+        else if (command == "bank")
+        {
+            std::cout << "Memory bank: " << memory_[Memory::BANK] << '\n';
+        }
         else if (command == "c" || command == "current")
         {
             std::cout << "Current instruction: " << instr_;

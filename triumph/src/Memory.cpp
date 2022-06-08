@@ -14,7 +14,7 @@ Tryte const Memory::PC = 9841;
 Tryte const Memory::BANK_START = -9841;
 Tryte const Memory::STACK_BOTTOM = 9828;
 Tryte const Memory::STACK_TOP = 9113;
-Tryte const Memory::BANK_END = -3281;
+Tryte const Memory::BANK_END = -3280;
 
 Memory::Memory(std::vector<Bank*> const& banks, std::vector<Disk>& disks) : banks_(banks)
 {
