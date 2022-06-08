@@ -15,9 +15,12 @@ void CPU::debug()
     std::string input;
     std::string word;
     std::vector<std::string> words;
-    while (debug_mode_ && std::getline(std::cin, input))
+    // get first input
+    std::cout << ">>> ";
+    std::getline(std::cin, input);
+    // loop until debugger is quit
+    while (debug_mode_)
     {
-        std::cout << ">>> ";
         // break line input into words
         std::stringstream input_stream(input);
         while (input_stream >> word)
@@ -101,6 +104,15 @@ void CPU::debug()
         {
             std::cout << "Unrecognised command.\n";
         }
+
+        words.clear();
+
+        if (debug_mode_)
+        {
+            // get next input
+            std::cout << ">>> ";
+            std::getline(std::cin, input);
+        }
     }
 }
 
@@ -123,9 +135,9 @@ void CPU::debug_set_command(std::vector<std::string> const& words)
         size_t reg_index = static_cast<size_t>(reg[0]) - 96;
 
         // now handle the second argument
-        if (util::string_is_septavingt_chars(words[2]))
+        if (util::string_is_septavingt(words[2]))
         {
-            set(regs_[reg_index], Tryte(words[2]));
+            set(regs_[reg_index], Tryte(words[2].substr(2)));
             return;
         }
         else if (util::string_is_int(words[2]))
@@ -138,11 +150,11 @@ void CPU::debug_set_command(std::vector<std::string> const& words)
     else if (util::string_is_addr(words[1]))
     {
         // first argument was an address
-        Tryte addr = Tryte(words[1]);
+        Tryte addr = Tryte(words[1].substr(1));
         // now handle the second argument
-        if (util::string_is_septavingt_chars(words[2]))
+        if (util::string_is_septavingt(words[2]))
         {
-            set(memory_[addr], Tryte(words[2]));
+            set(memory_[addr], Tryte(words[2].substr(2)));
             return;
         }
         else if (util::string_is_int(words[2]))
@@ -154,9 +166,9 @@ void CPU::debug_set_command(std::vector<std::string> const& words)
     else if (words[1] == "bank" || words[1] == "BANK")
     {
         // handle second argument
-        if (util::string_is_septavingt_chars(words[2]))
+        if (util::string_is_septavingt(words[2]))
         {
-            memory_[Memory::BANK] = Tryte(words[2]);
+            memory_[Memory::BANK] = Tryte(words[2].substr(2));
             return;
         }
         else if (util::string_is_int(words[2]))
@@ -231,6 +243,7 @@ void CPU::debug_dump_memory(std::vector<std::string> const& words)
     while (addr1 <= addr2)
     {
         std::cout << addr1 << ": " << memory_[addr1] << '\n';
+        addr1 += 1;
     }
 }
 

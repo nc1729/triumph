@@ -75,6 +75,11 @@ Tryte& Memory::bank()
 	return local_[Memory::BANK + 9841 - 6561];
 }
 
+Tryte const& Memory::bank() const
+{
+	return local_[Memory::BANK + 9841 - 6561];
+}
+
 Tryte& Memory::sp()
 {
 	return local_[Memory::SP + 9841 - 6561];

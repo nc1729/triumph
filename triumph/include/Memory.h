@@ -39,6 +39,7 @@ public:
 
 	// public access to current bank
 	Tryte& bank();
+	Tryte const& bank() const;
 	// public access to stack pointer
 	Tryte& sp();
 	// public access to program counter (for jump instructions)

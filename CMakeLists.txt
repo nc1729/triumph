@@ -76,6 +76,8 @@ if (MSVC)
     target_compile_options(tas PUBLIC "$<$<CONFIG:RELEASE>:${MSVC_RELEASE_OPTIONS}>")
     target_compile_options(triumph PUBLIC "$<$<CONFIG:DEBUG>:${MSVC_DEBUG_OPTIONS}>")
     target_compile_options(triumph PUBLIC "$<$<CONFIG:RELEASE>:${MSVC_RELEASE_OPTIONS}>")
+    target_link_options(tas PUBLIC "/SUBSYSTEM:CONSOLE")
+    target_link_options(triumph PUBLIC "/SUBSYSTEM:CONSOLE")
 else()
     # GCC & clang compiler flags
     target_compile_options(tas PUBLIC "$<$<CONFIG:DEBUG>:${DEBUG_OPTIONS}>")
