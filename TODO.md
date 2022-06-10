@@ -9,6 +9,8 @@
 - Use CLI11 for triumph as well for command line options. Some possibilties:
    * Option for running a .tri file directly from $DMM, rather than loading it from a disk
    * Run in console-only mode, no screen (maybe even compile in console-only mode?)
+- Decouple Screen object and SDL2 window?
+- Add some kind of GUI (load disk, etc)
 
 ## tas
 - Fix a bug with chars - currently '\n' and other control characters will not be parsed as CHAR tokens.

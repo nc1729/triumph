@@ -144,6 +144,11 @@ void CPU::debug_set_command(std::vector<std::string> const& words)
             set(regs_[reg_index], Tryte(words[2].substr(2)));
             return;
         }
+        else if (util::string_is_tryte(words[2]))
+        {
+            set(regs_[reg_index], Tryte(words[2]));
+            return;
+        }
         else if (util::string_is_int(words[2]))
         {
             set(regs_[reg_index], Tryte(std::stoi(words[2])));
@@ -161,6 +166,11 @@ void CPU::debug_set_command(std::vector<std::string> const& words)
             set(memory_[addr], Tryte(words[2].substr(2)));
             return;
         }
+        else if (util::string_is_tryte(words[2]))
+        {
+            set(memory_[addr], Tryte(words[2]));
+            return;
+        }
         else if (util::string_is_int(words[2]))
         {
             set(memory_[addr], Tryte(std::stoi(words[2])));
@@ -173,6 +183,11 @@ void CPU::debug_set_command(std::vector<std::string> const& words)
         if (util::string_is_septavingt(words[2]))
         {
             memory_[Memory::BANK] = Tryte(words[2].substr(2));
+            return;
+        }
+        else if (util::string_is_tryte(words[2]))
+        {
+            memory_[Memory::BANK] = Tryte(words[2]);
             return;
         }
         else if (util::string_is_int(words[2]))
@@ -230,21 +245,36 @@ void CPU::debug_dump_memory(std::vector<std::string> const& words)
 {
     if (words.size() != 3)
     {
-        std::cout << "Usage: d(ump) $ADDR1 $ADDR2\n";
+        std::cout << "Usage: d(ump) $ADDR1 $ADDR2/VAL\n";
         return;
     }
 
-    // check both args were addresses
-    if (!(util::string_is_addr(words[1]) && util::string_is_addr(words[2])))
+    Tryte addr1;
+    Tryte addr2;
+
+    // check first arg was an address
+    if (!(util::string_is_addr(words[1])))
     {
         std::cout << "Usage: d(ump) $ADDR1 $ADDR2\n";
         return;
     }
+    addr1 = Tryte(words[1].substr(1));
 
-    Tryte addr1 = Tryte(words[1].substr(1));
-    Tryte addr2 = Tryte(words[2].substr(1));
+    // check second arg was address or value
+    if (util::string_is_addr(words[2]))
+    {
+        addr2 = Tryte(words[1].substr(1));
+    }
+    else if (util::string_is_tryte(words[2]))
+    {
+        addr2 = addr1 + Tryte(words[2]);
+    }
+    else if (util::string_is_int(words[2]))
+    {
+        addr2 = addr1 + Tryte(std::stoi(words[2]));
+    }
 
-    while (addr1 <= addr2)
+    while (addr1 != addr2)
     {
         std::cout << addr1 << ": " << memory_[addr1] << '\n';
         addr1 += 1;

@@ -57,7 +57,15 @@ std::string util::to_lower(std::string const& word)
 
 bool util::string_is_int(std::string const& word)
 {
-	return (word.find_first_not_of("0123456789") == std::string::npos);
+	std::string num_chars = "0123456789";
+	if (word[0] == '-' || word[0] == '+')
+	{
+		return (word.substr(1).find_first_not_of(num_chars) == std::string::npos);
+	}
+	else
+	{
+		return (word.find_first_not_of("0123456789") == std::string::npos);
+	}
 }
 
 bool util::string_is_tryte(std::string const& word)
