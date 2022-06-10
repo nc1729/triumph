@@ -85,12 +85,27 @@ private:
 	*/
 	// on/off switch
 	bool on_;
+	bool debug_mode_;
 
 	// fetch the Tryte at the instruction pointer and set it as current instruction
 	void fetch();
 
 	// decode the current instruction and execute it
 	void decode_and_execute();
+
+	/*
+	debugger operations
+	*/
+	// begin a REPL debug loop that allows stepping through instructions and other commands
+	void debug();
+	// "set value/addr value" - use this to tweak registers and memory
+	void debug_set_command(std::vector<std::string> const& words);
+	// "p reg/addr" print the contents of reg/addr
+	void debug_print(std::vector<std::string> const& words);
+	// "d addr1 addr2" dump contents of memory in the range addr1 <= x < addr2
+	void debug_dump_memory(std::vector<std::string> const& words);
+	// print explanation of commands
+	void debug_show_help();
 
 	/*
 	CPU operations
@@ -180,10 +195,6 @@ private:
 	// pop from stack and jump to popped address
 	void pop_and_jump();
 
-	/* for debugging */
-	// push Tryte to stdout
-	void show(Tryte const& x);
-
-	// fetch Tryte from stdin
-	void tell(Tryte& x);
+	// start debugger
+	void enter_debug();
 };

@@ -26,9 +26,7 @@ public:
 	Tryte(int64_t n);
 
 	// string constructor (uses integer constructor)
-	Tryte(std::string const& s) : 
-		Tryte(729 * schar_to_val.at(s[0]) + 27 * schar_to_val.at(s[1]) + schar_to_val.at(s[2]))
-	{};
+	Tryte(std::string const& s);
 
 	// ternary array constructor
 	Tryte(std::array<int8_t, 9> const& arr);

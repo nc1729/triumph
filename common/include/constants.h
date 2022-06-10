@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 namespace constants
 {
@@ -67,7 +68,8 @@ namespace constants
         "STAR", "star",
         // control flow
         "NOP", "nop",
-        "HALT", "halt"
+        "HALT", "halt",
+        "BREAK", "break"
     };
 
     std::vector<std::string> const jump_instructions =

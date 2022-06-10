@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 
+#include "TriumphCLOptions.h"
 #include "Bank.h"
 #include "Console.h"
 #include "Memory.h"
@@ -14,6 +15,8 @@
 class Computer
 {
 private:
+	// options from command line
+	TriumphCLOptions options;
 	// init Screen - contains SDL calls
 	Screen screen;
 	// Console interface
@@ -30,7 +33,8 @@ private:
 	void disk_manager();
 	void console_manager();
 public:
-	Computer(std::vector<Disk>& disks) :
+	Computer(std::vector<Disk>& disks, TriumphCLOptions const& options) :
+	options{options},
 	console{std::cout, std::cin},
     disks{disks},
 	memory{{&zero, &screen.tryte_framebuffer, &screen.tilemap, &screen.work_RAM, &console.buffer}, disks},

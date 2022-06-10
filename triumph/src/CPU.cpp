@@ -17,6 +17,8 @@ CPU::CPU(Memory& memory) :
 
 	// CPU is switched off
 	on_ = false;
+	// debug mode off by default
+	debug_mode_ = false;
 
 	// registers/stack pointer/etc are set in boot code in Memory class
 }
@@ -48,7 +50,15 @@ void CPU::run()
 	this->turn_on();
 	while (on_)
 	{
-		cycle();
+		if (debug_mode_)
+		{
+			debug();
+		}
+		else
+		{
+			cycle();
+		}
+		/*
 		// moderate processor speed
 		if (cycles_ % max_frequency_ == 0)
 		{
@@ -75,6 +85,7 @@ void CPU::run()
 			}
 			second_start_ = clock_.now();
 		}
+		*/
 		//dump();
 	}
 }
@@ -92,12 +103,12 @@ void CPU::dump()
 
 	std::cout << "-----------STACK-----------\n";
 	Tryte stack_start = sp_;
-	while (stack_start != Tryte("m00"))
+	while (stack_start != Memory::STACK_BOTTOM)
 	{
 		std::cout << stack_start << ": " << memory_[stack_start] << '\n';
 		stack_start += 1;
 	}
-	std::cout << "m00: " << memory_[stack_start] << "\n\n";
+	std::cout << Memory::STACK_BOTTOM << ": " << memory_[stack_start] << "\n\n";
 }
 
 void CPU::crash_dump(std::string const& err_msg)
@@ -130,35 +141,20 @@ void CPU::decode_and_execute()
 		// M - no Tryte register instructions
 		switch (mid)
 		{
+		case -13:
+			// MM* - BREAK
+			enter_debug();
+			instr_size_ = 1;
+			break;
 		case 6:
-			// Mf. t9 - PUSH t9
+			// Mf* t9 - PUSH t9
 			push(memory_[pc_ + 1]);
 			instr_size_ = 2;
 			break;
 		case 10:
-			// Mj. t9 - BANK t9
+			// Mj* t9 - BANK t9
 			set_bank(memory_[pc_ + 1]);
 			instr_size_ = 2;
-			break;
-		default:
-			crash_dump("Unrecognised instruction");
-			halt();
-			break;
-		}
-		break;
-	case -12:
-		// L - console input/output
-		switch (mid)
-		{
-		case -1:
-			// LAX - TELL X
-			tell(regs_[low]);
-			instr_size_ = 1;
-			break;
-		case 1:
-			// LaX - SHOW X
-			show(regs_[low]);
-			instr_size_ = 1;
 			break;
 		default:
 			crash_dump("Unrecognised instruction");

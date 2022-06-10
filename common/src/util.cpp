@@ -40,7 +40,7 @@ std::string util::to_upper(std::string const& word)
 	std::string out;
 	for (char c : word)
 	{
-		out += std::toupper(c);
+		out += static_cast<char>(std::toupper(c));
 	}
 	return out;
 }
@@ -50,14 +50,22 @@ std::string util::to_lower(std::string const& word)
 	std::string out;
 	for (char c : word)
 	{
-		out += std::tolower(c);
+		out += static_cast<char>(std::tolower(c));
 	}
 	return out;
 }
 
 bool util::string_is_int(std::string const& word)
 {
-	return (word.find_first_not_of("0123456789") == std::string::npos);
+	std::string num_chars = "0123456789";
+	if (word[0] == '-' || word[0] == '+')
+	{
+		return (word.substr(1).find_first_not_of(num_chars) == std::string::npos);
+	}
+	else
+	{
+		return (word.find_first_not_of("0123456789") == std::string::npos);
+	}
 }
 
 bool util::string_is_tryte(std::string const& word)
@@ -101,7 +109,7 @@ bool util::string_is_char(std::string const& word)
 	{
 		return false;
 	}
-	else if (word[0] != '\'' || word[2] != '\''))
+	else if (word[0] != '\'' || word[2] != '\'')
 	{
 	return false;
 	}
@@ -135,6 +143,11 @@ bool util::string_is_addr(std::string const& word)
 	if (word[0] != '$') return false;
 	std::string tryte = word.substr(1);
 	return string_is_tryte(tryte);
+}
+
+bool util::string_is_septavingt_chars(std::string const& word)
+{
+	return word.find_first_not_of(constants::septavingt_chars) == std::string::npos;
 }
 
 bool util::string_is_jump_label(std::string const& word)

@@ -46,6 +46,8 @@ namespace util
 	bool string_is_control_char(std::string const& word);
 	// return true if string begins with $ and is followed by 
 	bool string_is_addr(std::string const& word);
+	// return true if string is three septavingt chars
+	bool string_is_septavingt_chars(std::string const& word);
 	// return true if string begins with !
 	bool string_is_jump_label(std::string const& word);
 }

@@ -19,31 +19,34 @@ private:
 public:
 	Memory(std::vector<Bank*> const& banks, std::vector<Disk>& disks);
 
-	Tryte& operator[](int64_t const addr);
-	Tryte const& operator[](int64_t const addr) const;
+	Tryte& operator[](Tryte const& addr);
+	Tryte const& operator[](Tryte const& addr) const;
 
 	// $mmk - current memory bank
-	static int64_t constexpr BANK = 9839;
+	static Tryte const BANK;
 	// $mml - stack pointer
-	static int64_t constexpr SP = 9840;
+	static Tryte const SP;
 	// $mmm - program counter
-	static int64_t constexpr PC = 9841;
+	static Tryte const PC;
 	// $MMM - bank memory start
-	static int64_t constexpr BANK_START = -9841;
+	static Tryte const BANK_START;
+	// $mm0 - stack bottom
+	static Tryte const STACK_BOTTOM;
+	// $mMM - stack top
+	static Tryte const STACK_TOP;
 	// $Emm - bank memory end
-	static int64_t constexpr BANK_END = (-9841 + 6561);
-	// $mmk-mmm - reserved memory
-	static int64_t constexpr RESERVED_START = (9841 - 3);
+	static Tryte const BANK_END;
 
 	// public access to current bank
 	Tryte& bank();
+	Tryte const& bank() const;
 	// public access to stack pointer
 	Tryte& sp();
 	// public access to program counter (for jump instructions)
 	Tryte& pc();
 
 	// dump a program into an address and move the program counter to that address, ready to run
-	void load_program(int64_t addr, std::vector<Tryte> const& program);
+	void load_program(Tryte const& addr, std::vector<Tryte> const& program);
 
 	// add a bank (if device 'plugged in')
 	void add_bank(Bank* new_bank_ptr);
