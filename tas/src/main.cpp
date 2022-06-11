@@ -20,6 +20,9 @@ int main(int argc, char** argv) {
     // start address for main
     app.add_option("-a,--addr,--start_addr", options.start_addr, "main start address for linking: default is $DMM");
 
+    // if verbose flag found, print assembly in readable form to stdout
+    app.add_flag("-v", options.verbose, "Print assembly in readable form");
+
     // parse command line arguments, populating options
     CLI11_PARSE(app, argc, argv);
 
