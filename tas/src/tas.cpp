@@ -20,6 +20,12 @@ int tas(TASCLOptions const& options)
 {
 	std::vector<Block> code_blocks;
 
+	if (options.input_filenames.size() == 0)
+	{
+		std::cerr << "No input files found.\n";
+		return 1;
+	}
+
 	// assemble all blocks in files in turn
 	for (auto const& input_filename : options.input_filenames)
 	{
@@ -59,7 +65,10 @@ int tas(TASCLOptions const& options)
 		std::map<std::string, Tryte> block_addresses = link::arrange_blocks(code_blocks, main_address);
 		code_blocks = link::link_blocks(code_blocks, block_addresses);
 		output_string = link::output_assembly(code_blocks);
-		verbose_output = link::output_verbose_assembly(code_blocks);
+		if (options.verbose)
+		{
+			verbose_output = link::output_verbose_assembly(code_blocks);
+		}
 	}
 	catch (TASLinkError const& e)
 	{
@@ -70,13 +79,16 @@ int tas(TASCLOptions const& options)
 	}
 	catch (std::runtime_error const& e)
 	{
-		std::cerr << "Link error: " << e.what();
+		std::cerr << "Link error: " << e.what() << '\n';
 		return 1;
 	}
 	
 	// finally, print ternary assembly to a file (and do padding if required)
 	IO::write_file(options.output_filename, output_string);
-	std::cout << verbose_output;
+	if (options.verbose)
+	{
+		std::cout << verbose_output;
+	}
 
 	return 0;
 }
