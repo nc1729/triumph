@@ -10,37 +10,48 @@ void Console::flush_to_out()
 	// set console status to busy
 	buffer[CONSOLE_STATE_ADDR + 9841][STATUS_FLAG] = 0;
 
-	// get number of Trytes to print
-	int64_t output_size = Tryte::get_int(buffer[COUT_BUFFER_LEN + 9841]);
-	if (output_size < 0)
+	if (mode == DisplayMode::CHAR)
 	{
-		// a negative number of characters makes no sense, so do nothing
-		output_size = 0;
-	}
-	else if (output_size > BUFFER_SIZE)
-	{
-		// if a larger number of Trytes is required for printing, prevent
-		// output of Trytes outside of output buffer by capping it here
-		output_size = BUFFER_SIZE;
-	}
-
-	// print to output
-	for (int64_t i = 0; i < output_size; i++)
-	{
+		// if in char mode, no need to set output buffer size
+		// just print until we encounter a '\0' char
+		// obviously stop if we hit the end of the buffer though
+		int64_t i = 0;
 		Tryte& tryte = buffer[COUT_BUFFER_START + 9841 + i];
+		while (tryte != Tryte(0) && i < BUFFER_SIZE)
+		{
+			// print the tryte's ASCII char equivalent
+			out << static_cast<char>(tryte);
+		}
+	}
+	else
+	{
+		// get number of Trytes to print
+		int64_t output_size = Tryte::get_int(buffer[COUT_BUFFER_LEN + 9841]);
+		if (output_size < 0)
+		{
+			// a negative number of characters makes no sense, so do nothing
+			output_size = 0;
+		}
+		else if (output_size > BUFFER_SIZE)
+		{
+			// if a larger number of Trytes is required for printing, prevent
+			// output of Trytes outside of output buffer by capping it here
+			output_size = BUFFER_SIZE;
+		}
 
-		if (mode == DisplayMode::CHAR)
+		// print to output
+		for (int64_t i = 0; i < output_size; i++)
 		{
-			// print the Tryte's ASCII char equivalent
-			out << static_cast<char>(Tryte::get_int(tryte));
-		}
-		else if (mode == DisplayMode::INTEGER)
-		{
-			out << Tryte::get_int(tryte);
-		}
-		else
-		{
-			out << tryte;
+			Tryte& tryte = buffer[COUT_BUFFER_START + 9841 + i];
+
+			if (mode == DisplayMode::INTEGER)
+			{
+				out << Tryte::get_int(tryte);
+			}
+			else
+			{
+				out << tryte;
+			}
 		}
 	}
 
@@ -60,11 +71,18 @@ int64_t Console::read_chars(std::string const& input_string)
 		temp = static_cast<int64_t>(c);
 		buffer[CIN_BUFFER_START + 9841 + input_size] = temp;
 		input_size++;
-		if (input_size > BUFFER_SIZE)
+		if (input_size > BUFFER_SIZE - 2)
 		{
+			// append a \'0' char to the end of any read string
+			// in this case, the string is 729 Trytes with the '\0' (filled the buffer)
+			buffer[CIN_BUFFER_START + 9841 + BUFFER_SIZE - 1] = temp;
 			return BUFFER_SIZE;
 		}
 	}
+	// append a \'0' char to the end of any read string
+	buffer[CIN_BUFFER_START + 9841 + input_size] = temp;
+	input_size++;
+	// input_size isn't necessary for strings with '\0' endings, but good to have anyway
 	return input_size;
 }
 
@@ -83,7 +101,7 @@ int64_t Console::read_ints(std::string const& input_string)
 		temp = input_int;
 		buffer[CIN_BUFFER_START + 9841 + input_size] = temp;
 		input_size++;
-		if (input_size > BUFFER_SIZE)
+		if (input_size > BUFFER_SIZE - 1)
 		{
 			return BUFFER_SIZE;
 		}
@@ -104,7 +122,7 @@ int64_t Console::read_trytes(std::string const& input_string)
 		// input was a valid Tryte
 		buffer[CIN_BUFFER_START + 9841 + input_size] = temp;
 		input_size++;
-		if (input_size > BUFFER_SIZE)
+		if (input_size > BUFFER_SIZE - 1)
 		{
 			return BUFFER_SIZE;
 		}

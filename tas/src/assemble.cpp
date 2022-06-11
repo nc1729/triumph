@@ -57,6 +57,8 @@ std::vector<std::string> assemble::assemble_string(Token const& token)
         // get ASCII value of char c, and convert it into its Tryte equivalent
         string_trytes.push_back(Tryte::get_str(Tryte(static_cast<int64_t>(c))));
     }
+    // finish all strings with '\0' char - "000"
+    string_trytes.push_back("000");
     return string_trytes;
 }
 
