@@ -1,5 +1,6 @@
 #include <vector>
 #include <string>
+#include <map>
 
 #include "Token.h"
 #include "Statement.h"
@@ -7,6 +8,128 @@
 #include "Block.h"
 #include "error.h"
 #include "parse.h"
+
+std::vector<Token> parse::handle_aliases(std::vector<Token> const& tokens)
+{
+	bool in_block = false;
+	std::map<std::string, Token> global_aliases;
+	std::map<std::string, Token> block_aliases;
+	std::vector<Token> new_tokens;
+	
+	// loop through tokens, searching for aliases
+	size_t index = 0;
+	while (index < tokens.size())
+	{
+		Token const& this_token = tokens[index];
+		if (in_block)
+		{
+			if (this_token.type == TokenType::ALIAS)
+			{
+				// found a local alias declaration
+				// must be of form "alias NAME TOKEN", if not, throw an error here
+				if (index + 2 >= tokens.size())
+				{
+					// there are not two tokens following this alias token, throw an error
+					throw TASError("alias declaration must be of the form \"alias [NAME] [TOKEN]\"", this_token.line_number);
+				}
+
+				if (tokens[index + 1].type != TokenType::NAME)
+				{
+					// alias must be followed by a token of NAME type
+					throw TASError("alias declaration must be of the form \"alias [NAME] [TOKEN]\"", this_token.line_number);
+				}
+
+				if (tokens[index + 2].type != TokenType::VAL && tokens[index + 2].type != TokenType::ADDR &&
+					tokens[index + 2].type != TokenType::STRING && tokens[index + 2].type != TokenType::NAME)
+				{
+					// token to replace the alias must be VAL, ADDR, STRING or a NAME
+					throw TASError("Invalid alias declaration - must alias a VAL, ADDR, STRING or NAME token", this_token.line_number);
+				}
+
+				// now add this alias to the local aliases...
+				block_aliases.insert({tokens[index + 1].value, tokens[index + 2]});
+				index += 2;
+			}
+			else if (this_token.type == TokenType::NAME)
+			{
+				// found a name - check if it is in the global or local aliases,
+				// and replace this token if it is
+				// note - local aliases supersede global aliases of the same name
+				if (block_aliases.find(this_token.value) != block_aliases.end())
+				{
+					// found this name as a previously encountered local alias, so replace it
+					new_tokens.push_back(block_aliases[this_token.value]);
+				}
+				else if (global_aliases.find(this_token.value) != global_aliases.end())
+				{
+					// found this name as a previously encountered global alias, so replace it
+					new_tokens.push_back(global_aliases[this_token.value]);
+				}
+				else
+				{
+					// this name is not aliased, so don't touch it
+					new_tokens.push_back(this_token);
+				}
+			}
+			else if (this_token.type == TokenType::BLOCK_END)
+			{
+				// found the end of this block
+				in_block = false;
+				// aliases inside this block are local to this block, so forget them now
+				block_aliases.clear(); 
+				new_tokens.push_back(this_token);
+			}
+			else
+			{
+				// just a normal token, add it to the new list
+				new_tokens.push_back(this_token);
+			}
+		}
+		else
+		{
+			if (this_token.type == TokenType::ALIAS)
+			{
+				// found a global alias declaration
+				// must be of form "alias NAME TOKEN", if not, throw an error here
+				if (index + 2 >= tokens.size())
+				{
+					// there are not two tokens following this alias token, throw an error
+					throw TASError("alias declaration must be of the form \"alias [NAME] [TOKEN]\"", this_token.line_number);
+				}
+
+				if (tokens[index + 1].type != TokenType::NAME)
+				{
+					// alias must be followed by a token of NAME type
+					throw TASError("alias declaration must be of the form \"alias [NAME] [TOKEN]\"", this_token.line_number);
+				}
+
+				if (tokens[index + 2].type != TokenType::VAL && tokens[index + 2].type != TokenType::ADDR &&
+					tokens[index + 2].type != TokenType::STRING && tokens[index + 2].type != TokenType::NAME)
+				{
+					// token to replace the alias must be VAL, ADDR, STRING or a NAME
+					throw TASError("Invalid alias declaration - must alias a VAL, ADDR, STRING or NAME token", this_token.line_number);
+				}
+
+				// now add this alias to the global aliases...
+				global_aliases.insert({tokens[index + 1].value, tokens[index + 2]});
+				index += 2;
+			}
+			else if (this_token.type == TokenType::BLOCK_START)
+			{
+				// found the start of a block
+				in_block = true;
+				new_tokens.push_back(this_token);
+			}
+			else
+			{
+				// normal token (outside of a block, so a NAME or NEWLINE or STATEMENT_END)
+				new_tokens.push_back(this_token);
+			}
+		}
+		index++;
+	}
+	return new_tokens;
+}
 
 std::vector<Block> parse::make_blocks(std::vector<Token> const& tokens, std::string const& filename)
 {
@@ -345,9 +468,13 @@ std::vector<Block>& parse::handle_macros(std::vector<Block>& blocks)
 	return blocks;
 }
 
-std::vector<Block> parse::parse(std::vector<Token> const& tokens, std::string const& filename)
+std::vector<Block> parse::parse(std::vector<Token>& tokens, std::string const& filename)
 {
+	// search for alias statements and resolve them
+	tokens = handle_aliases(tokens);
+	// collect together code blocks, filling them with statements
 	std::vector<Block> blocks = make_blocks(tokens, filename);
+	// expand macro statements ("CALL", "JPZ", etc)
 	blocks = handle_macros(blocks);
 	return blocks;
 }

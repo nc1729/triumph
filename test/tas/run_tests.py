@@ -10,15 +10,22 @@ def run_test(test_name, test_dir, tas_path):
     test_output = test_dir + "/out.tri"
     expected_output = test_dir + "/expected"
     output = subprocess.run([tas_path, "-i", test_input, "-o", test_output], capture_output=True, text=True)
-    test_result = compare_files.compare_files(test_output, expected_output)
+    #test_result = compare_files.compare_files(test_output, expected_output)
+    try:
+        test_result = compare_files.compare_files(test_output, expected_output)
+    except FileNotFoundError:
+        print(output.stderr)
+        return False
     if test_result:
         os.remove(test_output)
         return True
     else:
-        with open(expected_output, 'r') as file:
-            expected = file.readline()
+        with open(expected_output, 'r') as file1:
+            expected = file1.readline()
+        with open(test_output, 'r') as file2:
+            test = file2.readline()
         print(f"Expected output:  {expected}")
-        print(f"Test output:      {output.stdout}")
+        print(f"Test output:      {test}")
         return False
 
 
@@ -34,6 +41,7 @@ def run_test_family(test_root_dir, tas_path):
     number_of_passing_tests = 0
     for test in test_names:
         if run_test(test, test_root_dir + "/" + test, tas_path):
+            print("Test " + test + " passed.")
             number_of_passing_tests += 1
         else:
             print("Test " + test + " failed.\n")
@@ -41,18 +49,6 @@ def run_test_family(test_root_dir, tas_path):
     number_of_tests = len(test_names)
     print(f"{number_of_passing_tests} of {number_of_tests} tests passed.")
 
-
-def loop_through_dirs():
-    rootdir = os.getcwd() + "/instr_tests"
-    for subdir, dirs, files in os.walk(rootdir):
-        print(subdir)
-    """
-    for subdir, dirs, files in os.walk(rootdir):
-        print(subdir)
-        print(dirs)
-        print(files)
-        print("\n\n")
-    """
 
 def main():
     if len(sys.argv) != 2:
@@ -71,6 +67,11 @@ def main():
     print("Running macro tests...")
     macro_test_dir = os.getcwd() + "/macro_tests"
     run_test_family(macro_test_dir, tas_path)
+
+    # run alias tests
+    print("Running alias tests")
+    alias_test_dir = os.getcwd() + "/alias_tests"
+    run_test_family(alias_test_dir, tas_path)
 
 
 if __name__ == "__main__":

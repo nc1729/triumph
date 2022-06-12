@@ -9,6 +9,9 @@
 
 namespace parse
 {
+	// search for alias tokens (in blocks or not in blocks) and make substitutions of 
+	// "NAME" tokens for their aliases
+	std::vector<Token> handle_aliases(std::vector<Token> const& tokens);
 	// take a list of Tokens generated from tokenizing a file
 	// and make a set of Blocks by collecting Tokens into Statements
 	// throw errors if syntax issues
@@ -23,5 +26,5 @@ namespace parse
 
 	// take a list of Tokens and collect them into code Blocks, containing a series
 	// of statements. At this stage (before assembly) handle macros
-	std::vector<Block> parse(std::vector<Token> const& tokens, std::string const& filename);
+	std::vector<Block> parse(std::vector<Token>& tokens, std::string const& filename);
 }
