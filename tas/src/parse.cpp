@@ -73,6 +73,13 @@ std::vector<Block> parse::make_blocks(std::vector<Token> const& tokens, std::str
 				{
 					// found the end of a block
 					in_block = false;
+					// add an additional HALT statement if this block is the main block
+					if (block_name == "main")
+					{
+						statement_tokens.clear();
+						statement_tokens.push_back(Token("HALT", line_number));
+						block_statements.emplace_back(statement_tokens);
+					}
 					blocks.emplace_back(block_name, filename, block_statements);
 				}
 				else if (this_token.type == TokenType::JUMP_LABEL)
@@ -108,6 +115,13 @@ std::vector<Block> parse::make_blocks(std::vector<Token> const& tokens, std::str
 					in_statement = false;
 					in_block = false;
 					block_statements.emplace_back(statement_tokens);
+					// add an additional HALT statement if this block is the main block
+					if (block_name == "main")
+					{
+						statement_tokens.clear();
+						statement_tokens.push_back(Token("HALT", line_number));
+						block_statements.emplace_back(statement_tokens);
+					}
 					blocks.emplace_back(block_name, filename, block_statements);
 				}
 				else if (this_token.type == TokenType::NEWLINE || this_token.type == TokenType::STATEMENT_END)
