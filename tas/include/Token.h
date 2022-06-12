@@ -28,6 +28,13 @@ enum class TokenType
 	STATEMENT_END,
 
 	/*
+	keywords
+	*/
+	// alias statement - "alias [NAME] [TOKEN]"
+	// aliases are used to replace names with other tokens
+	ALIAS,
+
+	/*
 	register types
 	*/
 	// register - any isolated char in A-I (or a-i)?
@@ -76,12 +83,13 @@ private:
 	std::string word;
 public:
 	// the line number the Token was on - for error messages etc
-	size_t line_number{ 0 };
+	size_t line_number;
 	// the Token after preprocessing (removing special chars etc)
 	std::string value;
         // the type of the Token
-	TokenType type{ TokenType::INVALID };
+	TokenType type;
 
+	Token() : line_number{0}, type{TokenType::INVALID} {};
 	Token(std::string const& word, size_t const& line_number, TokenType const& type = TokenType::INVALID);
 
 	bool operator==(Token const& other);

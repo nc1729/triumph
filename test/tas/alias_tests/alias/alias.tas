@@ -1,0 +1,17 @@
+main
+{
+    SET A, 5;
+    alias SEVEN 7;
+    SET B, SEVEN;
+    CALL func;
+}
+
+alias ADDR $MMM
+
+func
+{
+    LOAD C, ADDR;
+    alias SEVEN 11;
+    SET D, SEVEN;
+    RET;
+}

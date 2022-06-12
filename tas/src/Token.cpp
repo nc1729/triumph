@@ -48,6 +48,10 @@ std::ostream& operator<<(std::ostream& os, TokenType const& tokentype)
 	{
 		os << "STATEMENT_END";
 	}
+	else if (tokentype == TokenType::ALIAS)
+	{
+		os << "ALIAS";
+	}
 	else if (tokentype == TokenType::REG)
 	{
 		os << "REG";
@@ -86,6 +90,7 @@ std::ostream& operator<<(std::ostream& os, TokenType const& tokentype)
 	}
 	return os;
 }
+
 Token::Token(std::string const& word, size_t const& line_number, TokenType const& tokentype) :
     word{ word }, line_number{ line_number }, type{ tokentype }
 {
@@ -261,6 +266,11 @@ Token::Token(std::string const& word, size_t const& line_number, TokenType const
 	{
 		type = TokenType::JUMP_LABEL;
 		value = word.substr(1);
+	}
+	else if (word == "alias" || word == "ALIAS")
+	{
+		type = TokenType::ALIAS;
+		value = word;
 	}
 	else
 	{
