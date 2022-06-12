@@ -163,7 +163,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 #### SET X, t9
 - Opcode: maX t9
 - Length: 2 trytes
-- Description: set register X equal to immediate value t9.
+- Description: set register X equal to immediate value t9. t9 can be a value type, an addr type (in which case the address itself is used as the immediate, rather than its contents - use LOAD instruction to access memory) or a placeholder name type (useful for setting registers to addresses of code blocks)
 - Compare flag: No effect.
 - Carry flag: No effect.
 - Sign flag: No effect.

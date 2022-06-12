@@ -4,4 +4,5 @@ main {
     SET B, 5
     SET C, 82
     SET D, 'a'
+    SET E, $ggg
 }

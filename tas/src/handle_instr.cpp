@@ -205,7 +205,7 @@ void handle::gank(Statement& statement)
 
 void handle::set(Statement& statement)
 {
-    // SET reg, reg/t9
+    // SET reg, reg/addr/t9
     size_t number_of_arguments = statement.size() - 1;
     if (number_of_arguments == 2)
     {
@@ -215,9 +215,9 @@ void handle::set(Statement& statement)
             throw TASError(err_string, statement.line_number);
         }
         if (statement[2].type != TokenType::REG && statement[2].type != TokenType::VAL
-            && statement[2].type != TokenType::NAME)
+            && statement[2].type != TokenType::ADDR && statement[2].type != TokenType::NAME)
         {
-            std::string err_string = "Argument 2 in SET statement must be of REG, VAL or NAME type";
+            std::string err_string = "Argument 2 in SET statement must be of REG, VAL, ADDR or NAME type";
             throw TASError(err_string, statement.line_number);
         }
     }
