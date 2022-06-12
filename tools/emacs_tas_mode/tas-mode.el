@@ -15,7 +15,7 @@
 (add-to-list 'auto-mode-alist '("\\.tas\\'" . tas-mode))
 
 (defconst tas-font-lock-keywords-1
-  (list   '("\\<\\(A\\(?:D[CD]\\|ND\\)\\|BANK\\|C\\(?:MP\\|PZ\\)\\|DEC\\|FLIP\\|GANK\\|HALT\\|INC\\|JP\\(?:N[NPZ]\\|[NPSZ]\\)?\\|LOAD\\|NO[PT]\\|OR\\|P\\(?:EEK\\|JP\\|OP\\|USH\\)\\|S\\(?:AVE\\|BB\\|ET\\|H\\|TAR\\|UB\\|WAP\\)\\|ZERO\\)\\>" . font-lock-builtin-face)
+  (list   '("\\<\\(A\\(?:D[CD]\\|ND\\)\\|BANK\\|C\\(?:ALL\\|MP\\|PZ\\)\\|DEC\\|FLIP\\|GANK\\|HALT\\|INC\\|JP\\(?:N[NPZ]\\|[NPSZ]\\)?\\|LOAD\\|NO[PT]\\|OR\\|P\\(?:EEK\\|JP\\|OP\\|USH\\)\\|RET\\|S\\(?:AVE\\|BB\\|ET\\|H\\|TAR\\|UB\\|WAP\\)\\|ZERO\\)\\>" . font-lock-builtin-face)
    '("\\('\\w*'\\)" . font-lock-variable-name-face))
   "Minimal highlighting expressions for TAS mode.")
 
