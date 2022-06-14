@@ -79,11 +79,17 @@ void Computer::boot()
 		catch(const std::invalid_argument& e)
 		{
 			(void)e;
-			Tryte addr{"M00"};
+			Tryte addr{"DMM"};
 			memory.load_program(addr, input_trytes);
 			memory.pc() = addr;
 			memory.sp() = Memory::STACK_BOTTOM;
 		}
+	}
+
+	// if debug flag found, set CPU into debug mode on startup
+	if (options.debug_mode)
+	{
+		cpu.debug_mode() = true;
 	}
 
 	// start IO in new thread

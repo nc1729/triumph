@@ -26,6 +26,8 @@ public:
 	void dump();
 	// on crash, dump contents of registers and other things to stderr
 	void crash_dump(std::string const& err_msg);
+	// public access to debug mode
+	bool& debug_mode();
 
 
 private:

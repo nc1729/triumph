@@ -117,6 +117,11 @@ void CPU::crash_dump(std::string const& err_msg)
 	dump();
 }
 
+bool& CPU::debug_mode()
+{
+	return debug_mode_;
+}
+
 void CPU::fetch()
 {
 	instr_ = memory_[pc_];

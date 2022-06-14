@@ -17,5 +17,5 @@ struct TriumphCLOptions
     bool console_mode;
 
     // default constructor
-    TriumphCLOptions() : disk_filenames{}, input_trifile{}, start_addr{"M00"}, debug_mode{false}, console_mode{false} {};
+    TriumphCLOptions() : disk_filenames{}, input_trifile{}, start_addr{"DMM"}, debug_mode{false}, console_mode{false} {};
 };
