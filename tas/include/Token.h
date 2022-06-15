@@ -97,6 +97,7 @@ public:
 
 	bool is_data_type() const;
 	bool is_addr_type() const;
+
+	friend std::ostream& operator<<(std::ostream& os, Token const& token);
 };
 
-std::ostream& operator<<(std::ostream& os, Token const& token);

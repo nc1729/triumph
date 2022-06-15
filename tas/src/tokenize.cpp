@@ -68,6 +68,10 @@ std::string tokenize::remove_comments(std::string const& file_string)
 					new_line += "\\\"";
 					index++;
 				}
+				else
+				{
+					new_line += this_char;
+				}
 			}
 			else if (this_char == '\"')
 			{

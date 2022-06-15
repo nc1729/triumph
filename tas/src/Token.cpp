@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "constants.h"
+#include "error.h"
 #include "Tryte.h"
 #include "util.hpp"
 #include "Token.h"
@@ -96,8 +97,65 @@ Token::Token(std::string const& word, size_t const& line_number, TokenType const
 {
 	if (type != TokenType::INVALID)
 	{
-		// already defined TokenType with constructor, no need to infer it
-		value = word;
+		if (type == TokenType::STRING)
+		{
+			// handle special chars here
+			std::cout << "Found a string\n";
+			size_t string_len = word.size();
+			size_t i = 0;
+			while (i < string_len)
+			{
+				char this_char = word[i];
+				if (this_char == '\\')
+				{
+					// found a backslash, signifying a special char
+					if (i == string_len - 1)
+					{
+						// found a backslash before the end of string, throw error
+						throw TASError("Unexpected backslash at end of string", line_number);
+					}
+					char next_char = word[i+1];
+					if (next_char == 'n')
+					{
+						// found a newline char
+						value += '\n';
+					}
+					else if (next_char == 't')
+					{
+						value += '\t';
+					}
+					else if (next_char == 'r')
+					{
+						value += '\r';
+					}
+					else if (next_char == '\\')
+					{
+						value += '\\';
+					}
+					else if (next_char == '0')
+					{
+						value += '\0';
+					}
+					else
+					{
+						throw TASError("Backslash followed by unexpected control char", line_number);
+					}
+					i++;
+				}
+				else
+				{
+					value += this_char;
+				}
+				i++;
+			}
+			std::cout << word << '\n';
+			std::cout << value << '\n';
+		}
+		else
+		{
+			// by default, if type given in constructor, copy value from given string
+			value = word;
+		}
 		return;
 	}
 
@@ -292,6 +350,16 @@ bool Token::operator!=(Token const& other)
 
 std::ostream& operator<<(std::ostream& os, Token const& token)
 {
-	os << "[" << token.value << ", " << token.type << ", " << token.line_number << "]";
+	std::string token_contents;
+	if (token.type == TokenType::STRING)
+	{
+		// print contents with special chars unhandled
+		token_contents = token.word;
+	}
+	else
+	{
+		token_contents = token.value;
+	}
+	os << "[" << token_contents << ", " << token.type << ", " << token.line_number << "]";
 	return os;
 }
