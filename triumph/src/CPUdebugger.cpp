@@ -263,7 +263,7 @@ void CPU::debug_dump_memory(std::vector<std::string> const& words)
     // check second arg was address or value
     if (util::string_is_addr(words[2]))
     {
-        addr2 = Tryte(words[1].substr(1));
+        addr2 = Tryte(words[2].substr(1));
     }
     else if (util::string_is_tryte(words[2]))
     {

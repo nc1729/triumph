@@ -100,7 +100,6 @@ Token::Token(std::string const& word, size_t const& line_number, TokenType const
 		if (type == TokenType::STRING)
 		{
 			// handle special chars here
-			std::cout << "Found a string\n";
 			size_t string_len = word.size();
 			size_t i = 0;
 			while (i < string_len)
@@ -148,8 +147,6 @@ Token::Token(std::string const& word, size_t const& line_number, TokenType const
 				}
 				i++;
 			}
-			std::cout << word << '\n';
-			std::cout << value << '\n';
 		}
 		else
 		{

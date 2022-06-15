@@ -1,0 +1,34 @@
+main
+{
+    CALL print_string welcome_string;
+
+    /*
+    CALL load_save_test;
+    CALL bank_gank_test;
+    CALL set_test;
+    CALL swap_test;
+    CALL push_pop_test;
+    CALL peek_test;
+    CALL add_test;
+    CALL adc_test;
+    CALL sub_test;
+    CALL sbb_test;
+    CALL sh_test;
+    CALL inc_dec_test;
+    CALL flip_not_test;
+    CALL zero_test;
+    CALL cmp_test;
+    CALL cpz_test;
+    CALL and_test;
+    CALL or_test;
+    CALL star_test;
+    CALL not_test;
+    CALL nop_test;
+    CALL jump_tests;
+    */
+}
+
+welcome_string
+{
+    "TRIUMPH test disk\n"
+}
