@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <thread>
+#include <chrono>
 
 #include "Tryte.h"
 #include "Bank.h"
@@ -189,12 +190,15 @@ void Computer::console_manager()
 
 void Computer::IO_manager()
 {
+	constexpr auto wait = std::chrono::milliseconds(100);
 	while (this->is_on)
 	{
+		auto start = std::chrono::steady_clock::now();
 		console_manager();
 		if (disks.size() > 0)
 		{
 			disk_manager();
 		}
+		std::this_thread::sleep_until(start + wait);
 	}
 }
