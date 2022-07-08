@@ -196,13 +196,6 @@ std::vector<Block> parse::make_blocks(std::vector<Token> const& tokens, std::str
 				{
 					// found the end of a block
 					in_block = false;
-					// add an additional HALT statement if this block is the main block
-					if (block_name == "main")
-					{
-						statement_tokens.clear();
-						statement_tokens.push_back(Token("HALT", line_number));
-						block_statements.emplace_back(statement_tokens);
-					}
 					blocks.emplace_back(block_name, filename, block_statements);
 				}
 				else if (this_token.type == TokenType::JUMP_LABEL)
@@ -270,7 +263,7 @@ std::vector<Block> parse::make_blocks(std::vector<Token> const& tokens, std::str
 	return blocks;
 }
 
-std::vector<Statement> parse::expand_macro(Statement const& macro)
+std::vector<Statement> parse::expand_macro(Statement const& macro, std::string const& block_name)
 {
 	std::vector<Statement> new_statements;
 	if (macro[0].value == "NOT")
@@ -288,8 +281,19 @@ std::vector<Statement> parse::expand_macro(Statement const& macro)
 		{
 			throw TASError("RET macro takes no arguments", macro.line_number);
 		}
-		// RET => PJP
-		new_statements.push_back(Statement({ Token("PJP", macro.line_number, TokenType::INSTR) }));
+
+		// in main block, RET is replaced with HALT
+		if (block_name == "main")
+		{
+			// RET => HALT
+			new_statements.push_back(Statement({ Token("HALT", macro.line_number, TokenType::INSTR) }));
+		}
+		else
+		{
+			// in any other block, RETs are PJPs
+			// RET => PJP
+			new_statements.push_back(Statement({ Token("PJP", macro.line_number, TokenType::INSTR) }));
+		}
 	}
 	else if (macro[0].value == "JPN")
 	{
@@ -435,11 +439,40 @@ std::vector<Statement> parse::expand_macro(Statement const& macro)
 					Token("POP", macro.line_number, TokenType::INSTR),
 					Token(constants::regs[number_of_func_args - i], macro.line_number) }));
 		}
-		// after all this, something like CALL func B, 72, 'a' should become
-		// PUSH B; PUSH C; PUSH D; SET B, B (nop?); SET C, 72; SET D, 'a'; JPS func; POP D; POP C; POP B
+		// after all this, something like CALL func C, 72, 'a' should become
+		// PUSH B; PUSH C; PUSH D; SET B, C; SET C, 72; SET D, 'a'; JPS func; POP D; POP C; POP B
 		// a CALL function with n arguments will become 3n + 1 instructions, so it's a bit heavy
+		// it's more efficient to use B for first argument, C for second, and so on
 	}
 	return new_statements;
+}
+
+std::vector<Block>& parse::add_last_halt(std::vector<Block>& blocks)
+{
+	for (Block& block : blocks)
+	{
+		if (block.name == "main")
+		{
+			std::vector<Token> new_tokens;
+			if (block.statements.size() == 0)
+			{
+				// main block was empty, add a HALT instruction
+				new_tokens.push_back(Token("HALT", 1, TokenType::INSTR));
+				block.statements.emplace_back(new_tokens);
+			}
+			else
+			{
+				Statement& last_statement = block.statements.back();
+				if (last_statement.type == StatementType::INSTR && last_statement[0].value != "HALT")
+				{
+					// main block doesn't end in a HALT statement, so add one here
+					new_tokens.push_back(Token("HALT", last_statement.line_number, TokenType::INSTR));
+					block.statements.emplace_back(new_tokens);
+				}
+			}
+		}
+	}
+	return blocks;
 }
 
 std::vector<Block>& parse::handle_macros(std::vector<Block>& blocks)
@@ -452,7 +485,7 @@ std::vector<Block>& parse::handle_macros(std::vector<Block>& blocks)
 		{
 			if (statement.type == StatementType::MACRO)
 			{
-				std::vector<Statement> expanded_macro = expand_macro(statement);
+				std::vector<Statement> expanded_macro = expand_macro(statement, block.name);
 				// add new statements from expanded macro onto new_statements
 				new_statements.insert(new_statements.end(), expanded_macro.begin(), expanded_macro.end());
 			}
@@ -476,5 +509,7 @@ std::vector<Block> parse::parse(std::vector<Token>& tokens, std::string const& f
 	std::vector<Block> blocks = make_blocks(tokens, filename);
 	// expand macro statements ("CALL", "JPZ", etc)
 	blocks = handle_macros(blocks);
+	// if there's a main block, ensure that it ends in a HALT, if it doesn't already
+	blocks = add_last_halt(blocks);
 	return blocks;
 }

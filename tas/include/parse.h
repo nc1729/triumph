@@ -18,11 +18,15 @@ namespace parse
 	std::vector<Block> make_blocks(std::vector<Token> const& tokens, std::string const& filename);
 
 	// if statement matches the form of a macro, expand it
-	std::vector<Statement> expand_macro(Statement const& statement);
+	// block name is passed as "RET" macro behaves differently in main block
+	std::vector<Statement> expand_macro(Statement const& statement, std::string const& block_name);
 
 	// work through statements in all Blocks
 	// if statement matches a macro, replace that statement with several statements
 	std::vector<Block>& handle_macros(std::vector<Block>& blocks);
+
+	// add last HALT to main, if main does not end in a HALT statement
+	std::vector<Block>& add_last_halt(std::vector<Block>& blocks);
 
 	// take a list of Tokens and collect them into code Blocks, containing a series
 	// of statements. At this stage (before assembly) handle macros
