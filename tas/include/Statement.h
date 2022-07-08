@@ -16,6 +16,8 @@ enum class StatementType
 	JUMP_LABEL
 };
 
+std::ostream& operator<<(std::ostream& os, StatementType const& type);
+
 class Statement
 {
 public:

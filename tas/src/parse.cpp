@@ -463,11 +463,14 @@ std::vector<Block>& parse::add_last_halt(std::vector<Block>& blocks)
 			else
 			{
 				Statement& last_statement = block.statements.back();
-				if (last_statement.type == StatementType::INSTR && last_statement[0].value != "HALT")
+				if (last_statement.type == StatementType::INSTR || last_statement.type == StatementType::JUMP)
 				{
-					// main block doesn't end in a HALT statement, so add one here
-					new_tokens.push_back(Token("HALT", last_statement.line_number, TokenType::INSTR));
-					block.statements.emplace_back(new_tokens);
+					if (last_statement[0].value != "HALT")
+					{
+						// main block doesn't end in a HALT statement, so add one here
+						new_tokens.push_back(Token("HALT", last_statement.line_number, TokenType::INSTR));
+						block.statements.emplace_back(new_tokens);
+					}
 				}
 			}
 		}

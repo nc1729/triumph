@@ -1,5 +1,6 @@
 /build/*
 /bin/*
+/scratch/*
 /CMakeFiles/*
 /Debug/*
 /.vs/*

@@ -110,3 +110,28 @@ std::ostream& operator<<(std::ostream& os, Statement const& statement)
 	}
 	return os;
 }
+
+std::ostream& operator<<(std::ostream& os, StatementType const& type)
+{
+	if (type == StatementType::INSTR)
+	{
+		os << "INSTR";
+	}
+	else if (type == StatementType::DATA)
+	{
+		os << "DATA";
+	}
+	else if (type == StatementType::JUMP)
+	{
+		os << "JUMP";
+	}
+	else if (type == StatementType::JUMP_LABEL)
+	{
+		os << "JUMP_LABEL";
+	}
+	else if (type == StatementType::MACRO)
+	{
+		os << "MACRO";
+	}
+	return os;
+}
