@@ -30,7 +30,7 @@ public:
 	static Tryte const PC;
 	// $MMM - bank memory start
 	static Tryte const BANK_START;
-	// $mm0 - stack bottom
+	// $mma - stack bottom
 	static Tryte const STACK_BOTTOM;
 	// $mMM - stack top
 	static Tryte const STACK_TOP;

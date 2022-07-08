@@ -12,7 +12,7 @@ Tryte const Memory::BANK = 9839;
 Tryte const Memory::SP = 9840;
 Tryte const Memory::PC = 9841;
 Tryte const Memory::BANK_START = -9841;
-Tryte const Memory::STACK_BOTTOM = 9828;
+Tryte const Memory::STACK_BOTTOM = 9829;
 Tryte const Memory::STACK_TOP = 9113;
 Tryte const Memory::BANK_END = -3280;
 

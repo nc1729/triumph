@@ -18,8 +18,8 @@ void CPU::debug()
     // get first input
     std::cout << ">>> ";
     std::getline(std::cin, input);
-    // loop until debugger is quit
-    while (debug_mode_)
+    // loop until debugger is quit or CPU is switched off
+    while (debug_mode_ && this->is_on())
     {
         // break line input into words
         std::stringstream input_stream(input);
@@ -72,13 +72,7 @@ void CPU::debug()
                 continue;
             }
             // print contents of stack
-            Tryte stack_start = sp_;
-            while (stack_start != Memory::STACK_BOTTOM)
-            {
-                std::cout << stack_start << ": " << memory_[stack_start] << '\n';
-                stack_start += 1;
-            }
-            std::cout << Memory::STACK_BOTTOM << ": " << memory_[stack_start] << "\n\n";
+            dump_stack();
         }
         else if (command == "bank")
         {
@@ -86,7 +80,7 @@ void CPU::debug()
         }
         else if (command == "c" || command == "current")
         {
-            std::cout << "Current instruction: " << instr_;
+            std::cout << "Current instruction: " << instr_ << '\n';
         }
         else if (command == "s" || command == "set")
         {

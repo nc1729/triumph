@@ -24,6 +24,8 @@ public:
 	void run();
 	// dump contents of registers and other things to stdout
 	void dump();
+	// dump stack to stdout
+	void dump_stack();
 	// on crash, dump contents of registers and other things to stderr
 	void crash_dump(std::string const& err_msg);
 	// public access to debug mode

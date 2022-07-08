@@ -95,6 +95,7 @@ void CPU::dump()
 	std::cout << "Program counter: " << pc_ << '\n';
 	std::cout << "Last instruction: " << instr_ << '\n';
 	std::cout << "Stack pointer: " << sp_ << '\n';
+	std::cout << "Memory bank: " << bank_ << '\n';
 
 	std::cout << "---------REGISTERS---------\n";
 	std::cout << "A : " << regs_[1] << " B : " << regs_[2] << " C : " << regs_[3] << '\n';
@@ -102,13 +103,17 @@ void CPU::dump()
 	std::cout << "G : " << regs_[7] << " H : " << regs_[8] << " I : " << regs_[9] << '\n';
 
 	std::cout << "-----------STACK-----------\n";
+	dump_stack();
+}
+
+void CPU::dump_stack()
+{
 	Tryte stack_start = sp_;
 	while (stack_start != Memory::STACK_BOTTOM)
 	{
 		std::cout << stack_start << ": " << memory_[stack_start] << '\n';
 		stack_start += 1;
 	}
-	std::cout << Memory::STACK_BOTTOM << ": " << memory_[stack_start] << "\n\n";
 }
 
 void CPU::crash_dump(std::string const& err_msg)
