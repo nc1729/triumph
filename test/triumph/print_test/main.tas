@@ -1,0 +1,15 @@
+main
+{
+    BANK -4; // set bank to console mode
+    CALL print_string hello;
+    CALL print_int 42;
+    CALL print_newline;
+    SET B, 100;
+    CALL print_raw B;
+    CALL print_newline;
+}
+
+hello
+{
+    "Hello!\n";
+}

@@ -164,6 +164,8 @@ void Computer::disk_manager()
 
 void Computer::console_manager()
 {
+	// refresh display mode (it may have changed since last cycle)
+	console.set_display_mode();
 	// check if console is being accessed
 	if (memory.bank() == Tryte(Console::CONSOLE_BANK))
 	{
@@ -185,20 +187,16 @@ void Computer::console_manager()
 			memory[Console::CONSOLE_STATE_ADDR][Console::IN_REQUEST_FLAG] = 0;
 		}
 	}
-	console.set_display_mode();
 }
 
 void Computer::IO_manager()
 {
-	constexpr auto wait = std::chrono::milliseconds(100);
 	while (this->is_on)
 	{
-		auto start = std::chrono::steady_clock::now();
 		console_manager();
 		if (disks.size() > 0)
 		{
 			disk_manager();
 		}
-		std::this_thread::sleep_until(start + wait);
 	}
 }

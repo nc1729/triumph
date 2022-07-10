@@ -21,6 +21,8 @@ void Console::flush_to_out()
 		{
 			// print the tryte's ASCII char equivalent
 			out << static_cast<char>(tryte);
+			i++;
+			tryte = buffer[COUT_BUFFER_START + 9841 + i];
 		}
 	}
 	else
