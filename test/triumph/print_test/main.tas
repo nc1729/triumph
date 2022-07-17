@@ -1,6 +1,6 @@
 main
 {
-    BANK -4; // set bank to console mode
+    BANK -1; // set bank to console mode
     CALL print_string hello;
     CALL print_int 42;
     CALL print_newline;

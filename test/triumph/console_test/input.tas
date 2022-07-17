@@ -1,6 +1,6 @@
 main
 {
-    BANK -4; // switch bank to console
+    BANK -1; // switch bank to console
     CALL read_from_input // get input into cin buffer
 
     LOAD B, $Emk // get length of input into B

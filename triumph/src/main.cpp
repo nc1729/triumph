@@ -11,6 +11,10 @@
 #include "TriumphCLOptions.h"
 #include "Computer.h"
 
+// SDL messes with main, defining its own
+// this undoes that, allowing the option to run without SDL in console mode
+#undef main
+
 int main(int argc, char** argv) {
     CLI::App app{ "Converts a collection of ternary assembly (.tas) files \
      into a ternary machine code file (.tri)" };

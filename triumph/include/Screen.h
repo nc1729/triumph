@@ -48,20 +48,22 @@ private:
 	int64_t static constexpr STATUS = 6560;
 	
 public:
-	Screen();
-	~Screen();
 	void read_tilemap(std::string const& filename);
 	void show_tilemap();
 
 	// main loop
 	void run();
 
+	// on/off functions - init/destroy SDL when screen is turned on/off
+	void turn_on();
+	void turn_off();
+
 	void draw_to_screen();
 	int64_t static constexpr FPS = 30;
 
-	int64_t static constexpr FRAMEBUFFER_BANK = -1;
-	int64_t static constexpr TILEMAP_BANK = -2;
-	int64_t static constexpr WORKRAM_BANK = -3;
+	int64_t static constexpr FRAMEBUFFER_BANK = -101;
+	int64_t static constexpr TILEMAP_BANK = -102;
+	int64_t static constexpr WORKRAM_BANK = -103;
 	// location of screen status flag in work RAM
 	// + : screen is ready
 	// 0 : screen is busy

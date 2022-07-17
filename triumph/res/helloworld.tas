@@ -1,3 +1,7 @@
+alias FRAMEBUFFER -101
+alias TILEMAP_BANK -102
+alias SCREEN_WORKRAM -103
+
 main
 {
     CALL copy_to_tilemap
@@ -21,7 +25,7 @@ copy_to_tilemap
         BANK B // set bank to disk
         CALL load_page B, C
         CALL memcpy 0sMMM, 0sAMM, 729
-        BANK -2
+        BANK TILEMAP_BANK
         CALL memcpy 0sAMM, D, 729
         ADD D, 729
         INC C
@@ -45,7 +49,7 @@ write_to_palette_0
     // store bank
     PUSH G; GANK G
     // switch to work RAM
-    BANK -3
+    BANK SCREEN_WORKRAM
     // set C to pointer to palette 0
     SET C, 0sMLA
     // negative trits - black
@@ -77,7 +81,7 @@ write_to_framebuffer
     // store current bank in stack
     PUSH G; GANK G
     // switch bank to framebuffer
-    BANK -1
+    BANK FRAMEBUFFER
 
     // set to row 26 of framebuffer (and some columns along)
     SET C, 0sLlg

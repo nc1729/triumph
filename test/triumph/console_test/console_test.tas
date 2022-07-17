@@ -1,6 +1,6 @@
 main
 {
-    BANK -4; // switch bank to console
+    BANK -1; // switch bank to console
     SET C, 0sMMM; // point C to beginning of cout buffer
     SET D, print_this;
     SET E, D 
