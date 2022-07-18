@@ -447,6 +447,15 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Sign flag: No effect.
 - Stack flag: No effect.
 
+#### SLEEP/WAIT
+- Opcode: M00
+- Length: 1 tryte
+- Description: CPU goes to sleep - will awake when external device tells it to.
+- Compare flag: No effect.
+- Carry flag: No effect.
+- Sign flag: No effect.
+- Stack flag: No effect.
+
 #### HALT
 - Opcode: 000
 - Length: 1 tryte

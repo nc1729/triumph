@@ -41,13 +41,16 @@ def run_test_family(test_root_dir, tas_path):
     number_of_passing_tests = 0
     for test in test_names:
         if run_test(test, test_root_dir + "/" + test, tas_path):
-            print("Test " + test + " passed.")
+            print(test + " test passed.")
             number_of_passing_tests += 1
         else:
-            print("Test " + test + " failed.\n")
+            print(test + " test failed.\n")
 
     number_of_tests = len(test_names)
     print(f"{number_of_passing_tests} of {number_of_tests} tests passed.")
+
+    # if all tests pass, return True
+    return number_of_passing_tests == number_of_tests
 
 
 def main():
@@ -61,17 +64,25 @@ def main():
     # run instr tests
     print("Running instr tests...")
     instr_test_dir = os.getcwd() + "/instr_tests"
-    run_test_family(instr_test_dir, tas_path)
+    instr_test_results = run_test_family(instr_test_dir, tas_path)
+    print("======================")
 
     # run macro tests
     print("Running macro tests...")
     macro_test_dir = os.getcwd() + "/macro_tests"
-    run_test_family(macro_test_dir, tas_path)
+    macro_test_results = run_test_family(macro_test_dir, tas_path)
+    print("======================")
 
     # run alias tests
     print("Running alias tests")
     alias_test_dir = os.getcwd() + "/alias_tests"
-    run_test_family(alias_test_dir, tas_path)
+    alias_test_results = run_test_family(alias_test_dir, tas_path)
+    print("======================")
+
+    if instr_test_results and macro_test_results and alias_test_results:
+        print("SUCCESS")
+    else:
+        print("FAILURE")
 
 
 if __name__ == "__main__":

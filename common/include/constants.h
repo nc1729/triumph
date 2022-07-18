@@ -69,6 +69,7 @@ namespace constants
         // control flow
         "NOP", "nop",
         "HALT", "halt",
+        "SLEEP", "sleep",
         "BREAK", "break"
     };
 
@@ -83,6 +84,8 @@ namespace constants
     {
         // equivalent to FLIP X
         "NOT", "not",
+        // equivalent to SLEEP
+        "WAIT", "wait",
         // CALL addr, arg1, arg2 ...
         // should expand to PUSH B, PUSH C, ... (equal to number of arguments, up to 8)
         // SET B, arg1; SET C, arg2; SET D, arg3, ...

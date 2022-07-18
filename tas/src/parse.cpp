@@ -275,6 +275,15 @@ std::vector<Statement> parse::expand_macro(Statement const& macro, std::string c
 		// NOT reg => FLIP reg
 		new_statements.push_back(Statement({ Token("FLIP", macro.line_number, TokenType::INSTR), macro[1] }));
 	}
+	else if (macro[0].value == "WAIT")
+	{
+		if (macro.size() != 1)
+		{
+			throw TASError("WAIT macro takes no arguments", macro.line_number);
+		}
+		// WAIT => SLEEP (synonym)
+		new_statements.push_back(Statement({Token("SLEEP", macro.line_number, TokenType::INSTR) }));
+	}
 	else if (macro[0].value == "RET")
 	{
 		if (macro.size() != 1)
