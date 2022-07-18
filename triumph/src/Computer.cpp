@@ -106,9 +106,30 @@ void Computer::boot()
 	{
 		// start CPU in new thread
 		std::thread cpu_thread{ &CPU::run, &(this->cpu) };
+
 		// and run screen in main thread
-		screen.is_on = true;
+		// first add screen's internal memory to computer's memory map
+		memory.add_bank(&screen.tryte_framebuffer);
+		memory.add_bank(&screen.tilemap);
+		memory.add_bank(&screen.work_RAM);
+		// memory test
+		/*
+		std::cout << memory.bank() << '\n';
+		std::cout << "Opening framebuffer\n";
+		memory.bank() = -101;
+		std::cout << memory[Tryte("MMM")] << '\n';
+		std::cout << "Opening tilemap\n";
+		memory.bank() = -102;
+		std::cout << memory[Tryte("MMM")] << '\n';
+		std::cout << "Opening workRAM\n";
+		memory.bank() = -103;
+		std::cout << memory[Tryte("MMM")] << '\n';
+		memory.bank() = 1;
+		*/
+		// and set up and run screen loop
+		screen.turn_on();
 		screen.run();
+
 		// when screen is switched off, stop the CPU
 		cpu.turn_off();
 		cpu_thread.join();

@@ -22,7 +22,7 @@ private:
 public:
 	Console(std::ostream& out, std::istream& in) : out{ out }, in{ in } {};
 	DisplayMode mode = DisplayMode::RAW;
-	int64_t static constexpr CONSOLE_BANK = -4;
+	int64_t static constexpr CONSOLE_BANK = -1;
 	int64_t static constexpr BUFFER_SIZE = 729;
 	Bank buffer{ CONSOLE_BANK };
 

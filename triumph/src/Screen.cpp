@@ -14,7 +14,7 @@ std::array<uint32_t, 27> const Screen::colour_values =
 { 0, 10, 20, 29, 39, 49, 59, 69, 78, 88, 98, 108, 118, 128, 137, 147, 157, 167, 177, 186,
     196, 206, 216, 226, 235, 245, 255 };
 
-Screen::Screen()
+void Screen::turn_on()
 {
     // initialise SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -48,9 +48,10 @@ Screen::Screen()
         byte_framebuffer.resize(PIXEL_WIDTH * PIXEL_HEIGHT);
         palettes.resize(81, 0);
     }
+    is_on = true;
 }
 
-Screen::~Screen()
+void Screen::turn_off()
 {
     SDL_DestroyTexture(screen_texture);
     SDL_DestroyRenderer(renderer);
@@ -59,6 +60,8 @@ Screen::~Screen()
 
     // quit SDL
     SDL_Quit();
+
+    is_on = false;
 }
 
 void Screen::read_tilemap(std::string const& filename)
@@ -203,7 +206,7 @@ void Screen::run()
             // handle input
             if (e.type == SDL_QUIT)
             {
-                is_on = false;
+                turn_off();
             }
             if (e.type == SDL_KEYDOWN)
             {
@@ -221,10 +224,10 @@ void Screen::run()
             }
             if (e.type == SDL_MOUSEBUTTONDOWN)
             {
-                is_on = false;
+                turn_off();
             }
 
-            regen_palettes();            
+            regen_palettes();
             draw_to_screen();
             uint64_t frame_end = SDL_GetPerformanceCounter();
 
