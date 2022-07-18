@@ -450,7 +450,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 #### SLEEP/WAIT
 - Opcode: M00
 - Length: 1 tryte
-- Description: CPU goes to sleep - will awake when external device tells it to.
+- Description: CPU goes to sleep - will awake when external device tells it to. Useful to prevent data races when disks load/save.
 - Compare flag: No effect.
 - Carry flag: No effect.
 - Sign flag: No effect.
