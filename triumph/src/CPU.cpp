@@ -33,6 +33,21 @@ void CPU::turn_off()
 	on_ = false;
 }
 
+void CPU::sleep()
+{
+	asleep_ = true;
+}
+
+void CPU::wake()
+{
+	asleep_ = false;
+}
+
+bool CPU::is_asleep()
+{
+	return asleep_;
+}
+
 bool CPU::is_on()
 {
 	return on_;
@@ -50,14 +65,18 @@ void CPU::run()
 	this->turn_on();
 	while (on_)
 	{
-		if (debug_mode_)
+		if (!asleep_)
 		{
-			debug();
+			if (debug_mode_)
+			{
+				debug();
+			}
+			else
+			{
+				cycle();
+			}
 		}
-		else
-		{
-			cycle();
-		}
+		
 		/*
 		// moderate processor speed
 		if (cycles_ % max_frequency_ == 0)
@@ -154,6 +173,11 @@ void CPU::decode_and_execute()
 		case -13:
 			// MM* - BREAK
 			enter_debug();
+			instr_size_ = 1;
+			break;
+		case 0:
+			// M0* - SLEEP
+			sleep();
 			instr_size_ = 1;
 			break;
 		case 6:

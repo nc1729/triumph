@@ -126,7 +126,10 @@ load_page
     LOAD D, $Emm // D = disk flag
     OR D, 0t-------+- // set read request trit to 1
     SAVE D, $Emm // send read request
+
+    SLEEP; // disk manager will awaken CPU when it's done
     
+    /*
     !send_loop
         LOAD D, $Emm
         STAR D, 0t0000000+0 // tritwise multiply - get read request trit alone
@@ -138,6 +141,7 @@ load_page
         STAR D, 0t00000000+ // get disk status trit
         CPZ D
         JPZ wait_loop // if D == 0, disk is still busy, keep waiting
+    */
     
     // leave
     POP D

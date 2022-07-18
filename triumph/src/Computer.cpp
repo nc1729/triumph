@@ -141,8 +141,8 @@ void Computer::boot()
 
 void Computer::disk_manager()
 {
-	// check if a disk is being accessed
-	if (memory.bank() > Tryte(0))
+	// check if a disk is being accessed and CPU is sleeping (to prevent data race)
+	if (memory.bank() > Tryte(0) && cpu.is_asleep())
 	{
 		// check for a CPU read request
 		if (memory[Disk::DISK_STATE_ADDR][Disk::READ_REQUEST_FLAG] == 1)
@@ -180,6 +180,9 @@ void Computer::disk_manager()
 			memory[Disk::DISK_STATE_ADDR][Disk::WRITE_REQUEST_FLAG] = 0;
 
 		}
+
+		// wake CPU when read/write is finished
+		cpu.wake();
 	}
 }
 

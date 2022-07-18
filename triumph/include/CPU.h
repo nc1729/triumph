@@ -16,7 +16,13 @@ public:
 	void turn_on();
 	// turn CPU off
 	void turn_off();
-	// return CPU status
+	// put CPU to sleep
+	void sleep();
+	// wake CPU up
+	void wake();
+	// check if CPU is sleeping or awake
+	bool is_asleep();
+	// check if CPU is on
 	bool is_on();
 	// perform a single CPU fetch/decode/execute cycle
 	void cycle();
@@ -82,13 +88,15 @@ private:
 	// CPU is being throttled by the emulator
 	bool throttled_;
 
-	bool print = false;
-
 	/*
 	CPU variables and private functions
 	*/
 	// on/off switch
 	bool on_;
+	// sleep mode switch
+	bool asleep_;
+
+	// debug mode switch
 	bool debug_mode_;
 
 	// fetch the Tryte at the instruction pointer and set it as current instruction
