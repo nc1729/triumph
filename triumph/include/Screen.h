@@ -59,7 +59,7 @@ public:
 	void turn_off();
 
 	void draw_to_screen();
-	int64_t static constexpr FPS = 30;
+	int64_t static constexpr FPS = 60;
 
 	int64_t static constexpr FRAMEBUFFER_BANK = -101;
 	int64_t static constexpr TILEMAP_BANK = -102;

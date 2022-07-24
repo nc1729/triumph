@@ -26,9 +26,9 @@ private:
 	// disk
 	std::vector<Disk>& disks;
 	// collate memory banks and initialise memory management
-	Memory memory{ {&zero, &(console.buffer)}, disks};
+	Memory memory;
 	// init CPU
-	CPU cpu{ memory };
+	CPU cpu;
 	
 	void disk_manager();
 	void console_manager();
