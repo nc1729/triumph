@@ -80,13 +80,15 @@ private:
 	// time updated every time max_frequency cycles elapses
 	std::chrono::time_point<std::chrono::system_clock> second_start_;
 	// number of cycles elasped so far
-	int64_t cycles_;
-	// maximum number of cycles per second
-	size_t max_frequency_;
+	int64_t cycles_ = 0;
+	// cycles per frame
+	// clock frequency fixed at 3 MHz - screen runs at 60 FPS
+	// => 50,000 cycles per frame
+	size_t const cycles_per_frame_ = 50000;
+	// frame duration (1/60th of a second)
+	std::chrono::duration<int64_t, std::nano> const frame_duration_ = std::chrono::nanoseconds{1000000000 / 60};
 	// instruction size, used for jumping
 	size_t instr_size_;
-	// CPU is being throttled by the emulator
-	bool throttled_;
 
 	/*
 	CPU variables and private functions

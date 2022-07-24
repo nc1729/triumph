@@ -10,17 +10,10 @@
 CPU::CPU(Memory& memory) :
 	memory_{memory}
 {
-	// initialise clock variables
-	cycles_ = 0;
-	max_frequency_ = 100000;
-	throttled_ = false;
-
 	// CPU is switched off
 	on_ = false;
 	// debug mode off by default
 	debug_mode_ = false;
-
-	// registers/stack pointer/etc are set in boot code in Memory class
 }
 
 void CPU::turn_on()
@@ -65,6 +58,7 @@ void CPU::run()
 	this->turn_on();
 	while (on_)
 	{
+		auto frame_start = clock_.now();
 		if (!asleep_)
 		{
 			if (debug_mode_)
@@ -74,38 +68,14 @@ void CPU::run()
 			else
 			{
 				cycle();
+				if (cycles_ % cycles_per_frame_ == 0)
+				{
+					// if we're early, wait until 1/60 of a second has passed before continuing
+					std::this_thread::sleep_until(frame_start + frame_duration_);
+					frame_start = clock_.now();
+				}
 			}
 		}
-		
-		/*
-		// moderate processor speed
-		if (cycles_ % max_frequency_ == 0)
-		{
-			if (throttled_)
-			{
-				if ((clock_.now() - second_start_) < std::chrono::seconds{ 1 })
-				{
-					// we are going fast enough to hit the max frequency, unthrottle
-					throttled_ = false;
-				}
-			}
-			else
-			{
-				if ((clock_.now() - second_start_) < std::chrono::seconds{ 1 })
-				{
-					// pause until a second has passed, then move on to next cycle
-					std::this_thread::sleep_until(second_start_ + std::chrono::seconds{ 1 });
-				}
-				else
-				{
-					// max_frequency_ cycles has taken longer than a second - throttle
-					throttled_ = true;
-				}
-			}
-			second_start_ = clock_.now();
-		}
-		*/
-		//dump();
 	}
 }
 
