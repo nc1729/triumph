@@ -1,0 +1,35 @@
+// need to assemble with print.tas
+
+main
+{
+    BREAK;
+    CALL get_length "Hello!";
+    CALL get_length test_string;
+    BANK -1;
+    CALL print_int A;
+}
+
+// register B contains a pointer to a string
+// this function counts the length of a string (up to but not including the \0 char)
+// returns result in register A
+get_length
+{
+    PUSH C; // work register - C for count
+    ZERO A;
+    !walk_string
+    LOAD C, [B];
+    CPZ C;
+    JPZ walk_string_end;
+    INC A;
+    INC B;
+    JP walk_string;
+
+    !walk_string_end
+    POP C;
+    RET;
+}
+
+test_string
+{
+    "A character string that is 42 chars long.\n";
+}

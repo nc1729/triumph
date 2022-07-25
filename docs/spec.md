@@ -101,7 +101,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 #### LOAD X, $Y
 - Opcode: mdX $Y
 - Length: 2 trytes
-- Description: Load register Y with contents of address $X.
+- Description: Load register X with contents of address $Y.
 - Compare flag: No effect.
 - Carry flag: No effect.
 - Sign flag: No effect.
@@ -110,7 +110,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 #### LOAD X, \[Y\]
 - Opcode: dXY
 - Length: 1 tryte
-- Description: Load register Y with contents of indirect address given by register X.
+- Description: Load register X with contents of indirect address given by register Y.
 - Compare flag: No effect.
 - Carry flag: No effect.
 - Sign flag: No effect.

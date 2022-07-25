@@ -27,6 +27,8 @@ public:
 	std::vector<std::string> assembled_trytes;
 
 	Statement(std::vector<Token> const& tokens);
+	// allow construction of statement from single Token
+	Statement(Token const& token) : Statement(std::vector<Token>{token}) {};
 	Token& operator[](size_t const i);
 	Token const& operator[](size_t const i) const;
 	size_t size() const;

@@ -20,6 +20,9 @@ public:
 
 	Block(std::string const& name, std::string const& filename, std::vector<Statement> const& statements) :
 		name{ name }, filename{ filename }, statements{ statements } {};
+	// allow construction of Block from single statement
+	Block(std::string const& name, std::string const& filename, Statement const& statement) :
+		Block(name, filename, std::vector<Statement>{statement}) {};
 	
 	std::vector<Statement>::iterator begin();
 	std::vector<Statement>::iterator end();

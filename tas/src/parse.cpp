@@ -263,6 +263,48 @@ std::vector<Block> parse::make_blocks(std::vector<Token> const& tokens, std::str
 	return blocks;
 }
 
+std::vector<Block>& parse::make_string_blocks(std::vector<Block>& blocks)
+{
+	// store new blocks in vector - join onto blocks at the end
+	std::vector<Block> new_string_blocks;
+	size_t string_number = 0;
+
+	// loop over existing blocks, looking for statements containing string literals
+	for (Block& block : blocks)
+	{
+		for (Statement& statement : block.statements)
+		{
+			for (size_t i = 1; // ignore any statements of size 1 - i.e. string literals on their own
+				i < statement.tokens.size(); i++)
+			{
+				if (statement[i].type == TokenType::STRING)
+				{
+					// found a string literal
+					// make a new block with name __STR__[str_number] containing only this string literal
+					// and construct it on the end of new_string_blocks
+					new_string_blocks.emplace_back("__STR__" + std::to_string(string_number),
+												   block.filename,
+												   Statement(statement[i]));
+
+					// now replace this string literal Token with a NAME Token
+					statement[i].type = TokenType::NAME;
+					// extra dollar sign is for marking token as a name for linking
+					statement[i].value = "$__STR__" + std::to_string(string_number);
+					string_number++;
+				}
+			}
+		}
+	}
+
+	// now append these new string blocks onto the original block list
+	for (Block const& string_block : new_string_blocks)
+	{
+		blocks.push_back(string_block);
+	}
+
+	return blocks;
+}
+
 std::vector<Statement> parse::expand_macro(Statement const& macro, std::string const& block_name)
 {
 	std::vector<Statement> new_statements;
@@ -519,9 +561,18 @@ std::vector<Block> parse::parse(std::vector<Token>& tokens, std::string const& f
 	tokens = handle_aliases(tokens);
 	// collect together code blocks, filling them with statements
 	std::vector<Block> blocks = make_blocks(tokens, filename);
+	// if string literals used in statements, replace them with names of new blocks
+	// this allows use of string literals as arguments
+	blocks = make_string_blocks(blocks);
 	// expand macro statements ("CALL", "JPZ", etc)
 	blocks = handle_macros(blocks);
 	// if there's a main block, ensure that it ends in a HALT, if it doesn't already
 	blocks = add_last_halt(blocks);
+
+	for (Block const& block : blocks)
+	{
+		std::cout << block;
+		std::cout << "\n\n";
+	}
 	return blocks;
 }

@@ -7,7 +7,7 @@ alias CONSOLE_STATE_ADDR $Emm
 /*
 function: print_int(B: int)
 Print to console output the contents of register B as a integer.
-Assumes the BANK has been set to CONSOLE_BANK (-4)
+Assumes the BANK has been set to CONSOLE_BANK (-1)
 */
 print_int
 {
