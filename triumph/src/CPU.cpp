@@ -19,6 +19,7 @@ CPU::CPU(Memory& memory) :
 void CPU::turn_on()
 {
 	on_ = true;
+	asleep_ = false;
 }
 
 void CPU::turn_off()
