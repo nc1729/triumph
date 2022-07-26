@@ -79,7 +79,13 @@ def main():
     alias_test_results = run_test_family(alias_test_dir, tas_path)
     print("======================")
 
-    if instr_test_results and macro_test_results and alias_test_results:
+    # run integration tests
+    print("Running integration tests")
+    int_test_dir = os.getcwd() + "/integration_tests"
+    int_test_results = run_test_family(int_test_dir, tas_path)
+    print("======================")
+
+    if instr_test_results and macro_test_results and alias_test_results and int_test_results:
         print("SUCCESS")
     else:
         print("FAILURE")
