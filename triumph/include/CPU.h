@@ -94,12 +94,12 @@ private:
 	CPU variables and private functions
 	*/
 	// on/off switch
-	bool on_;
+	bool on_ = false;
 	// sleep mode switch
-	bool asleep_;
+	bool asleep_ = false;
 
 	// debug mode switch
-	bool debug_mode_;
+	bool debug_mode_ = false;
 
 	// fetch the Tryte at the instruction pointer and set it as current instruction
 	void fetch();
