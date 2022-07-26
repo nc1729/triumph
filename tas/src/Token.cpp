@@ -330,8 +330,8 @@ Token::Token(std::string const& word, size_t const& line_number, TokenType const
 	else
 	{
 		type = TokenType::NAME;
-		// append name with underscore, useful for assembly
-		value = "_" + word;
+		// append name with dollar sign, useful for finding names at link time
+		value = "$" + word;
 	}
 }
 

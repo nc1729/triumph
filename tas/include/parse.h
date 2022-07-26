@@ -17,6 +17,10 @@ namespace parse
 	// throw errors if syntax issues
 	std::vector<Block> make_blocks(std::vector<Token> const& tokens, std::string const& filename);
 
+	// isolate string literals into their own blocks
+	// this allows use of string literals directly as arguments
+	std::vector<Block>& make_string_blocks(std::vector<Block>& blocks);
+
 	// if statement matches the form of a macro, expand it
 	// block name is passed as "RET" macro behaves differently in main block
 	std::vector<Statement> expand_macro(Statement const& statement, std::string const& block_name);

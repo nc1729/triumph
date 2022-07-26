@@ -108,7 +108,7 @@ std::vector<Block>& link::link_blocks(std::vector<Block>& blocks,
 			{
 				for (std::string& tryte : statement.assembled_trytes)
 				{
-					if (tryte[0] == '_')
+					if (tryte[0] == '$')
 					{
 						// found a name
 						std::string name = tryte.substr(1);

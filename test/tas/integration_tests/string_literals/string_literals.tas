@@ -1,3 +1,41 @@
+
+main
+{
+    BANK -1;
+    CALL get_length "Hello!";
+    CALL print_int A;
+    CALL print_newline;
+    CALL get_length test_string;
+    CALL print_int A;
+    CALL print_newline;
+}
+
+// register B contains a pointer to a string
+// this function counts the length of a string (up to but not including the \0 char)
+// returns result in register A
+get_length
+{
+    PUSH C; // work register - C for count
+    ZERO A;
+    !walk_string
+    LOAD C, [B];
+    CPZ C;
+    JPZ walk_string_end;
+    INC A;
+    INC B;
+    JP walk_string;
+
+    !walk_string_end
+    POP C;
+    RET;
+}
+
+test_string
+{
+    "A character string that is 42 chars long.\n";
+}
+
+// copy print library here
 alias CONSOLE_BANK -1
 alias OUT_BUFFER_START $MMM
 alias OUT_BUFFER_LEN_ADDR $Emj
