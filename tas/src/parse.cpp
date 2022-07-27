@@ -569,10 +569,5 @@ std::vector<Block> parse::parse(std::vector<Token>& tokens, std::string const& f
 	// if there's a main block, ensure that it ends in a HALT, if it doesn't already
 	blocks = add_last_halt(blocks);
 
-	for (Block const& block : blocks)
-	{
-		std::cout << block;
-		std::cout << "\n\n";
-	}
 	return blocks;
 }
