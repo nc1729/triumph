@@ -1,0 +1,23 @@
+alias CONSOLE_BANK -1
+
+main
+{
+    BANK CONSOLE_BANK;
+    CALL print_string "Printing all Fibonacci numbers less than 9841\n";
+
+    SET B, 1;
+    SET C, 0;
+    SET D, C;
+    !start_loop
+    ADD B, D;
+    CPZ B;
+    JPN end_loop
+    CALL print_int B;
+    CALL print_newline;
+    SET D, C;
+    SET C, B;
+    JP start_loop
+
+    !end_loop
+    HALT;
+}
