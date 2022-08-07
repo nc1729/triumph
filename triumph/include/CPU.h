@@ -52,10 +52,9 @@ private:
 	*/
 	// mark flags register
 	Tryte& flags_ = regs_[6];
-	int8_t& COMPARE_FLAG = flags_[0];
+	int8_t& SIGN_FLAG = flags_[0];
 	int8_t& CARRY_FLAG = flags_[1];
-	int8_t& SIGN_FLAG = flags_[2];
-	int8_t& STACK_FLAG = flags_[3];
+	int8_t& STACK_FLAG = flags_[2];
 
 
 	/*

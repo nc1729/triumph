@@ -10,7 +10,6 @@ main
     SET D, C;
     !start_loop
     ADD B, D;
-    CPZ B;
     JPN end_loop
     CALL print_int B;
     CALL print_newline;

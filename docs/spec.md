@@ -54,10 +54,10 @@ C - GP register
 D - GP register
 E - GP register
 F - flags, from least signficant trit to most significant trit:
-    COMPARE - stores result of CMP instruction
+    SIGN - stores sign of previous arithmetic/logical instruction. Also used in jump instructions.
     CARRY - ADD/ADC instructions can produce carry
-    SIGN - sign of result of last arithmetic/logic operation
     STACK - stack status
+    Top 6 trits - unused.
 G - GP register
 H - GP register
 I - GP register
@@ -102,36 +102,32 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Opcode: mdX $Y
 - Length: 2 trytes
 - Description: Load register X with contents of address $Y.
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: No effect.
+- Carry flag: No effect.
 - Stack flag: No effect.
 
 #### LOAD X, \[Y\]
 - Opcode: dXY
 - Length: 1 tryte
 - Description: Load register X with contents of indirect address given by register Y.
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: No effect.
+- Carry flag: No effect.
 - Stack flag: No effect.
 
 #### SAVE X, $Y
 - Opcode: mDX $Y
 - Length: 2 trytes
 - Description: Save contents of register X to address $Y.
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: No effect.
+- Carry flag: No effect.
 - Stack flag: No effect.
 
 #### SAVE X, \[Y\]
 - Opcode: DXY
 - Length: 1 tryte
 - Description: Save contents of register X to indirect address given by register Y.
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: No effect.
+- Carry flag: No effect.
 - Stack flag: No effect.
 
 #### BANK X
@@ -155,27 +151,24 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Opcode: aXY
 - Length: 1 tryte
 - Description: set register X equal to register Y.
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: No effect.
+- Carry flag: No effect.
 - Stack flag: No effect.
 
 #### SET X, t9
 - Opcode: maX t9
 - Length: 2 trytes
 - Description: set register X equal to immediate value t9. t9 can be a value type, an addr type (in which case the address itself is used as the immediate, rather than its contents - use LOAD instruction to access memory) or a placeholder name type (useful for setting registers to addresses of code blocks)
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: No effect.
+- Carry flag: No effect.
 - Stack flag: No effect.
 
 #### SWAP X, Y
 - Opcode: AXY
 - Length: 1 tryte
 - Description: swap the values of registers X and Y.
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: No effect.
+- Carry flag: No effect.
 - Stack flag: No effect.
 
 ### Stack management
@@ -184,36 +177,32 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Opcode: mfX
 - Length: 1 tryte
 - Description: decrement the stack pointer SP and write contents of X to that point in memory.
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: No effect.
+- Carry flag: No effect.
 - Stack flag: If after decrementing, SP < mMM, stack flag will be set to '+', indicating overflow.
 
 #### PUSH t9
 - Opcode: Mf* t9
 - Length: 2 trytes
 - Description: decrement the stack pointer SP and write immediate value t9 to that point in memory.
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: No effect.
+- Carry flag: No effect.
 - Stack flag: If after decrementing, SP < mMM, stack flag will be set to '+', indicating overflow.
 
 #### POP X
 - Opcode: mFX
 - Length: 1 tryte
 - Description: write value at $SP to register X, and increment the stack pointer.
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: No effect.
+- Carry flag: No effect.
 - Stack flag: If after incrementing, SP > m00, stack flag will be set to '-', indicating underflow.
 
 #### PEEK X
 - Opcode: mmX
 - Length: 1 tryte
 - Description: write value at $SP to register X. Stack pointer is unchanged.
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: No effect.
+- Carry flag: No effect.
 - Stack flag: No effect.
 
 ### Arithmetic operations
@@ -222,126 +211,112 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Opcode: eXY
 - Length: 1 tryte
 - Description: X += Y
-- Compare flag: No effect.
+- Sign flag: Set with sign of result.
 - Carry flag: Carry flag will be set; '+' if overflow is positive, '0' if no overflow, '-' if overflow is negative.
-- Sign flag: set with sign of result.
 - Stack flag: No effect.
 
 #### ADD X, t9
 - Opcode: meX t9
 - Length: 2 trytes
 - Description: X += t9
-- Compare flag: No effect.
-- Carry flag: Carry flag will be set; '+' if overflow is positive, '0' if no overflow, '-' if overflow is negative.
 - Sign flag: Set with sign of result.
+- Carry flag: Carry flag will be set; '+' if overflow is positive, '0' if no overflow, '-' if overflow is negative.
 - Stack flag: No effect.
 
 #### ADC X, Y
 - Opcode: gXY
 - Length: 1 tryte
 - Description: X += (Y + c), where 'c' is the current value in the carry flag.
-- Compare flag: No effect.
-- Carry flag: Carry flag will be set; '+' if overflow is positive, '0' if no overflow, '-' if overflow is negative.
 - Sign flag: Set with sign of result.
+- Carry flag: Carry flag will be set; '+' if overflow is positive, '0' if no overflow, '-' if overflow is negative.
 - Stack flag: No effect.
 
 #### ADC X, t9
 - Opcode: mgX t9
 - Length: 2 trytes
 - Description: X += (t9 + c), where 'c' is the current value in the carry flag.
-- Compare flag: No effect.
-- Carry flag: Carry flag will be set; '+' if overflow is positive, '0' if no overflow, '-' if overflow is negative.
 - Sign flag: Set with sign of result.
+- Carry flag: Carry flag will be set; '+' if overflow is positive, '0' if no overflow, '-' if overflow is negative.
 - Stack flag: No effect.
 
 #### SUB X, Y
 - Opcode: EXY
 - Length: 1 tryte
 - Description: X -= Y
-- Compare flag: No effect.
-- Carry flag: Carry flag will be set; '+' if overflow is positive, '0' if no overflow, '-' if overflow is negative.
 - Sign flag: Set with sign of result.
+- Carry flag: Carry flag will be set; '+' if overflow is positive, '0' if no overflow, '-' if overflow is negative.
 - Stack flag: No effect.
 
 #### SUB X, t9
 - Opcode: mEX t9
 - Length: 2 trytes
 - Description: X -= t9
-- Compare flag: No effect.
-- Carry flag: Carry flag will be set; '+' if overflow is positive, '0' if no overflow, '-' if overflow is negative.
 - Sign flag: Set with sign of result.
+- Carry flag: Carry flag will be set; '+' if overflow is positive, '0' if no overflow, '-' if overflow is negative.
 - Stack flag: No effect.
 
 #### SBB X, Y
 - Opcode: GXY
 - Length: 1 tryte
 - Description: X -= (Y - b), where 'b', the "borrow" is the current value in the carry flag.
-- Compare flag: No effect.
-- Carry flag: Carry flag will be set; '+' if overflow is positive, '0' if no overflow, '-' if overflow is negative.
 - Sign flag: Set with sign of result.
+- Carry flag: Carry flag will be set; '+' if overflow is positive, '0' if no overflow, '-' if overflow is negative.
 - Stack flag: No effect.
 
 #### SBB X, t9
 - Opcode: mGX t9
 - Length: 1 tryte
 - Description: X -= (t9 - b), where 'b', the "borrow" is the current value in the carry flag.
-- Compare flag: No effect.
-- Carry flag: Carry flag will be set; '+' if overflow is positive, '0' if no overflow, '-' if overflow is negative.
 - Sign flag: Set with sign of result.
+- Carry flag: Carry flag will be set; '+' if overflow is positive, '0' if no overflow, '-' if overflow is negative.
 - Stack flag: No effect.
 
 #### SH X, Y
 - Opcode: hXY
 - Length: 1 tryte
 - Description: Trit-shift the value of register X left or right by the value of the three least-significant trits of register Y. A positive number means shift left, i.e. multiply by 3 repeatedly. Negative means shift right. If Y == 0, nothing happens.
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: Set with sign of result.
+- Carry flag: No effect.
 - Stack flag: No effect.
 
 #### SH X, t3
 - Opcode: HX(t3)
 - Length: 1 tryte
 - Description: Trit-shift the value of register X left or right by the value of t3. A positive number means shift left, i.e. multiply by 3 repeatedly. Negative means shift right. SH X, 0 does nothing.
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: Set with sign of result.
+- Carry flag: No effect.
 - Stack flag: No effect.
 
 #### INC X
 - Opcode: mlX
 - Length: 1 tryte
 - Description: X += 1.
-- Compare flag: No effect.
-- Carry flag: If increment overflows, carry flag will be set to '+'.
 - Sign flag: Set with sign of result.
+- Carry flag: If increment overflows, carry flag will be set to '+'.
 - Stack flag: No effect.
 
 #### DEC X
 - Opcode: mLX
 - Length: 1 tryte
 - Description: X -= 1.
-- Compare flag: No effect.
-- Carry flag: If increment underflows, carry flag will be set to '-'.
 - Sign flag: Set with sign of result.
+- Carry flag: If increment underflows, carry flag will be set to '-'.
 - Stack flag: No effect.
 
 #### FLIP X
 - Opcode: mMX
 - Length: 1 tryte
 - Description: X = -X; flip all trits in X. Same opcode as "NOT X".
-- Compare flag: No effect.
+- Sign flag: Set with sign of result.
 - Carry flag: No effect.
-- Sign flag: No effect.
 - Stack flag: No effect.
 
 #### ZERO X
 - Opcode: m0X
 - Length: 1 tryte
 - Description: X = 0; short for "SET X, 0", which would be a 2 Tryte instruction "maX 000"
-- Compare flag: No effect.
+- Sign flag: Set to 0.
 - Carry flag: No effect.
-- Sign flag: No effect.
 - Stack flag: No effect.
 
 ### Logic operations
@@ -349,91 +324,81 @@ The instructions also permit indirect addressing of memory using registers, deno
 #### CMP X, Y
 - Opcode: cXY
 - Length: 1 tryte
-- Description: compare register X and Y; compare flag is set to sign(X - Y).
-- Compare flag: Set to sign(X - Y).
+- Description: compare register X and Y; sign flag is set to sign(X - Y).
+- Sign flag: Set to sign(X - Y).
 - Carry flag: No effect.
-- Sign flag: No effect.
 - Stack flag: No effect.
 
 #### CMP X, t9
 - Opcode: mcX t9
 - Length: 2 trytes
-- Description: compare flag is set to sign(X - t9).
-- Compare flag: Set to sign(X - t9).
+- Description: sign flag is set to sign(X - t9).
+- Sign flag: Set to sign(X - t9).
 - Carry flag: No effect.
-- Sign flag: No effect.
 - Stack flag: No effect.
 
 #### CPZ X
 - Opcode: mCX
 - Length: 1 tryte
 - Description: Short form of "CMP X, 0".
-- Compare flag: Set to sign(X).
+- Sign flag: Set to sign(X).
 - Carry flag: No effect.
-- Sign flag: No effect.
 - Stack flag: No effect.
 
 #### AND X, Y
 - Opcode: bXY
 - Length: 1 tryte
 - Description: Perform tritwise ternary logical AND on registers X and Y. In ternary logic, - is FALSE, 0 is UNKNOWN/MAYBE, + is TRUE. Each pair of trits is compared, and their minimum value is used to construct the result, which is placed in register X.
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: Set to sign(X & Y).
+- Carry flag: No effect.
 - Stack flag: No effect.
 
 #### AND X, t9
 - Opcode: mbX t9
 - Length: 2 trytes
 - Description: X &= t9, where & is the ternary AND operator.
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: Set to sign(X & t9).
+- Carry flag: No effect.
 - Stack flag: No effect.
 
 #### OR X, Y
 - Opcode: BXY
 - Length: 1 tryte
 - Description: Perform tritwise ternary logical OR on registers X and Y. In ternary logic, - is FALSE, 0 is UNKNOWN/MAYBE, + is TRUE. Each pair of trits is compared, and their maximum value is used to construct the result, which is placed in register X.
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: Set to sign(X | Y).
+- Carry flag: No effect.
 - Stack flag: No effect.
 
 #### OR X, t9
 - Opcode: mBX t9
 - Length: 2 trytes
 - Description: X |= t9, where | is the ternary OR operator.
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: Set to sign(X | t9).
+- Carry flag: No effect.
 - Stack flag: No effect.
 
 #### STAR X, Y
 - Opcode: kXY
 - Length: 1 tryte
 - Description: Tritwise multiply registers X and Y. Useful for singling out particular trits. For example mmm * 00a = 00a.
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: Set to sign(X * Y).
+- Carry flag: No effect.
 - Stack flag: No effect.
 
 #### STAR X, t9
 - Opcode: mkX t9
 - Length: 2 trytes
 - Description: X *= t9, where * is the ternary STAR operator, tritwise multiplication.
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: Set to sign(X * t9).
+- Carry flag: No effect.
 - Stack flag: No effect.
 
 #### NOT X
 - Opcode: mMX
 - Length: 1 tryte
 - Description: Perform tritwise ternary logical NOT on register X. NOT(TRUE) = FALSE, NOT(UNKNOWN) = UNKNOWN, NOT(FALSE) = TRUE. Equivalent (same opcode) to FLIP X.
-- Compare flag: No effect.
+- Sign flag: Set with sign of result.
 - Carry flag: No effect.
-- Sign flag: No effect.
 - Stack flag: No effect.
 
 ### Control flow operations
@@ -442,27 +407,24 @@ The instructions also permit indirect addressing of memory using registers, deno
 - Opcode: j00
 - Length: 1 tryte
 - Description: Do nothing except increment program counter (PC).
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: No effect.
+- Carry flag: No effect.
 - Stack flag: No effect.
 
 #### SLEEP/WAIT
 - Opcode: M00
 - Length: 1 tryte
 - Description: CPU goes to sleep - will awake when external device tells it to. Useful to prevent data races when disks load/save.
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: No effect.
+- Carry flag: No effect.
 - Stack flag: No effect.
 
 #### HALT
 - Opcode: 000
 - Length: 1 tryte
 - Description: Halt and catch fire. Computer will stop.
-- Compare flag: No effect.
-- Carry flag: No effect.
 - Sign flag: No effect.
+- Carry flag: No effect.
 - Stack flag: No effect.
 
 ### The ternary jump instruction
@@ -471,9 +433,9 @@ The instructions also permit indirect addressing of memory using registers, deno
 
 JP is the mnemonic for the _ternary jump instruction_, where 
 
-- if compare flag < 0, jump to addr1 (or do nothing except to go to next instruction if null)
-- if compare flag == 0, jump to addr2 (or do nothing if null)
-- if compare flag > 0, jump to addr3 (or do nothing if null).
+- if sign flag < 0, jump to addr1 (or do nothing except to go to next instruction if null)
+- if sign flag == 0, jump to addr2 (or do nothing if null)
+- if sign flag > 0, jump to addr3 (or do nothing if null).
 
 Jump opcodes may be longer than a single Tryte - in general, they have the following pattern. The first tryte is always of the form:
 
@@ -503,67 +465,67 @@ therefore, for "JP \[B\], $000, $aaa" we have the assembled instruction "jeb 000
     * If all three registers match - ZZZ encodes the register used. For example, "JP \[A\], \[A\], \[A\]" (which can be written as "JP \[A\]") assembles to "jma".
     * Otherwise, ZZZ = '0', and the registers are encoded in a 'register' tryte, following the opcode. For example, "JP \[D\], \[A\], \[F\]" assembles to "jm0 daf".
 
-Special macro mnemonics are available for common forms of JP - they are described, along with their opcodes, below. The JP instruction has no effect on any flags - the compare flag is NOT reset after it is used.
+Special macro mnemonics are available for common forms of JP - they are described, along with their opcodes, below. The JP instruction has no effect on any flags - the sign flag is NOT reset after it is used.
 
 #### JPZ $X - JP null, $X, null
 - Opcode: jCj $X
 - Length: 2 trytes
-- Description: jump to address $X if compare flag == 0.
+- Description: jump to address $X if sign flag == 0.
 
 #### JPZ \[X\] - JP null, \[X\], null
 - Opcode: jcX
 - Length: 1 tryte
-- Description: jump to address stored in register X if compare flag == 0.
+- Description: jump to address stored in register X if sign flag == 0.
 
 #### JPNZ $X - JP $X, null, $X
 - Opcode: jJj $X
 - Length: 2 trytes
-- Description: jump to address $X if compare flag != 0.
+- Description: jump to address $X if sign flag != 0.
 
 #### JPNZ \[X\] - JP \[X\], null, \[X\]
 - Opcode: jjX
 - Length: 1 tryte
-- Description: jump to address stored in register X if compare flag != 0.
+- Description: jump to address stored in register X if sign flag != 0.
 
 #### JPP $X - JP null, null, $X
 - Opcode: jAj $X
 - Length: 2 trytes
-- Description: jump to address $X if compare flag > 0.
+- Description: jump to address $X if sign flag > 0.
 
 #### JPP \[X\] - JP null, null, \[X\]
 - Opcode: jaX
 - Length: 1 tryte
-- Description: jump to address stored in register X if compare flag > 0.
+- Description: jump to address stored in register X if sign flag > 0.
 
 #### JPNP $X - JP $X, $X, null
 - Opcode: jLj $X
 - Length: 2 trytes
-- Description: jump to address $X if compare flag < 0 or == 0.
+- Description: jump to address $X if sign flag < 0 or == 0.
 
 #### JPNP \[X\] - JP \[X\], \[X\], null
 - Opcode: jlX
 - Length: 1 tryte
-- Description: jump to address stored in register X if compare flag < 0 or == 0.
+- Description: jump to address stored in register X if sign flag < 0 or == 0.
 
 #### JPN $X - JP $X, null, null
 - Opcode: jIj $X
 - Length: 2 trytes
-- Description: jump to address $X if compare flag > 0.
+- Description: jump to address $X if sign flag > 0.
 
 #### JPN \[X\] - JP \[X\], null, null
 - Opcode: jiX
 - Length: 1 tryte
-- Description: jump to address stored in register X if compare flag > 0.
+- Description: jump to address stored in register X if sign flag > 0.
 
 #### JPNN $X - JP null, $X, $X
 - Opcode: jDj $X
 - Length: 2 trytes
-- Description: jump to address $X if compare flag < 0 or == 0.
+- Description: jump to address $X if sign flag < 0 or == 0.
 
 #### JPNN \[X\] - JP null, \[X\], \[X\]
 - Opcode: jdX
 - Length: 1 tryte
-- Description: jump to address stored in register X if compare flag < 0 or == 0.
+- Description: jump to address stored in register X if sign flag < 0 or == 0.
 
 #### JP $X
 - Opcode: jMj $X
