@@ -109,26 +109,28 @@ void CPU::decrement(Tryte& x)
 void CPU::flip(Tryte& x)
 {
 	Tryte::flip(x);
+	SIGN_FLAG = Tryte::sign(x);
 }
 
 void CPU::zero(Tryte& x)
 {
 	x = 0;
+	SIGN_FLAG = 0;
 }
 
 void CPU::compare(Tryte const& x, Tryte const& y)
 {
 	if (x < y)
 	{
-		COMPARE_FLAG = -1;
+		SIGN_FLAG = -1;
 	}
 	else if (x > y)
 	{
-		COMPARE_FLAG = 1;
+		SIGN_FLAG = 1;
 	}
 	else
 	{
-		COMPARE_FLAG = 0;
+		SIGN_FLAG = 0;
 	}
 }
 
@@ -163,11 +165,11 @@ void CPU::halt()
 
 void CPU::jump(Tryte const& x, Tryte const& y, Tryte const& z)
 {
-	if (COMPARE_FLAG < 0)
+	if (SIGN_FLAG < 0)
 	{
 		pc_ = x;
 	}
-	else if (COMPARE_FLAG == 0)
+	else if (SIGN_FLAG == 0)
 	{
 		pc_ = y;
 	}

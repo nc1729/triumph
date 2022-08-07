@@ -58,19 +58,17 @@ public:
 	// sign - get the sign of the Tryte
 	int8_t static constexpr sign(Tryte const& tryte)
 	{
-		int64_t tryte_int = Tryte::get_int(tryte);
-		if (tryte_int > 0)
+		// loop through trits, starting with most significant
+		// if a non-zero trit is found, return its value
+		for (size_t i = 0; i < 9; i++)
 		{
-			return 1;
+			if (tryte[8 - i] != 0)
+			{
+				return tryte[8 - i];
+			}
 		}
-		else if (tryte_int < 0)
-		{
-			return -1;
-		}
-		else
-		{
-			return 0;
-		}
+		// if all trits are zero, tryte is zero, so its sign is zero
+		return 0;
 	}
 
 	/*
