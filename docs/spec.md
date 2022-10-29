@@ -6,33 +6,17 @@ TRIUMPH is a ternary computer, a computer that runs on ternary logic and where t
 
 Just as binary computers use the hexadecimal number system as a convenient shorthand for binary, this balanced ternary computer used a balanced *septavingtesmal* (base 27) number system, where the allowed characters M-A, 0, a-m correspond to the following balanced ternary values:
 
-M : --- : -13
-L : --0 : -12
-K : --+ : -11
-J : -0- : -10
-I : -00 : -9
-H : -0+ : -8
-G : -+- : -7
-F : -+0 : -6
-E : -++ : -5
-D : 0-- : -4
-C : 0-0 : -3
-B : 0-+ : -2
-A : 00- : -1
-0 : 000 : 0
-a : 00+ : 1
-b : 0+- : 2
-c : 0+0 : 3
-d : 0++ : 4
-e : +-- : 5
-f : +-0 : 6
-g : +-+ : 7
-h : +0- : 8
-i : +00 : 9
-j : +0+ : 10
-k : ++- : 11
-l : ++0 : 12
-m : +++ : 13
+|   |     |     |   |   |     |     |   |   |     |     |
+| - | --- | --- | - | - | --- | --- | - | - | --- | --- |
+| M | --- | -13 |   | D | 0-- | -4  |   | e | +-- | 5   |
+| L | --0 | -12 |   | C | 0-0 | -3  |   | f | +-0 | 6   |
+| K | --+ | -11 |   | B | 0-+ | -2  |   | g | +-+ | 7   |
+| J | -0- | -10 |   | A | 00- | -1  |   | h | +0- | 8   |
+| I | -00 | -9  |   | 0 | 000 | 0   |   | i | +00 | 9   |
+| H | -0+ | -8  |   | a | 00+ | 1   |   | j | +0+ | 10  |
+| G | -+- | -7  |   | b | 0+- | 2   |   | k | ++- | 11  |
+| F | -+0 | -6  |   | c | 0+0 | 3   |   | l | ++0 | 12  |
+| E | -++ | -5  |   | d | 0++ | 4   |   | m | +++ | 13  |
 
 For example, the decimal number 1000 can be written 729 + 27 * 10 + 1 = aja, and the value MMM = (-13 * 729) - (13 * 27) - 13 = -9,841. Flipping the sign of a balanced septavingtesmal number is equivalent to changing the number from upper to lower case.
 
