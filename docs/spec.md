@@ -64,7 +64,7 @@ $mmm      : program counter PC
 
 ## Instruction set
 
-The following is a list of ternary assembly instructions accepted by TRIUMPH. Each instruction has a unique 1-tryte opcode (except for certain permissible JP instructions), with these opcodes being denoted "*XY" (for a standard 2-register instruction), "**X" (for a 1-register instruction) or "***", where '*' is a valid septavingtesmal character (M-A,0,a-m), and X/Y are 3-trit opcode representations of specific registers, given by the following table:
+The following is a list of ternary assembly instructions accepted by TRIUMPH. Each instruction has a unique 1-tryte opcode (except for certain permissible JP instructions), with these opcodes being denoted "\*XY" (for a standard 2-register instruction), "\*\*X" (for a 1-register instruction) or "\*\*\*", where '\*' is a valid septavingtesmal character (M-A,0,a-m), and X/Y are 3-trit opcode representations of specific registers, given by the following table:
 
 A - 00+ ('a')
 B - 0+- ('b')
@@ -433,9 +433,9 @@ where XXX is +0+ , the septavingtesmal value 'j'; YYY is a sequence of three tri
 
 The final three trits ZZZ are dependent on the number of register arguments:
 - If there are no register arguments, ZZZ is either '0' or 'j':
-    * '0' if the address arguments do not match, i.e. the general case. "JP $X, *, $Y" assembles to "jJ0 $X $Y"
+    * '0' if the address arguments do not match, i.e. the general case. "JP $X, \*, $Y" assembles to "jJ0 $X $Y"
     * 'j' if all the address arguments match. In this case, a shorthand is possible: "JP $X, *, $X" assembles to "jJj $X".
-- A slightly special case applies for YYY = '0' - i.e. if all three arguments are null. In this case the instruction would be "JP *, *, *", a no-op. Different values of ZZZ then encode various special operations, namely JPS, PJP, and NOP.
+- A slightly special case applies for YYY = '0' - i.e. if all three arguments are null. In this case the instruction would be "JP \*, \*, \*", a no-op. Different values of ZZZ then encode various special operations, namely JPS, PJP, and NOP.
 - If there is a single register argument, the trits ZZZ encode the register used in the operation. For example, for the instruction "JP \[X\], $Y, $Z" the opcode is constructed in the following way:
     * XXX = 'j' as this is a jump instruction
     * YYY = +-- = 'e' as we have one register and two address arguments
