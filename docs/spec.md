@@ -30,53 +30,47 @@ A *tryte* is a balanced septavingtesmal number from -9,841 to 9,841 (MMM to mmm)
 
 ## Registers
 
-9 9-trit registers:
+9 9-trit registers; A, B, C, D, E, F, G, H, I. All general purpose, except for register F, which contains the processor flags.
 
-A - general purpose (GP) register
-B - GP register
-C - GP register
-D - GP register
-E - GP register
-F - flags, from least signficant trit to most significant trit:
-    SIGN - stores sign of previous arithmetic/logical instruction. Also used in jump instructions.
-    CARRY - ADD/ADC instructions can produce carry
-    STACK - stack status
-    Top 6 trits - unused.
-G - GP register
-H - GP register
-I - GP register
+From least significant trit to most significant trit:
+- SIGN: stores sign of previous arithemtic/logical instruction. Also used in jump instructions.
+- CARRY: Some arithemtic instructions can produce a carry trit, used by ADC/SBB instructions.
+- STACK: status of the stack; if stack has overflowed, this trit is '+'; if underflowed, '-', and if stack is normal, '0'.
+- All higher trits are 0 on startup, but are otherwise unused.
 
-in memory, also have the PC (program counter), the SP (stack pointer and the current MB (memory bank).
+In memory, also have the PC (program counter) at $mmm, the SP (stack pointer) at $mml and the current MB (memory bank) at $mmk.
 
 ## Memory map
 
 TRIUMPH can address Tryte memory in the range $MMM-$mmm.
 By default, stack pointer SP begins at $m00.
 
-$MMM-$Emm : 6561 trytes of general purpose memory (bank switchable)
-$DMM-$dmm : 6561 trytes of general purpose memory
-$eMM-$mMM : PROGRAM memory; assembled code is written here. Use at own risk.
-$mMM-$m0A : stack; stack pointer SP begins at $m00 and decrements as stack grows
-$m00-$mmj : reserved for system use (boot code, etc)
-$mmk      : current memory bank MB
-$mml      : stack pointer SP
-$mmm      : program counter PC
+- $MMM-$Emm : 6561 trytes of general purpose memory (bank switchable)
+- $DMM-$dmm : 6561 trytes of general purpose memory
+- $eMM-$mMM : PROGRAM memory; assembled code is written here. Use at own risk.
+- $mMM-$m0A : stack; stack pointer SP begins at $m00 and decrements as stack grows
+- $m00-$mmj : reserved for system use (boot code, etc)
+- $mmk      : current memory bank MB
+- $mml      : stack pointer SP
+- $mmm      : program counter PC
 
 ## Instruction set
 
 The following is a list of ternary assembly instructions accepted by TRIUMPH. Each instruction has a unique 1-tryte opcode (except for certain permissible JP instructions), with these opcodes being denoted "\*XY" (for a standard 2-register instruction), "\*\*X" (for a 1-register instruction) or "\*\*\*", where '\*' is a valid septavingtesmal character (M-A,0,a-m), and X/Y are 3-trit opcode representations of specific registers, given by the following table:
 
-A - 00+ ('a')
-B - 0+- ('b')
-C - 0+0 ('c')
-D - 0++ ('d')
-E - +-- ('e')
-F - +-0 ('f')
-G - +-+ ('g')
-H - +0- ('h')
-I - +00 ('i')
+| Register name  |  Ternary |  Opcode char |
+| - | --- | --- |
+| A | 00+ | 'a' |
+| B | 0+- | 'b' |
+| C | 0+0 | 'c' |
+| D | 0++ | 'd' |
+| E | +-- | 'e' |
+| F | +-0 | 'f' |
+| G | +-+ | 'g' |
+| H | +0- | 'h' |
+| I | +00 | 'i' |
 
-For example, the general form of the opcode for "ADD X, Y" is eXY - "ADD A, B" is given by "eab". If instructions require raw memory addresses, these will immediately follow the opcode. For example, the jump instruction "JP $X" assembles to "jMj X", where X is the raw tryte address of $X. If an opcode contains the wildcard character '*', any valid septavingtesmal character is valid there (usually this is chosen to be 0.)
+For example, the general form of the opcode for "ADD X, Y" is eXY - therefore "ADD A, B" is given by "eab". If instructions require raw memory addresses, these will immediately follow the opcode. For example, the jump instruction "JP $X" assembles to "jMj X", where X is the raw tryte address of $X. If an opcode contains the wildcard character '*', any valid septavingtesmal character is valid there (usually this is chosen to be 0.)
 
 The instructions also permit indirect addressing of memory using registers, denoted by square brackets \[\] - for example, if register A = a00, \[A\] will point to the contents of memory at address $a00. The placeholder 't9' represents a 9-trit immediate value, standing for any value between -9,841 and 9,841. 't3' represents a 3-trit immediate value, standing for any value between -13 and 13. Values outside these ranges will be truncated.
 
@@ -127,7 +121,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 #### GANK X
 - Opcode: mJX
 - Length: 1 tryte
-- Description: Set register X equal to the current BANK value.
+- Description: Set register X equal to the current BANK value. Compacted form of "G(et b)ANK"
 
 ### Register management
 
@@ -372,7 +366,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 #### STAR X, t9
 - Opcode: mkX t9
 - Length: 2 trytes
-- Description: X *= t9, where * is the ternary STAR operator, tritwise multiplication.
+- Description: X \*= t9, where \* is the ternary STAR operator, tritwise multiplication.
 - Sign flag: Set to sign(X * t9).
 - Carry flag: No effect.
 - Stack flag: No effect.
@@ -406,7 +400,7 @@ The instructions also permit indirect addressing of memory using registers, deno
 #### HALT
 - Opcode: 000
 - Length: 1 tryte
-- Description: Halt and catch fire. Computer will stop.
+- Description: Halt and catch fire. CPU will stop.
 - Sign flag: No effect.
 - Carry flag: No effect.
 - Stack flag: No effect.
