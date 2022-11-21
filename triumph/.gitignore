@@ -6,7 +6,3 @@
 /out/*
 /.vscode/*
 CMakeSettings.json
-/tools/bmp_to_trytes/build/*
-triumph.vcxproj
-triumph.vcxproj.filters
-triumph.vcxproj.user

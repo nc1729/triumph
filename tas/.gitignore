@@ -7,6 +7,3 @@
 /Debug/*
 /x64/*
 CMakeSettings.json
-tas.vcxproj
-tas.vcxproj.filters
-tas.vcxproj.user

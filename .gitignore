@@ -8,4 +8,5 @@
 /x64/*
 /.vscode/*
 CMakeSettings.json
+launch.vs.json
 /tools/bmp_to_trytes/build/*
