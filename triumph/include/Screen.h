@@ -18,10 +18,12 @@ private:
 	std::vector<uint32_t> byte_framebuffer;
 
 	// screen size
+	int const PIXELS_PER_TRIT = 1;
+	int const PIXELS_PER_TILE = 9 * PIXELS_PER_TRIT;
 	int const TILE_GRID_WIDTH = 54;
 	int const TILE_GRID_HEIGHT = 54;
-	int const PIXEL_WIDTH = TILE_GRID_WIDTH * 9;
-	int const PIXEL_HEIGHT = TILE_GRID_HEIGHT * 9;
+	int const PIXEL_WIDTH = TILE_GRID_WIDTH * PIXELS_PER_TILE;
+	int const PIXEL_HEIGHT = TILE_GRID_HEIGHT * PIXELS_PER_TILE;
 	
 	// palettes are stored at start of work_RAM - 27 palettes, 81 Trytes
 	// 3 colours per palette, each colour is a tryte (high - R, mid - G, low - B)
@@ -38,7 +40,7 @@ private:
 	void write_tile_to_framebuffer(size_t const grid_index_x, size_t const grid_index_y, size_t const palette_index, size_t const tile_addr);
 	// using the 81 trytes stored in palette memory, construct the byte palettes array
 	void regen_palettes();
-	// convert a RGB Tryte (high - red, mid - green, low- blue) into a color SDL2 can understand
+	// convert a RGB Tryte (high - red, mid - green, low - blue) into a color SDL2 can understand
 	uint32_t static tryte_to_colour(Tryte const& colour_tryte);
 
 	// debugging functions for dumping memory contents to console

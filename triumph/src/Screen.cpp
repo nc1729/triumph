@@ -128,10 +128,10 @@ void Screen::write_tryte_fb_to_byte_fb()
     {
         for (int64_t j = 0; j < TILE_GRID_WIDTH; j++)
         {
-            Tryte& t = tryte_framebuffer[(TILE_GRID_WIDTH * i) + j];
-            size_t palette_index = Tryte::get_high(t) + 13;
-            size_t tilemap_addr = static_cast<size_t>(27 * static_cast<int64_t>(Tryte::get_mid(t)) + static_cast<int64_t>(Tryte::get_low(t)) + 364);
-             write_tile_to_framebuffer(j, i, palette_index, tilemap_addr);
+            Tryte& tile = tryte_framebuffer[(TILE_GRID_WIDTH * i) + j];
+            size_t palette_index = Tryte::get_high(tile) + 13;
+            size_t tile_addr = static_cast<size_t>(27 * static_cast<int64_t>(Tryte::get_mid(tile)) + static_cast<int64_t>(Tryte::get_low(tile)) + 364);
+            write_tile_to_framebuffer(j, i, palette_index, tile_addr);
         }
     }
 }
@@ -147,16 +147,16 @@ void Screen::write_tile_to_framebuffer(size_t const grid_index_x, size_t const g
     // find pointer to tile's trytes in tilemap
     Tryte* tile_trytes = &(tilemap[9 * tile_addr]);
 
-    size_t pixel_index_x = 9 * grid_index_x;
-    size_t pixel_index_y = 9 * grid_index_y;
+    size_t pixel_index_x = PIXELS_PER_TILE * grid_index_x;
+    size_t pixel_index_y = PIXELS_PER_TILE * grid_index_y;
 
-    for (size_t row = 0; row < 9; row++)
+    for (size_t row = 0; row < PIXELS_PER_TILE; row++)
     {
         size_t y = pixel_index_y + row;
-        for (size_t col = 0; col < 9; col++)
+        for (size_t col = 0; col < PIXELS_PER_TILE; col++)
         {
             size_t x = pixel_index_x + col;
-            byte_framebuffer[(PIXEL_WIDTH * y) + x] = colours[tile_trytes[row][8 - col] + 1];
+            byte_framebuffer[(PIXEL_WIDTH * y) + x] = colours[tile_trytes[row / PIXELS_PER_TRIT][8 - (col / PIXELS_PER_TRIT)] + 1];
         }
     }
 }
