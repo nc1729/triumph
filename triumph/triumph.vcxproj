@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)\common\include;$(ProjectDir)\triumph\include;C:\libraries\SDL2-2.0.22\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)common\include;$(SolutionDir)triumph\include;C:\libraries\SDL2-2.0.22\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\libraries\SDL2-2.0.22\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)\triumph\include;$(ProjectDir)\common\include;C:\libraries\SDL2-2.0.22\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)triumph\include;$(SolutionDir)common\include;C:\libraries\SDL2-2.0.22\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\libraries\SDL2-2.0.22\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
