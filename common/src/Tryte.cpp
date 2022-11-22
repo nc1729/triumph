@@ -8,12 +8,6 @@
 #include "constants.h"
 #include "Tryte.h"
 
-std::map<char, int64_t> const Tryte::schar_to_val =
-	{ {'M', -13}, {'L', -12}, {'K', -11}, {'J', -10}, {'I', -9}, {'H', -8}, {'G', -7}, {'F', -6}, {'E', -5},
-	  {'D',  -4}, {'C',  -3}, {'B',  -2}, {'A',  -1}, {'0',  0}, {'a',  1}, {'b',  2}, {'c',  3}, {'d',  4},
-	  {'e',   5}, {'f',   6}, {'g',   7}, {'h',   8}, {'i',  9}, {'j', 10}, {'k', 11}, {'l', 12}, {'m', 13} };
-std::string const Tryte::schars = "MLKJIHGFEDCBA0abcdefghijklm";
-
 // default constructor
 Tryte::Tryte()
 {
@@ -50,25 +44,20 @@ Tryte::Tryte(std::string const& s)
 	if (s.find_first_not_of(constants::septavingt_chars) == std::string::npos && s.length() == 3)
 	{
 		// s was a valid Tryte string
-		int64_t n = 729 * schar_to_val.at(s[0]) + 27 * schar_to_val.at(s[1]) + schar_to_val.at(s[2]);
+		std::array<int8_t, 3> const high_ternary = constants::int_to_ternary.at(constants::schar_to_val.at(s[0]));
+		std::array<int8_t, 3> const mid_ternary = constants::int_to_ternary.at(constants::schar_to_val.at(s[1]));
+		std::array<int8_t, 3> const low_ternary = constants::int_to_ternary.at(constants::schar_to_val.at(s[2]));
+		
 		// fill internal trit array
-		for (size_t i = 0; i < 9; i++)
-		{
-			int8_t rem = static_cast<int8_t>(n % 3);
-			n /= 3;
-			// deal with carry
-			if (rem == 2)
-			{
-				rem = -1;
-				n++;
-			}
-			else if (rem == -2)
-			{
-				rem = 1;
-				n--;
-			}
-			trits_[i] = rem;
-		}
+		trits_[0] = low_ternary[2];
+		trits_[1] = low_ternary[1];
+		trits_[2] = low_ternary[0];
+		trits_[3] = mid_ternary[2];
+		trits_[4] = mid_ternary[1];
+		trits_[5] = mid_ternary[0];
+		trits_[6] = high_ternary[2];
+		trits_[7] = high_ternary[1];
+		trits_[8] = high_ternary[0];
 	}
 	else
 	{
@@ -76,17 +65,15 @@ Tryte::Tryte(std::string const& s)
 		throw std::invalid_argument(err_str);
 	}
 }
-/*
-Tryte(std::string const& s)
-{
-	if 
-}
-		//
-	//{};
-*/
 
 // ternary array constructor
 Tryte::Tryte(std::array<int8_t, 9> const& arr)
+{
+	trits_ = arr;
+}
+
+// ternary array rvalue constructor
+Tryte::Tryte(std::array<int8_t, 9> const&& arr)
 {
 	trits_ = arr;
 }
@@ -111,9 +98,9 @@ int8_t Tryte::get_low(Tryte const& tryte)
 std::string Tryte::get_str(Tryte const& tryte)
 {
 	std::string out(3, '0');
-	out[0] = Tryte::schars[Tryte::get_high(tryte) + 13];
-	out[1] = Tryte::schars[Tryte::get_mid(tryte) + 13];
-	out[2] = Tryte::schars[Tryte::get_low(tryte) + 13];
+	out[0] = constants::schars[Tryte::get_high(tryte) + 13];
+	out[1] = constants::schars[Tryte::get_mid(tryte) + 13];
+	out[2] = constants::schars[Tryte::get_low(tryte) + 13];
 	return out;
 }
 
@@ -130,15 +117,15 @@ int8_t const& Tryte::operator[](size_t const n) const
 }
 
 // increment operator
-Tryte& Tryte::operator+=(int64_t const n)
+Tryte& Tryte::operator+=(Tryte const& n)
 {
-	Tryte::add_with_carry(*this, Tryte(n), 0);
+	Tryte::add_with_carry(*this, n, 0);
 	return *this;
 }
 // decrement operator
-Tryte& Tryte::operator-=(int64_t const n)
+Tryte& Tryte::operator-=(Tryte const& n)
 {
-	Tryte::add_with_carry(*this, Tryte(-n), 0);
+	Tryte::add_with_carry(*this, -n, 0);
 	return *this;
 }
 /*
@@ -157,30 +144,74 @@ bool Tryte::operator!=(Tryte const& other) const
 
 bool Tryte::operator<(Tryte const& other) const
 {
-	int64_t const this_int = Tryte::get_int(*this);
-	int64_t const other_int = Tryte::get_int(other);
-	return this_int < other_int;
+	for (size_t i = 0; i < 9; i++)
+	{
+		// compare most significant trits first
+		if (this->trits_[8 - i] < other.trits_[8 - i])
+		{
+			return true;
+		}
+		else if (this->trits_[8 - i] > other.trits_[8 - i])
+		{
+			return false;
+		}
+	}
+	// all trits are equal
+	return false;
 }
 
 bool Tryte::operator<=(Tryte const& other) const
 {
-	int64_t const this_int = Tryte::get_int(*this);
-	int64_t const other_int = Tryte::get_int(other);
-	return this_int <= other_int;
+	for (size_t i = 0; i < 9; i++)
+	{
+		// compare most significant trits first
+		if (this->trits_[8 - i] < other.trits_[8 - i])
+		{
+			return true;
+		}
+		else if (this->trits_[8 - i] > other.trits_[8 - i])
+		{
+			return false;
+		}
+	}
+	// all trits are equal
+	return true;
 }
 
 bool Tryte::operator>(Tryte const& other) const
 {
-	int64_t const this_int = Tryte::get_int(*this);
-	int64_t const other_int = Tryte::get_int(other);
-	return this_int > other_int;
+	for (size_t i = 0; i < 9; i++)
+	{
+		// compare most significant trits first
+		if (this->trits_[8 - i] > other.trits_[8 - i])
+		{
+			return true;
+		}
+		else if (this->trits_[8 - i] < other.trits_[8 - i])
+		{
+			return false;
+		}
+	}
+	// all trits are equal
+	return false;
 }
 
 bool Tryte::operator>=(Tryte const& other) const
 {
-	int64_t const this_int = Tryte::get_int(*this);
-	int64_t const other_int = Tryte::get_int(other);
-	return this_int >= other_int;
+	for (size_t i = 0; i < 9; i++)
+	{
+		// compare most significant trits first
+		if (this->trits_[8 - i] > other.trits_[8 - i])
+		{
+			return true;
+		}
+		else if (this->trits_[8 - i] < other.trits_[8 - i])
+		{
+			return false;
+		}
+	}
+	// all trits are equal
+	return true;
 }
 
 Tryte Tryte::operator&(Tryte const& other) const
@@ -237,11 +268,23 @@ std::istream& operator>>(std::istream& is, Tryte& tryte)
 
 	is >> c[0] >> c[1] >> c[2];
 
-	int64_t high = Tryte::schar_to_val.at(c[0]);
-	int64_t mid = Tryte::schar_to_val.at(c[1]);
-	int64_t low = Tryte::schar_to_val.at(c[2]);
+	int64_t const high = constants::schar_to_val.at(c[0]);
+	int64_t const mid = constants::schar_to_val.at(c[1]);
+	int64_t const low = constants::schar_to_val.at(c[2]);
 
-	tryte = Tryte(729 * high + 27 * mid + low);
+	std::array<int8_t, 3> const high_ternary = constants::int_to_ternary.at(high);
+	std::array<int8_t, 3> const mid_ternary = constants::int_to_ternary.at(mid);
+	std::array<int8_t, 3> const low_ternary = constants::int_to_ternary.at(low);
+
+	tryte[0] = low_ternary[2];
+	tryte[1] = low_ternary[1];
+	tryte[2] = low_ternary[0];
+	tryte[3] = mid_ternary[2];
+	tryte[4] = mid_ternary[1];
+	tryte[5] = mid_ternary[0];
+	tryte[6] = high_ternary[2];
+	tryte[7] = high_ternary[1];
+	tryte[8] = high_ternary[0];
 
 	return is;
 }

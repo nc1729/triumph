@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Bank.h"
+#include "constants.h"
 
 class Console
 {
@@ -22,9 +23,8 @@ private:
 public:
 	Console(std::ostream& out, std::istream& in) : out{ out }, in{ in } {};
 	DisplayMode mode = DisplayMode::RAW;
-	int64_t static constexpr CONSOLE_BANK = -1;
 	int64_t static constexpr BUFFER_SIZE = 729;
-	Bank buffer{ CONSOLE_BANK };
+	Bank buffer{ constants::CONSOLE_BANK };
 
 	// useful memory addresses
 	static int64_t constexpr COUT_BUFFER_START = -9841; // $MMM

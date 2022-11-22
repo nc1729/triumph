@@ -1,11 +1,13 @@
-#include "CPU.h"
-#include "Memory.h"
-#include "Tryte.h"
-
 #include <thread> // for sleeping
 #include <chrono>
 #include <iostream>
 #include <string>
+
+#include "CPU.h"
+#include "constants.h"
+#include "Memory.h"
+#include "Tryte.h"
+
 
 CPU::CPU(Memory& memory) :
 	memory_{memory}
@@ -174,7 +176,7 @@ void CPU::decode_and_execute()
 		break;
 	case -8:
 		// HX(t3) - SH X, t3
-		trit_shift(regs_[mid], Tryte(low));
+		trit_shift(regs_[mid], constants::int_to_tryte.at(low));
 		instr_size_ = 1;
 		break;
 	case -7:

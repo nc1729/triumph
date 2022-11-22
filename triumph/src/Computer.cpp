@@ -6,6 +6,7 @@
 #include <thread>
 #include <chrono>
 
+#include "constants.h"
 #include "Tryte.h"
 #include "Bank.h"
 #include "Console.h"
@@ -112,20 +113,7 @@ void Computer::boot()
 		memory.add_bank(&screen.tryte_framebuffer);
 		memory.add_bank(&screen.tilemap);
 		memory.add_bank(&screen.work_RAM);
-		// memory test
-		/*
-		std::cout << memory.bank() << '\n';
-		std::cout << "Opening framebuffer\n";
-		memory.bank() = -101;
-		std::cout << memory[Tryte("MMM")] << '\n';
-		std::cout << "Opening tilemap\n";
-		memory.bank() = -102;
-		std::cout << memory[Tryte("MMM")] << '\n';
-		std::cout << "Opening workRAM\n";
-		memory.bank() = -103;
-		std::cout << memory[Tryte("MMM")] << '\n';
-		memory.bank() = 1;
-		*/
+
 		// and set up and run screen loop
 		screen.turn_on();
 		screen.run();
@@ -142,7 +130,7 @@ void Computer::boot()
 void Computer::disk_manager()
 {
 	// check if a disk is being accessed and CPU is sleeping (to prevent data race)
-	if (memory.bank() > Tryte(0) && cpu.is_asleep())
+	if (memory.bank() > constants::zero && cpu.is_asleep())
 	{
 		// check for a CPU read request
 		if (memory[Disk::DISK_STATE_ADDR][Disk::READ_REQUEST_FLAG] == 1)
@@ -191,7 +179,7 @@ void Computer::console_manager()
 	// refresh display mode (it may have changed since last cycle)
 	console.set_display_mode();
 	// check if console is being accessed
-	if (memory.bank() == Tryte(Console::CONSOLE_BANK))
+	if (memory.bank() == constants::CONSOLE_BANK)
 	{
 		// check for an out request
 		if (memory[Console::CONSOLE_STATE_ADDR][Console::OUT_REQUEST_FLAG] == 1)

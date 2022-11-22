@@ -2,6 +2,7 @@
 #include <string>
 #include <sstream>
 
+#include "constants.h"
 #include "Bank.h"
 #include "Console.h"
 
@@ -17,7 +18,7 @@ void Console::flush_to_out()
 		// obviously stop if we hit the end of the buffer though
 		int64_t i = 0;
 		Tryte& tryte = buffer[COUT_BUFFER_START + 9841 + i];
-		while (tryte != Tryte(0) && i < BUFFER_SIZE)
+		while (tryte != constants::zero && i < BUFFER_SIZE)
 		{
 			// print the tryte's ASCII char equivalent
 			out << static_cast<char>(tryte);

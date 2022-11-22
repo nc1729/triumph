@@ -31,6 +31,9 @@ public:
 	// ternary array constructor
 	Tryte(std::array<int8_t, 9> const& arr);
 
+	// ternary array rvalue constructor
+	Tryte(std::array<int8_t, 9> const&& arr);
+
 	/*
 	useful functions
 	*/
@@ -85,8 +88,8 @@ public:
 	/*
 	increment/decrement operators
 	*/
-    Tryte& operator+=(int64_t const n);
-	Tryte& operator-=(int64_t const n);
+    Tryte& operator+=(Tryte const& n);
+	Tryte& operator-=(Tryte const& n);
 
 	/*
 	relational operators
