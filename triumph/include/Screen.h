@@ -18,10 +18,10 @@ private:
 	std::vector<uint32_t> byte_framebuffer;
 
 	// screen size
-	size_t const PIXELS_PER_TRIT = 1;
+	size_t const PIXELS_PER_TRIT = 2;
 	size_t const PIXELS_PER_TILE = 9 * PIXELS_PER_TRIT;
-	int const TILE_GRID_WIDTH = 54;
-	int const TILE_GRID_HEIGHT = 54;
+	int const TILE_GRID_WIDTH = 36;
+	int const TILE_GRID_HEIGHT = 27;
 	int const PIXEL_WIDTH = TILE_GRID_WIDTH * PIXELS_PER_TILE;
 	int const PIXEL_HEIGHT = TILE_GRID_HEIGHT * PIXELS_PER_TILE;
 	

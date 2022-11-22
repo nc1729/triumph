@@ -12,7 +12,7 @@ TRIUMPH has the following capabilities:
 - Built in memory is 19,683 trytes, addressed by $MMM-$mmm (-9841 to 9841 in balanced septavingtesmal representation.)
 - Lower third of memory $MMM-$Emm is bank switchable; different banks of memory may be accessed by setting a special MB (memory bank) register.
 - TRIUMPH supports reading and writing to disks - text files containing only the characters A-M, 0 and a-m. These disks are lists of Trytes containing machine code or data. Each disk can have a maximum of 19,683 pages of 729 Trytes, and TRIUMPH can access up to 9,841 disks at once - inserting and removing disks is not supported at this time.
-- TRIUMPH currently outputs graphics to a 54x54 tile display (for a resolution of 486x486 pixels.) This display is tile based; an array of 2,916 Trytes acts as a framebuffer, with each Tryte in this buffer pointing to one of 27 possible palettes (which can be adjusted freely at runtime) and one of 729 possible tiles in a 6,561 Tryte tilemap. TRIUMPH can render 27x27x27 RGB colours, although it can only display 81 on screen at one time.
+- TRIUMPH currently outputs graphics to a 36x27 tile display (for a 4:3 resolution of 648x486 pixels.) This display is tile based; an array of 972 Trytes acts as a framebuffer, with each Tryte in this buffer pointing to one of 27 possible palettes (which can be adjusted freely at runtime) and one of 729 possible tiles in a 6,561 Tryte tilemap. TRIUMPH can render 27x27x27 RGB colours, although it can only display 81 on screen at one time.
 
 ## Repository layout
 

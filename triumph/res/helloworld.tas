@@ -83,8 +83,8 @@ write_to_framebuffer
     // switch bank to framebuffer
     BANK FRAMEBUFFER
 
-    // set to row 26 of framebuffer (and some columns along)
-    SET C, 0sLlg
+    // set to row 0 of framebuffer
+    SET C, 0sMMM
     // load pointer to string
     SET D, hello_string
 
