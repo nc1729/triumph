@@ -3,10 +3,10 @@
 #include <array>
 #include <stdexcept>
 
-#include "Memory.h"
-#include "Bank.h"
-#include "Disk.h"
-#include "Tryte.h"
+#include "common/Tryte.h"
+#include "IO/Disk.h"
+#include "Memory/Memory.h"
+#include "Memory/Bank.h"
 
 Tryte const Memory::BANK = 9839;
 Tryte const Memory::SP = 9840;

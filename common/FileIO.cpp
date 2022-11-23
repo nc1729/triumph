@@ -3,8 +3,8 @@
 #include <fstream>
 #include <sstream>
 
-#include "FileIO.h"
-#include "Tryte.h"
+#include "common/Tryte.h"
+#include "common/FileIO.h"
 
 std::vector<std::string> IO::read_lines(std::string const& input_filename)
 {

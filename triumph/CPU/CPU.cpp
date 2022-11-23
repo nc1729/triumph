@@ -3,11 +3,10 @@
 #include <iostream>
 #include <string>
 
-#include "CPU.h"
-#include "constants.h"
-#include "Memory.h"
-#include "Tryte.h"
-
+#include "common/Tryte.h"
+#include "common/constants.h"
+#include "CPU/CPU.h"
+#include "Memory/Memory.h"
 
 CPU::CPU(Memory& memory) :
 	memory_{memory}

@@ -4,8 +4,8 @@
 #include <array>
 #include <set>
 
-#include "Tryte.h"
-#include "Disk.h"
+#include "common/Tryte.h"
+#include "IO/Disk.h"
 
 int8_t const Disk::READWRITE = -1;
 int8_t const Disk::READONLY = 0;

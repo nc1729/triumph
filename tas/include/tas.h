@@ -1,7 +1,7 @@
 #pragma once
 
 #include "TASCLOptions.h"
-#include "Tryte.h"
+#include "common/Tryte.h"
 
 int tas(TASCLOptions const& options);
 

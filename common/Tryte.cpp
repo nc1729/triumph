@@ -5,8 +5,8 @@
 #include <array>
 #include <algorithm>
 
-#include "constants.h"
-#include "Tryte.h"
+#include "common/constants.h"
+#include "common/Tryte.h"
 
 // default constructor
 Tryte::Tryte()

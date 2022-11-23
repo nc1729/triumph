@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <map>
 
-#include "Bank.h"
+#include "Memory/Bank.h"
 
 class BankManager
 {

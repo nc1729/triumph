@@ -4,9 +4,9 @@
 #include <sstream>
 #include <algorithm>
 
-#include "constants.h"
-#include "util.hpp"
-#include "CPU.h"
+#include "common/constants.h"
+#include "common/util.h"
+#include "CPU/CPU.h"
 
 void CPU::debug()
 {

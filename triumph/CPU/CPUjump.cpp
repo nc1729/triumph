@@ -1,5 +1,5 @@
-#include "CPU.h"
-#include "Tryte.h"
+#include "common/Tryte.h"
+#include "CPU/CPU.h"
 
 void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
 {

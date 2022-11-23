@@ -6,9 +6,9 @@
 #include <cstdint>
 #include <cmath>
 
-#include "Screen.h"
-#include "Bank.h"
-#include "Tryte.h"
+#include "common/Tryte.h"
+#include "IO/Screen.h"
+#include "Memory/Bank.h"
 
 std::array<uint32_t, 27> const Screen::colour_values = 
 { 0, 10, 20, 29, 39, 49, 59, 69, 78, 88, 98, 108, 118, 128, 137, 147, 157, 167, 177, 186,

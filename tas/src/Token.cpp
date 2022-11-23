@@ -1,10 +1,10 @@
 #include <string>
 #include <iostream>
 
-#include "constants.h"
+#include "common/constants.h"
+#include "common/Tryte.h"
+#include "common/util.h"
 #include "error.h"
-#include "Tryte.h"
-#include "util.hpp"
 #include "Token.h"
 
 bool Token::is_data_type() const

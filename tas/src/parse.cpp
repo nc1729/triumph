@@ -2,9 +2,9 @@
 #include <string>
 #include <map>
 
+#include "common/constants.h"
 #include "Token.h"
 #include "Statement.h"
-#include "constants.h"
 #include "Block.h"
 #include "error.h"
 #include "parse.h"

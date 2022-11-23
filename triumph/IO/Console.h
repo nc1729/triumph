@@ -2,8 +2,8 @@
 #include <iostream>
 #include <string>
 
-#include "Bank.h"
-#include "constants.h"
+#include "common/constants.h"
+#include "Memory/Bank.h"
 
 class Console
 {

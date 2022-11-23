@@ -3,17 +3,17 @@
 #include <string>
 #include <stdexcept>
 
+#include "common/constants.h"
+#include "common/FileIO.h"
+#include "common/util.h"
 #include "TASCLOptions.h"
 #include "error.h"
-#include "constants.h"
 #include "tokenize.h"
 #include "parse.h"
 #include "assemble.h"
 #include "link.h"
 #include "Token.h"
 #include "Block.h"
-#include "FileIO.h"
-#include "util.hpp"
 #include "tas.h"
 
 int tas(TASCLOptions const& options)

@@ -1,9 +1,9 @@
 #include <vector>
 #include <map>
 
-#include "BankManager.h"
-#include "Bank.h"
-#include "Tryte.h"
+#include "common/Tryte.h"
+#include "Memory/BankManager.h"
+#include "Memory/Bank.h"
 
 BankManager::BankManager(std::vector<Bank*> const& banks) : banks_{banks}
 {

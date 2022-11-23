@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "Tryte.h"
+#include "common/Tryte.h"
 
 class Bank
 {

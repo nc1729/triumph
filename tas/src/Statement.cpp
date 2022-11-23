@@ -4,8 +4,8 @@
 #include <sstream>
 #include <iostream>
 
+#include "common/Tryte.h"
 #include "error.h"
-#include "Tryte.h"
 #include "Token.h"
 #include "Statement.h"
 

@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)common\include;$(SolutionDir)triumph\include;C:\libraries\SDL2-2.0.22\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)triumph;C:\libraries\SDL2-2.0.22\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\libraries\SDL2-2.0.22\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)triumph\include;$(SolutionDir)common\include;C:\libraries\SDL2-2.0.22\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)triumph;C:\libraries\SDL2-2.0.22\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\libraries\SDL2-2.0.22\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -138,40 +138,39 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\common\src\FileIO.cpp" />
-    <ClCompile Include="..\common\src\Tryte.cpp" />
-    <ClCompile Include="..\common\src\util.cpp" />
-    <ClCompile Include="src\Bank.cpp" />
-    <ClCompile Include="src\BankManager.cpp" />
-    <ClCompile Include="src\Computer.cpp" />
-    <ClCompile Include="src\Console.cpp" />
-    <ClCompile Include="src\CPU.cpp" />
-    <ClCompile Include="src\CPUdebugger.cpp" />
-    <ClCompile Include="src\CPUInstructions.cpp" />
-    <ClCompile Include="src\CPUjump.cpp" />
-    <ClCompile Include="src\Disk.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Memory.cpp" />
-    <ClCompile Include="src\Screen.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\common\include\constants.h" />
-    <ClInclude Include="..\common\include\FileIO.h" />
-    <ClInclude Include="..\common\include\Tryte.h" />
-    <ClInclude Include="..\common\include\util.hpp" />
-    <ClInclude Include="include\Bank.h" />
-    <ClInclude Include="include\BankManager.h" />
-    <ClInclude Include="include\BootDisk.h" />
-    <ClInclude Include="include\Computer.h" />
-    <ClInclude Include="include\Console.h" />
-    <ClInclude Include="include\CPU.h" />
-    <ClInclude Include="include\Disk.h" />
-    <ClInclude Include="include\Memory.h" />
-    <ClInclude Include="include\Screen.h" />
-    <ClInclude Include="include\TriumphCLOptions.h" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include=".gitignore" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\common\constants.h" />
+    <ClInclude Include="..\common\FileIO.h" />
+    <ClInclude Include="..\common\Tryte.h" />
+    <ClInclude Include="..\common\util.h" />
+    <ClInclude Include="Computer\Computer.h" />
+    <ClInclude Include="Computer\TriumphCLOptions.h" />
+    <ClInclude Include="CPU\CPU.h" />
+    <ClInclude Include="IO\Console.h" />
+    <ClInclude Include="IO\Disk.h" />
+    <ClInclude Include="IO\Screen.h" />
+    <ClInclude Include="Memory\Bank.h" />
+    <ClInclude Include="Memory\BankManager.h" />
+    <ClInclude Include="Memory\Memory.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\common\FileIO.cpp" />
+    <ClCompile Include="..\common\Tryte.cpp" />
+    <ClCompile Include="..\common\util.cpp" />
+    <ClCompile Include="Computer\Computer.cpp" />
+    <ClCompile Include="Computer\main.cpp" />
+    <ClCompile Include="CPU\CPU.cpp" />
+    <ClCompile Include="CPU\CPUdebugger.cpp" />
+    <ClCompile Include="CPU\CPUInstructions.cpp" />
+    <ClCompile Include="CPU\CPUjump.cpp" />
+    <ClCompile Include="IO\Console.cpp" />
+    <ClCompile Include="IO\Disk.cpp" />
+    <ClCompile Include="IO\Screen.cpp" />
+    <ClCompile Include="Memory\Bank.cpp" />
+    <ClCompile Include="Memory\BankManager.cpp" />
+    <ClCompile Include="Memory\Memory.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
