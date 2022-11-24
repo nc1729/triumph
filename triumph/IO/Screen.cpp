@@ -30,7 +30,8 @@ void Screen::turn_on()
         window = SDL_CreateWindow(window_title, 
             SDL_WINDOWPOS_UNDEFINED, 
             SDL_WINDOWPOS_UNDEFINED, 
-            PIXEL_WIDTH, PIXEL_HEIGHT, SDL_WINDOW_SHOWN);
+            constants::Gfx::PIXEL_WIDTH, 
+            constants::Gfx::PIXEL_HEIGHT, SDL_WINDOW_SHOWN);
         if (window == nullptr)
         {
             std::string SDL_err_code = SDL_GetError();
@@ -44,8 +45,8 @@ void Screen::turn_on()
             std::string err_string = "SDL_CreateRenderer Error: ";
             throw std::runtime_error(err_string + SDL_err_code);
         }
-        screen_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, PIXEL_WIDTH, PIXEL_HEIGHT);
-        byte_framebuffer.resize(PIXEL_WIDTH * PIXEL_HEIGHT);
+        screen_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, constants::Gfx::PIXEL_WIDTH, constants::Gfx::PIXEL_HEIGHT);
+        byte_framebuffer.resize(constants::Gfx::PIXEL_WIDTH * constants::Gfx::PIXEL_HEIGHT);
         palettes.resize(81, 0);
     }
     is_on = true;
@@ -112,7 +113,8 @@ void Screen::show_tilemap()
                 quit = true;
             }
             write_tryte_fb_to_byte_fb();
-            SDL_UpdateTexture(screen_texture, nullptr, byte_framebuffer.data(), PIXEL_WIDTH * sizeof(uint32_t));
+            SDL_UpdateTexture(screen_texture, nullptr, byte_framebuffer.data(), 
+                constants::Gfx::PIXEL_WIDTH * sizeof(uint32_t));
             SDL_RenderCopy(renderer, screen_texture, nullptr, nullptr);
             SDL_RenderPresent(renderer);
             SDL_Delay(100);
@@ -124,11 +126,11 @@ void Screen::show_tilemap()
 void Screen::write_tryte_fb_to_byte_fb()
 {
     // loop through tryte framebuffer
-    for (int64_t i = 0; i < TILE_GRID_HEIGHT; i++)
+    for (int64_t i = 0; i < constants::Gfx::TILE_GRID_HEIGHT; i++)
     {
-        for (int64_t j = 0; j < TILE_GRID_WIDTH; j++)
+        for (int64_t j = 0; j < constants::Gfx::TILE_GRID_WIDTH; j++)
         {
-            Tryte& tile = tryte_framebuffer[(TILE_GRID_WIDTH * i) + j];
+            Tryte& tile = tryte_framebuffer[(constants::Gfx::TILE_GRID_WIDTH * i) + j];
             size_t palette_index = Tryte::get_high(tile) + 13;
             size_t tile_addr = static_cast<size_t>(27 * static_cast<int64_t>(Tryte::get_mid(tile)) + static_cast<int64_t>(Tryte::get_low(tile)) + 364);
             write_tile_to_framebuffer(j, i, palette_index, tile_addr);
@@ -147,16 +149,17 @@ void Screen::write_tile_to_framebuffer(size_t const grid_index_x, size_t const g
     // find pointer to tile's trytes in tilemap
     Tryte* tile_trytes = &(tilemap[9 * tile_addr]);
 
-    size_t pixel_index_x = PIXELS_PER_TILE * grid_index_x;
-    size_t pixel_index_y = PIXELS_PER_TILE * grid_index_y;
+    size_t pixel_index_x = constants::Gfx::PIXELS_PER_TILE * grid_index_x;
+    size_t pixel_index_y = constants::Gfx::PIXELS_PER_TILE * grid_index_y;
 
-    for (size_t row = 0; row < PIXELS_PER_TILE; row++)
+    for (size_t row = 0; row < constants::Gfx::PIXELS_PER_TILE; row++)
     {
         size_t y = pixel_index_y + row;
-        for (size_t col = 0; col < PIXELS_PER_TILE; col++)
+        for (size_t col = 0; col < constants::Gfx::PIXELS_PER_TILE; col++)
         {
             size_t x = pixel_index_x + col;
-            byte_framebuffer[(PIXEL_WIDTH * y) + x] = colours[tile_trytes[row / PIXELS_PER_TRIT][8 - (col / PIXELS_PER_TRIT)] + 1];
+            byte_framebuffer[(constants::Gfx::PIXEL_WIDTH * y) + x] = 
+                colours[tile_trytes[row / constants::Gfx::PIXELS_PER_TRIT][8 - (col / constants::Gfx::PIXELS_PER_TRIT)] + 1];
         }
     }
 }
@@ -252,7 +255,7 @@ void Screen::draw_to_screen()
     // set screen to busy
     work_RAM[STATUS] = 0;
     write_tryte_fb_to_byte_fb();
-    SDL_UpdateTexture(screen_texture, nullptr, byte_framebuffer.data(), PIXEL_WIDTH * sizeof(uint32_t));
+    SDL_UpdateTexture(screen_texture, nullptr, byte_framebuffer.data(), constants::Gfx::PIXEL_WIDTH * sizeof(uint32_t));
     SDL_RenderCopy(renderer, screen_texture, nullptr, nullptr);
     SDL_RenderPresent(renderer);
     work_RAM[STATUS] = 1;

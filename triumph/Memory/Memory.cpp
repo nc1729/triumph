@@ -2,6 +2,7 @@
 #include <string>
 #include <array>
 #include <stdexcept>
+#include <iostream>
 
 #include "common/Tryte.h"
 #include "IO/Disk.h"
@@ -88,4 +89,34 @@ Tryte& Memory::sp()
 Tryte& Memory::pc()
 {
 	return local_[Memory::PC + 9841 - 6561];
+}
+
+void Memory::dump()
+{
+	int64_t const ROW_LENGTH = 27;
+	Tryte row_start = -9841;
+	Tryte row_end = -9841 + ROW_LENGTH - 1;
+
+	// print bank number
+	std::cout << "TRIUMPH memory dump\n";
+	std::cout << "Bank number: " << bank();
+
+	// draw top row
+	std::cout << "      M   L   K   J   I   H   G   F   E   D   C   B   A   0   a   b   c";
+	std::cout << "   d   e   f   g   h   i   j   k   l   m     \n";
+
+	// dump contents of memory
+	for (int64_t row = 0; row < 19683 / 27; row++)
+	{
+		std::cout << row_start << ": ";
+		for (int64_t j = 0; j < ROW_LENGTH; j++)
+		{
+			std::cout << (*this)[row_start + j] << ' ';
+		}
+		std::cout << row_end << '\n';
+
+		row_start = row_end;
+		row_end += ROW_LENGTH;
+	}
+	std::cout << '\n';
 }

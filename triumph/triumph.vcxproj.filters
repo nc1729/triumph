@@ -63,6 +63,9 @@
     <ClInclude Include="..\common\util.h">
       <Filter>common</Filter>
     </ClInclude>
+    <ClInclude Include="GPU\GPU.h">
+      <Filter>GPU</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Computer\Computer.cpp">

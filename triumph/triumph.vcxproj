@@ -148,6 +148,7 @@
     <ClInclude Include="Computer\Computer.h" />
     <ClInclude Include="Computer\TriumphCLOptions.h" />
     <ClInclude Include="CPU\CPU.h" />
+    <ClInclude Include="GPU\GPU.h" />
     <ClInclude Include="IO\Console.h" />
     <ClInclude Include="IO\Disk.h" />
     <ClInclude Include="IO\Screen.h" />

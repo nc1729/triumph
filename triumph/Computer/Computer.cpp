@@ -55,7 +55,7 @@ void Computer::boot()
 
 		// set stack pointer and program counter
 		memory.sp() = Memory::STACK_BOTTOM;
-		memory.pc() = boot_disk.buffer[BootDisk::BOOTCODE_PTR_ADDR]; // usually M00
+		memory.pc() = boot_disk.buffer[constants::BootDisk::BOOTCODE_PTR_ADDR]; // usually M00
 	}
 	else
 	{

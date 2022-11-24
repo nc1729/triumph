@@ -61,22 +61,22 @@ public:
 	// bank end
 	static int64_t constexpr DISK_BANK_END = -9841 + 6561; // $DMM
 	// palette location
-	static int64_t constexpr DISK_PALETTE_ADDR = -9841 + BootDisk::PALETTE_ARRAY_ADDR; // $ML0
+	static int64_t constexpr DISK_PALETTE_ADDR = -9841 + constants::BootDisk::PALETTE_ARRAY_ADDR; // $ML0
 
 	// disk cache - metadata is cached at the bottom of the disk's memory bank
 	// regenerated from Disk object when the disk is read/written
 	// cache start
 	static int64_t constexpr CACHE_START = DISK_BANK_END - 54; // $ElM
 	// disk name - 27 Trytes reserved for this
-	static int64_t constexpr CACHE_NAME_ADDR = CACHE_START + BootDisk::NAME_ADDR; // $ElD
+	static int64_t constexpr CACHE_NAME_ADDR = CACHE_START + constants::BootDisk::NAME_ADDR; // $ElD
 	// disk size
-	static int64_t constexpr CACHE_SIZE_ADDR = CACHE_START + BootDisk::SIZE_ADDR; // $EmD
+	static int64_t constexpr CACHE_SIZE_ADDR = CACHE_START + constants::BootDisk::SIZE_ADDR; // $EmD
 	// disk rw permissions
-	static int64_t constexpr CACHE_RW_ADDR = CACHE_START + BootDisk::RW_ADDR; // $EmC
+	static int64_t constexpr CACHE_RW_ADDR = CACHE_START + constants::BootDisk::RW_ADDR; // $EmC
 	// tilemap pointer
-	static int64_t constexpr CACHE_TILEMAP_ADDR = CACHE_START + BootDisk::TILEMAP_PAGE_ADDR; // $EmB
+	static int64_t constexpr CACHE_TILEMAP_ADDR = CACHE_START + constants::BootDisk::TILEMAP_PAGE_ADDR; // $EmB
 	// bootcode pointer
-	static int64_t constexpr CACHE_BCODE_ADDR = CACHE_START + BootDisk::BOOTCODE_PTR_ADDR; // $EmA	
+	static int64_t constexpr CACHE_BCODE_ADDR = CACHE_START + constants::BootDisk::BOOTCODE_PTR_ADDR; // $EmA	
 	// which page is open
 	static int64_t constexpr CACHE_PAGE_ADDR = DISK_BANK_END - 2; // $Eml
 	// live state of the disk - read/write status

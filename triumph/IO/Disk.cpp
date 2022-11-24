@@ -4,6 +4,7 @@
 #include <array>
 #include <set>
 
+#include "common/constants.h"
 #include "common/Tryte.h"
 #include "IO/Disk.h"
 
@@ -37,20 +38,20 @@ Disk::Disk(size_t const disk_number, std::string const& disk_path) :
 	// set disk name
 	for (size_t i = 0; i < 27; i++)
 	{
-		disk_name_trytes[i] = buffer[BootDisk::NAME_ADDR + i];
+		disk_name_trytes[i] = buffer[constants::BootDisk::NAME_ADDR + i];
 	}
 
 	// set disk size
-	disk_size_tryte = buffer[BootDisk::SIZE_ADDR];
+	disk_size_tryte = buffer[constants::BootDisk::SIZE_ADDR];
 
 	// set read/write permissions
-	rw_permissions = buffer[BootDisk::RW_ADDR];
+	rw_permissions = buffer[constants::BootDisk::RW_ADDR];
 
 	// set tilemap page addr
-	tilemap_addr = buffer[BootDisk::TILEMAP_PAGE_ADDR];
+	tilemap_addr = buffer[constants::BootDisk::TILEMAP_PAGE_ADDR];
 
 	// set bootcode ptr
-	bootcode_addr = buffer[BootDisk::BOOTCODE_PTR_ADDR];
+	bootcode_addr = buffer[constants::BootDisk::BOOTCODE_PTR_ADDR];
 
 	// set default page number to page 0
 	buffer[CACHE_PAGE_ADDR + 9841] = 0;
@@ -101,7 +102,7 @@ bool Disk::is_bootdisk()
 	// to be bootable, we need a tilemap address (if running in graphics mode)
 
 	// convert signed Tryte to 'unsigned' Tryte
-	int64_t tilemap_page_start = buffer[BootDisk::TILEMAP_PAGE_ADDR];
+	int64_t tilemap_page_start = buffer[constants::BootDisk::TILEMAP_PAGE_ADDR];
 	size_t tilemap_page_start_unsigned = 0;
 	if (tilemap_page_start < 0)
 	{
@@ -224,8 +225,8 @@ bool Disk::header_is_valid()
 	this->read_from_page(0);
 	// check disk header (TRIUMPH in 'wide' encoding, padded with \0s - one Tryte per char, using ASCII for each char)
 	// T R I U M P H -> 84 82 73 85 77 80 72 00 00 -> 0cc 0ca 0cH 0cd 0cD 0cA 0cI 000 000
-	std::array<Tryte, BootDisk::SIGNATURE_SIZE> boot_header{ buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6], buffer[7], buffer[8]};
-	std::array<Tryte, BootDisk::SIGNATURE_SIZE> header{ Tryte("0cc"), Tryte("0ca"), Tryte("0cH"), Tryte("0cd"), Tryte("0cD"), Tryte("0cA"), Tryte("0cI"), Tryte("000"), Tryte("000")};
+	std::array<Tryte, constants::BootDisk::SIGNATURE_SIZE> boot_header{ buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6], buffer[7], buffer[8]};
+	std::array<Tryte, constants::BootDisk::SIGNATURE_SIZE> header{ Tryte("0cc"), Tryte("0ca"), Tryte("0cH"), Tryte("0cd"), Tryte("0cD"), Tryte("0cA"), Tryte("0cI"), Tryte("000"), Tryte("000")};
 	return boot_header == header;
 }
 

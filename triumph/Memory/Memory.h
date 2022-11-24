@@ -50,4 +50,7 @@ public:
 
 	// add a bank (if device 'plugged in')
 	void add_bank(Bank* new_bank_ptr);
+
+	// dump memory contents to console output
+	void dump();
 };

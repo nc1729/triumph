@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <array>
 
+#include "common/constants.h"
 #include "common/Tryte.h"
 #include "Memory/Bank.h"
 
@@ -17,14 +18,6 @@ private:
 	SDL_Renderer* renderer = nullptr;
 	SDL_Texture* screen_texture = nullptr;
 	std::vector<uint32_t> byte_framebuffer;
-
-	// screen size
-	size_t const PIXELS_PER_TRIT = 2;
-	size_t const PIXELS_PER_TILE = 9 * PIXELS_PER_TRIT;
-	int const TILE_GRID_WIDTH = 36;
-	int const TILE_GRID_HEIGHT = 27;
-	int const PIXEL_WIDTH = TILE_GRID_WIDTH * PIXELS_PER_TILE;
-	int const PIXEL_HEIGHT = TILE_GRID_HEIGHT * PIXELS_PER_TILE;
 	
 	// palettes are stored at start of work_RAM - 27 palettes, 81 Trytes
 	// 3 colours per palette, each colour is a tryte (high - R, mid - G, low - B)
