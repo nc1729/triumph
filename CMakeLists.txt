@@ -30,6 +30,7 @@ target_sources(triumph PUBLIC
                 "triumph/IO/Console.cpp"
                 "triumph/IO/Disk.cpp"
                 "triumph/IO/Screen.cpp"
+                "triumph/Memory/MemoryBlock.cpp"
                 "triumph/Memory/Memory.cpp"
                 "triumph/Memory/Bank.cpp"
                 "triumph/Memory/BankManager.cpp"
