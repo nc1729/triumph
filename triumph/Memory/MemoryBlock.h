@@ -1,5 +1,7 @@
 #pragma once
 
+// unordered_map relies on generalisation of hash function on Trytes
+// allows for speedy lookup for Tryte memory
 #include <unordered_map>
 
 #include "common/Tryte.h"
