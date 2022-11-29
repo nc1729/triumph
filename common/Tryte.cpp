@@ -128,6 +128,18 @@ Tryte& Tryte::operator-=(Tryte const& n)
 	Tryte::add_with_carry(*this, -n, 0);
 	return *this;
 }
+
+Tryte& Tryte::operator++()
+{
+	return *this += 1;
+}
+
+Tryte& Tryte::operator--()
+{
+	return *this -= 1;
+}
+
+
 /*
 relational operators
 */

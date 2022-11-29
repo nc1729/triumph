@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <iostream>
+#include <functional>
 #include <array>
 
 class Tryte
@@ -90,6 +91,8 @@ public:
 	*/
     Tryte& operator+=(Tryte const& n);
 	Tryte& operator-=(Tryte const& n);
+	Tryte& operator++();
+	Tryte& operator--();
 
 	/*
 	relational operators
@@ -134,4 +137,13 @@ public:
 	// flip sign
 	static void flip(Tryte& t1);
 
+};
+
+template<>
+struct std::hash<Tryte>
+{
+	size_t operator()(Tryte const& t) const noexcept
+	{
+		return std::hash<int64_t>{}(Tryte::get_int(t));
+	}
 };

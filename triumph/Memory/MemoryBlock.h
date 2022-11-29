@@ -7,7 +7,7 @@
 class MemoryBlock
 {
 public:
-	MemoryBlock(Tryte const& start = Tryte("MMM"), Tryte const& end = Tryte("mmm"));
+	MemoryBlock(Tryte const& start = Tryte("MMM"), Tryte const& end = Tryte("MMM"));
 	Tryte& operator[](Tryte const& addr);
 	Tryte const& operator[](Tryte const& addr) const;
 

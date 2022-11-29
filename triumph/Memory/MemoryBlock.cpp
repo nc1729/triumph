@@ -2,7 +2,7 @@
 #include "common/Tryte.h"
 #include "Memory/MemoryBlock.h"
 
-MemoryBlock::MemoryBlock(Tryte const& start = Tryte("MMM"), Tryte const& end = Tryte("MMM")) :
+MemoryBlock::MemoryBlock(Tryte const& start, Tryte const& end) :
 	start_{start}, end_{end}
 {
 	// initialise local memory to zero
