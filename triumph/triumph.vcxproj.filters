@@ -66,6 +66,9 @@
     <ClInclude Include="GPU\GPU.h">
       <Filter>GPU</Filter>
     </ClInclude>
+    <ClInclude Include="Memory\MemoryBlock.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Computer\Computer.cpp">
@@ -112,6 +115,9 @@
     </ClCompile>
     <ClCompile Include="..\common\util.cpp">
       <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\MemoryBlock.cpp">
+      <Filter>Memory</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
