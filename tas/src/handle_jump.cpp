@@ -2,8 +2,8 @@
 #include <vector>
 #include <array>
 
+#include "common/constants.h"
 #include "Statement.h"
-#include "constants.h"
 #include "error.h"
 #include "handle_instr.h"
 

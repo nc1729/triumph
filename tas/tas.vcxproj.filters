@@ -13,11 +13,8 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\common">
-      <UniqueIdentifier>{0ae49e97-89a7-4f01-80dc-6243b8fbc9b6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common">
-      <UniqueIdentifier>{6229c5a6-ac12-45b6-8245-eefad9bde5c5}</UniqueIdentifier>
+    <Filter Include="common">
+      <UniqueIdentifier>{5474a856-fc8a-42e2-9268-cfa63459a910}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -57,14 +54,14 @@
     <ClCompile Include="src\tokenize.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\src\FileIO.cpp">
-      <Filter>Source Files\common</Filter>
+    <ClCompile Include="..\common\FileIO.cpp">
+      <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\src\Tryte.cpp">
-      <Filter>Source Files\common</Filter>
+    <ClCompile Include="..\common\Tryte.cpp">
+      <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\src\util.cpp">
-      <Filter>Source Files\common</Filter>
+    <ClCompile Include="..\common\util.cpp">
+      <Filter>common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -101,17 +98,17 @@
     <ClInclude Include="include\tokenize.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\include\constants.h">
-      <Filter>Header Files\common</Filter>
+    <ClInclude Include="..\common\constants.h">
+      <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\include\FileIO.h">
-      <Filter>Header Files\common</Filter>
+    <ClInclude Include="..\common\FileIO.h">
+      <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\include\Tryte.h">
-      <Filter>Header Files\common</Filter>
+    <ClInclude Include="..\common\Tryte.h">
+      <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\include\util.hpp">
-      <Filter>Header Files\common</Filter>
+    <ClInclude Include="..\common\util.h">
+      <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

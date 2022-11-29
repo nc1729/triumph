@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 
-#include "Tryte.h"
+#include "common/Tryte.h"
 #include "Statement.h"
 
 class Block

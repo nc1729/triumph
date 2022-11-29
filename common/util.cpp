@@ -3,8 +3,8 @@
 #include <stdexcept>
 #include <algorithm>
 
-#include "constants.h"
-#include "util.hpp"
+#include "common/constants.h"
+#include "common/util.h"
 
 std::vector<std::string> util::break_file_into_lines(std::string const& file_string)
 {

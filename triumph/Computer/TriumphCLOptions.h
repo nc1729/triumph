@@ -2,7 +2,7 @@
 #include <vector>
 #include <string>
 
-#include "constants.h"
+#include "common/constants.h"
 
 /*
 TriumphCLOptions:

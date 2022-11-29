@@ -74,7 +74,7 @@
     <IncludePath>$(SolutionDir)\tas\include;$(SolutionDir)\common\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)\tas\include;$(SolutionDir)\common\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\tas\include;$(SolutionDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -133,9 +133,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\common\src\FileIO.cpp" />
-    <ClCompile Include="..\common\src\Tryte.cpp" />
-    <ClCompile Include="..\common\src\util.cpp" />
+    <ClCompile Include="..\common\FileIO.cpp" />
+    <ClCompile Include="..\common\Tryte.cpp" />
+    <ClCompile Include="..\common\util.cpp" />
     <ClCompile Include="src\assemble.cpp" />
     <ClCompile Include="src\Block.cpp" />
     <ClCompile Include="src\error.cpp" />
@@ -150,10 +150,10 @@
     <ClCompile Include="src\tokenize.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\common\include\constants.h" />
-    <ClInclude Include="..\common\include\FileIO.h" />
-    <ClInclude Include="..\common\include\Tryte.h" />
-    <ClInclude Include="..\common\include\util.hpp" />
+    <ClInclude Include="..\common\constants.h" />
+    <ClInclude Include="..\common\FileIO.h" />
+    <ClInclude Include="..\common\Tryte.h" />
+    <ClInclude Include="..\common\util.h" />
     <ClInclude Include="include\assemble.h" />
     <ClInclude Include="include\Block.h" />
     <ClInclude Include="include\error.h" />

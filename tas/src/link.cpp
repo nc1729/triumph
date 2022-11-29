@@ -5,9 +5,9 @@
 #include <algorithm>
 #include <sstream>
 
-#include "Tryte.h"
+#include "common/Tryte.h"
+#include "common/util.h"
 #include "Block.h"
-#include "util.hpp"
 #include "error.h"
 #include "link.h"
 

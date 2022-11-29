@@ -4,7 +4,7 @@
 #include <string>
 #include <iostream>
 
-#include "Tryte.h"
+#include "common/Tryte.h"
 #include "Token.h"
 
 enum class StatementType

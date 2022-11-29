@@ -2,9 +2,9 @@
 #include <string>
 #include <sstream>
 
-#include "constants.h"
-#include "Bank.h"
-#include "Console.h"
+#include "common/constants.h"
+#include "IO/Console.h"
+#include "Memory/Bank.h"
 
 void Console::flush_to_out()
 {

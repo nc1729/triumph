@@ -14,24 +14,25 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # triumph - ternary computer
 add_executable(triumph)
-target_include_directories(triumph PUBLIC "triumph/include")
-target_include_directories(triumph PUBLIC "common/include")
+target_include_directories(triumph PUBLIC
+  "${CMAKE_SOURCE_DIR}"
+  "${CMAKE_SOURCE_DIR}/triumph")
 target_sources(triumph PUBLIC
-                triumph/src/main.cpp
-                triumph/src/Bank.cpp
-                triumph/src/BankManager.cpp
-                triumph/src/Computer.cpp
-                triumph/src/Console.cpp
-                triumph/src/CPU.cpp
-                triumph/src/CPUInstructions.cpp
-                triumph/src/CPUjump.cpp
-                triumph/src/CPUdebugger.cpp
-                triumph/src/Disk.cpp
-                triumph/src/Memory.cpp
-                triumph/src/Screen.cpp
-                common/src/FileIO.cpp
-                common/src/Tryte.cpp
-                common/src/util.cpp
+                "common/FileIO.cpp"
+                "common/Tryte.cpp"
+                "common/util.cpp"
+                "triumph/Computer/main.cpp"
+                "triumph/Computer/Computer.cpp"
+                "triumph/CPU/CPU.cpp"
+                "triumph/CPU/CPUInstructions.cpp"
+                "triumph/CPU/CPUjump.cpp"
+                "triumph/CPU/CPUdebugger.cpp"
+                "triumph/IO/Console.cpp"
+                "triumph/IO/Disk.cpp"
+                "triumph/IO/Screen.cpp"
+                "triumph/Memory/Memory.cpp"
+                "triumph/Memory/Bank.cpp"
+                "triumph/Memory/BankManager.cpp"
                 )
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
@@ -39,24 +40,25 @@ target_link_libraries(triumph ${SDL2_LIBRARIES})
 
 # tas - ternary assembler
 add_executable(tas)
-target_include_directories(tas PUBLIC "tas/include")
-target_include_directories(tas PUBLIC "common/include")
+target_include_directories(tas PUBLIC
+  "${CMAKE_SOURCE_DIR}"
+  "tas/include")
 target_sources(tas PUBLIC
-                tas/src/Block.cpp
-                tas/src/error.cpp
-                tas/src/assemble.cpp
-                tas/src/handle_instr.cpp
-                tas/src/handle_jump.cpp
-                tas/src/link.cpp
-                tas/src/main.cpp
-                tas/src/parse.cpp
-                tas/src/Statement.cpp
-                tas/src/tas.cpp
-                tas/src/Token.cpp
-                tas/src/tokenize.cpp
-                common/src/FileIO.cpp
-                common/src/Tryte.cpp
-                common/src/util.cpp
+                "tas/src/Block.cpp"
+                "tas/src/error.cpp"
+                "tas/src/assemble.cpp"
+                "tas/src/handle_instr.cpp"
+                "tas/src/handle_jump.cpp"
+                "tas/src/link.cpp"
+                "tas/src/main.cpp"
+                "tas/src/parse.cpp"
+                "tas/src/Statement.cpp"
+                "tas/src/tas.cpp"
+                "tas/src/Token.cpp"
+                "tas/src/tokenize.cpp"
+                "common/FileIO.cpp"
+                "common/Tryte.cpp"
+                "common/util.cpp"
                 )
 
 # set up multithreading (for Linux, clang on MacOS doesn't seem to need this)

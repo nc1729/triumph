@@ -6,12 +6,12 @@
 #include <thread>
 #include <chrono>
 
-#include "constants.h"
-#include "Tryte.h"
-#include "Bank.h"
-#include "Console.h"
-#include "FileIO.h"
-#include "Computer.h"
+#include "common/constants.h"
+#include "common/Tryte.h"
+#include "common/FileIO.h"
+#include "Memory/Bank.h"
+#include "IO/Console.h"
+#include "Computer/Computer.h"
 
 void Computer::turn_on()
 {

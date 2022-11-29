@@ -4,9 +4,9 @@
 #include <fstream>
 #include <array>
 
-#include "Bank.h"
-#include "BootDisk.h"
-#include "Tryte.h"
+#include "common/constants.h"
+#include "common/Tryte.h"
+#include "Memory/Bank.h"
 
 class Disk
 {

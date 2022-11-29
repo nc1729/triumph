@@ -4,9 +4,9 @@
 #include <array>
 #include <vector>
 
-#include "BankManager.h"
-#include "Tryte.h"
-#include "Disk.h"
+#include "common/Tryte.h"
+#include "IO/Disk.h"
+#include "Memory/BankManager.h"
 
 class Memory
 {

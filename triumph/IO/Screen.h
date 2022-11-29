@@ -6,7 +6,8 @@
 #include <cstdint>
 #include <array>
 
-#include "Bank.h"
+#include "common/Tryte.h"
+#include "Memory/Bank.h"
 
 class Screen
 {

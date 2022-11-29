@@ -1,7 +1,7 @@
-#include "CPU.h"
-#include "Tryte.h"
-
 #include <iostream> // for show/tell
+
+#include "common/Tryte.h"
+#include "CPU/CPU.h"
 
 void CPU::load(Tryte& x, Tryte const& y)
 {

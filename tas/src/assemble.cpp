@@ -1,7 +1,7 @@
 #include <vector>
 #include <string>
 
-#include "Tryte.h"
+#include "common/Tryte.h"
 #include "Block.h"
 #include "Statement.h"
 #include "error.h"

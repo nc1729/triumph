@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Tryte.h"
-#include "Memory.h"
-
 #include <string>
 #include <array>
 #include <chrono>
+
+#include "common/Tryte.h"
+#include "Memory/Memory.h"
 
 class CPU
 {

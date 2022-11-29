@@ -4,13 +4,14 @@
 #include <iostream>
 #include <string>
 
-#include "TriumphCLOptions.h"
-#include "Bank.h"
-#include "Console.h"
-#include "Memory.h"
-#include "CPU.h"
-#include "Disk.h"
-#include "Screen.h"
+#include "Computer/TriumphCLOptions.h"
+#include "CPU/CPU.h"
+#include "IO/Console.h"
+#include "IO/Disk.h"
+#include "IO/Screen.h"
+#include "Memory/Bank.h"
+#include "Memory/Memory.h"
+
 
 class Computer
 {

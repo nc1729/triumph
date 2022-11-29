@@ -4,7 +4,7 @@
 #include <string>
 #include <fstream>
 
-#include "Tryte.h"
+#include "common/Tryte.h"
 
 namespace IO
 {

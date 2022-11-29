@@ -1,7 +1,7 @@
 #include <vector>
 
-#include "Bank.h"
-#include "Tryte.h"
+#include "common/Tryte.h"
+#include "Memory/Bank.h"
 
 Bank::Bank(int64_t const number, size_t const size) : number{number}
 {

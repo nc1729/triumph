@@ -5,11 +5,11 @@
 #include <thread>
 #include <stdexcept>
 
-#include "Tryte.h"
-#include "Disk.h"
-#include "CLI11/CLI11.hpp"
-#include "TriumphCLOptions.h"
-#include "Computer.h"
+#include "common/Tryte.h"
+#include "common/CLI11/CLI11.hpp"
+#include "Computer/TriumphCLOptions.h"
+#include "Computer/Computer.h"
+#include "IO/Disk.h"
 
 // SDL messes with main, defining its own
 // this undoes that, allowing the option to run without SDL in console mode
