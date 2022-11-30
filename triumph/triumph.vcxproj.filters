@@ -42,6 +42,9 @@
     <ClInclude Include="Memory\Memory.h">
       <Filter>Memory</Filter>
     </ClInclude>
+    <ClInclude Include="Memory\MemoryBlock.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
     <ClInclude Include="IO\Console.h">
       <Filter>IO</Filter>
     </ClInclude>
@@ -90,6 +93,9 @@
       <Filter>Memory</Filter>
     </ClCompile>
     <ClCompile Include="Memory\Memory.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\MemoryBlock.cpp">
       <Filter>Memory</Filter>
     </ClCompile>
     <ClCompile Include="IO\Console.cpp">

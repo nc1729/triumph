@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include <array>
+#include <functional> // for hash specialisation
 
 class Tryte
 {
@@ -90,6 +91,8 @@ public:
 	*/
     Tryte& operator+=(Tryte const& n);
 	Tryte& operator-=(Tryte const& n);
+	Tryte& operator++();
+	Tryte& operator--();
 
 	/*
 	relational operators
@@ -134,4 +137,16 @@ public:
 	// flip sign
 	static void flip(Tryte& t1);
 
+};
+
+// define hash function for Trytes, for use with unordered_map
+// it's sufficient just to use the unique integer associated with each Tryte value
+// this guarantees no collisions
+template<>
+struct std::hash<Tryte>
+{
+	size_t operator()(Tryte const& t) const
+	{
+		return Tryte::get_int(t);
+	}
 };

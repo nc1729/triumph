@@ -33,6 +33,7 @@ target_sources(triumph PUBLIC
                 "triumph/Memory/Memory.cpp"
                 "triumph/Memory/Bank.cpp"
                 "triumph/Memory/BankManager.cpp"
+                "triumph/Memory/MemoryBlock.cpp"
                 )
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
