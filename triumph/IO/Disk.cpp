@@ -23,7 +23,7 @@ Disk::Disk(size_t const disk_number, std::string const& disk_path) :
 	}
 	file_handle.seekg(0, std::ios::end);
 	disk_size_chars = file_handle.tellg();
-	disk_size_pages = disk_size_chars / PAGE_SIZE;
+	disk_size_pages = disk_size_chars / PAGE_SIZE.get_int();
 
 	file_handle.close();
 
@@ -35,6 +35,8 @@ Disk::Disk(size_t const disk_number, std::string const& disk_path) :
 
 	// load control Trytes and metadata
 	// set disk name
+	
+	/*
 	for (size_t i = 0; i < 27; i++)
 	{
 		disk_name_trytes[i] = buffer[BootDisk::NAME_ADDR + i];
@@ -65,9 +67,16 @@ Disk::Disk(size_t const disk_number, std::string const& disk_path) :
 	{
 		is_bootable = true;
 	}
+	*/
+	disk_bank[SIZE] = disk_size_pages;
+	disk_bank[PAGE] = 0;
+	disk_bank[STATE] = 0;
+	disk_bank[STATE][STATUS_FLAG] = 1;
+	disk_bank[STATE][RW_STATUS_FLAG] = 1; // read disk header for this?
 
 }
 
+/*
 bool Disk::is_valid()
 {
 	// check that disk contains a positive integer number of pages
@@ -94,7 +103,9 @@ bool Disk::is_valid()
 	// finally check if header is valid
 	return header_is_valid();
 }
+*/
 
+/*
 bool Disk::is_bootdisk()
 {
 	// header is valid and we know we have at least one page (and we've read it already!)
@@ -119,8 +130,9 @@ bool Disk::is_bootdisk()
 	}
 	return true;
 }
+*/
 
-void Disk::read_from_page(int64_t const page_number)
+void Disk::read_from_page(Tryte const page_number)
 {
 	// set disk status flag to busy
 	buffer[DISK_STATE_ADDR + 9841][Disk::STATUS_FLAG] = 0;
@@ -169,7 +181,7 @@ void Disk::read_from_page(int64_t const page_number)
 	refresh_metadata();
 }
 
-void Disk::write_to_page(int64_t const page_number)
+void Disk::write_to_page(Tryte const page_number)
 {
 	// set disk status flag to busy
 	buffer[DISK_STATE_ADDR + 9841][Disk::STATUS_FLAG] = 0;

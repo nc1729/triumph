@@ -148,6 +148,7 @@
     <ClInclude Include="Computer\Computer.h" />
     <ClInclude Include="Computer\TriumphCLOptions.h" />
     <ClInclude Include="CPU\CPU.h" />
+    <ClInclude Include="GPU\GPU.h" />
     <ClInclude Include="IO\Console.h" />
     <ClInclude Include="IO\Disk.h" />
     <ClInclude Include="IO\Screen.h" />
@@ -166,6 +167,7 @@
     <ClCompile Include="CPU\CPUdebugger.cpp" />
     <ClCompile Include="CPU\CPUInstructions.cpp" />
     <ClCompile Include="CPU\CPUjump.cpp" />
+    <ClCompile Include="GPU\GPU.cpp" />
     <ClCompile Include="IO\Console.cpp" />
     <ClCompile Include="IO\Disk.cpp" />
     <ClCompile Include="IO\Screen.cpp" />

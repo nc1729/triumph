@@ -15,29 +15,6 @@ Tryte::Tryte()
 	trits_ = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 }
 
-// integer constructor
-Tryte::Tryte(int64_t n)
-{
-	// fill internal trit array
-	for (size_t i = 0; i < 9; i++)
-	{
-		int8_t rem = static_cast<int8_t>(n % 3);
-		n /= 3;
-		// deal with carry
-		if (rem == 2)
-		{
-			rem = -1;
-			n++;
-		}
-		else if (rem == -2)
-		{
-			rem = 1;
-			n--;
-		}
-		trits_[i] = rem;
-	}
-}
-
 // string constructor
 Tryte::Tryte(std::string const& s)
 {
@@ -47,7 +24,7 @@ Tryte::Tryte(std::string const& s)
 		std::array<int8_t, 3> const high_ternary = constants::int_to_ternary.at(constants::schar_to_val.at(s[0]));
 		std::array<int8_t, 3> const mid_ternary = constants::int_to_ternary.at(constants::schar_to_val.at(s[1]));
 		std::array<int8_t, 3> const low_ternary = constants::int_to_ternary.at(constants::schar_to_val.at(s[2]));
-		
+
 		// fill internal trit array
 		trits_[0] = low_ternary[2];
 		trits_[1] = low_ternary[1];
@@ -78,29 +55,13 @@ Tryte::Tryte(std::array<int8_t, 9> const&& arr)
 	trits_ = arr;
 }
 
-// get_high - get the value (as an 8-bit integer taking the values [-13, 13]) of the high three trits
-int8_t Tryte::get_high(Tryte const& tryte)
-{
-	return tryte[6] + 3 * tryte[7] + 9 * tryte[8];
-}
-// get_mid - get the value (as an 8-bit integer taking the values [-13, 13]) of the middle three trits
-int8_t Tryte::get_mid(Tryte const& tryte)
-{
-	return tryte[3] + 3 * tryte[4] + 9 * tryte[5];
-}
-// get_low - get the value (as an 8-bit integer taking the values [-13, 13]) of the low three trits
-int8_t Tryte::get_low(Tryte const& tryte)
-{
-	return tryte[0] + 3 * tryte[1] + 9 * tryte[2];
-}
-
 // get_str - get the Tryte as a septavingt string (three chars from [A-M]0[a-m])
-std::string Tryte::get_str(Tryte const& tryte)
+std::string Tryte::get_str() const
 {
 	std::string out(3, '0');
-	out[0] = constants::schars[Tryte::get_high(tryte) + 13];
-	out[1] = constants::schars[Tryte::get_mid(tryte) + 13];
-	out[2] = constants::schars[Tryte::get_low(tryte) + 13];
+	out[0] = constants::schars[this->get_high() + 13];
+	out[1] = constants::schars[this->get_mid() + 13];
+	out[2] = constants::schars[this->get_low() + 13];
 	return out;
 }
 
@@ -114,6 +75,17 @@ int8_t& Tryte::operator[](size_t const n)
 int8_t const& Tryte::operator[](size_t const n) const
 {
 	return this->trits_[n];
+}
+
+// unary minus operator
+Tryte Tryte::operator-() const
+{
+	Tryte out;
+	for (size_t i = 0; i < 9; i++)
+	{
+		out.trits_[i] = -this->trits_[i];
+	}
+	return out;
 }
 
 // increment operator
@@ -259,17 +231,12 @@ Tryte& Tryte::operator|=(Tryte const& other)
 
 Tryte Tryte::operator~() const
 {
-	std::array<int8_t, 9> out_array;
-	for (size_t i = 0; i < 9; i++)
-	{
-		out_array[i] = -this->trits_[i];
-	}
-	return Tryte(out_array);
+	return -(*this);
 }
 
 std::ostream& operator<<(std::ostream& os, Tryte const& tryte)
 {
-	os << Tryte::get_str(tryte);
+	os << tryte.get_str();
 	return os;
 }
 
@@ -328,6 +295,12 @@ void Tryte::add_with_carry(Tryte& t1, Tryte const& t2, int8_t&& carry)
 	Tryte::add_with_carry(t1, t2, carry);
 }
 
+Tryte operator+(Tryte lhs, Tryte const& rhs)
+{
+	lhs += rhs;
+	return lhs;
+}
+
 void Tryte::subtract_with_borrow(Tryte& t1, Tryte const& t2, int8_t& borrow)
 {
 	int8_t temp = 0;
@@ -351,6 +324,12 @@ void Tryte::subtract_with_borrow(Tryte& t1, Tryte const& t2, int8_t& borrow)
 	}
 }
 
+Tryte operator-(Tryte lhs, Tryte const& rhs)
+{
+	lhs -= rhs;
+	return lhs;
+}
+
 void Tryte::star(Tryte& t1, Tryte const& t2)
 {
 	// fill t1 with result of t1 * t2 (tritwise multiplication)
@@ -362,7 +341,7 @@ void Tryte::star(Tryte& t1, Tryte const& t2)
 
 void Tryte::shift(Tryte& t1, Tryte const& t2)
 {
-	int8_t shift = Tryte::get_low(t2);
+	int8_t shift = t2.get_low();
 
 	if (shift >= 9)
 	{

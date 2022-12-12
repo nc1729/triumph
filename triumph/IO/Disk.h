@@ -6,7 +6,7 @@
 
 #include "common/constants.h"
 #include "common/Tryte.h"
-#include "Memory/Bank.h"
+#include "Memory/MemoryBlock.h"
 
 class Disk
 {
@@ -19,6 +19,9 @@ private:
 	bool is_valid();
 	// check if disk is bootable
 	bool is_bootdisk();
+
+	// private buffer for disk operations (file I/O ops shouldn't interfere with Tryte ops)
+	MemoryBlock buffer{ PAGE_START, PAGE_END };
 
 	/*
 	private Tryte metadata
@@ -44,16 +47,35 @@ public:
 	// check boot status of disk
 	bool is_bootable = false;
 
+
+
 	// buffer accessible by CPU
-	Bank buffer;
+	
 	Disk() = delete;
 	Disk(size_t const disk_number, std::string const& disk_path);
 
 	
+	Tryte const PAGE_SIZE{ 729 };
+	Tryte const BANK_SIZE{ 729 + 27 }; // page + 27 status Trytes
 
 	/*
-	useful memory addresses for disk management
+	important memory addresses
 	*/
+	Tryte const PAGE_START{ "MMM" };
+	Tryte const PAGE_END = PAGE_START + PAGE_SIZE; // $LMM
+	Tryte const BANK_END = PAGE_START + BANK_SIZE; // $LLM
+
+	// after reading a page from disk, metadata about the new page is stored for later use
+	// the size of the disk (in pages)
+	Tryte const SIZE{ BANK_END - 3 }; // $LMk
+	// the current page
+	Tryte const PAGE{ BANK_END - 2 }; // $LMl
+	// various state flags for requesting read/write
+	Tryte const STATE{ BANK_END - 1 }; // $LMm
+
+	MemoryBlock disk_bank{ PAGE_START, BANK_END };
+
+	/*
 	// buffer start
 	static int64_t const DISK_PAGE_START = -9841; // $MMM
 	// buffer end
@@ -81,9 +103,10 @@ public:
 	static int64_t constexpr CACHE_PAGE_ADDR = DISK_BANK_END - 2; // $Eml
 	// live state of the disk - read/write status
 	static int64_t constexpr DISK_STATE_ADDR = DISK_BANK_END - 1; // $Emm
+	*/
 
 	/*
-	disk status trits - memory at $Emm is how CPU and disk communicate
+	disk status trits - for CPU and disk communications
 	*/
 	// disk status flag
 	// + : disk is ready for reading/writing
@@ -100,7 +123,11 @@ public:
 	// 0 : do nothing
 	// - : disk write error (see error code - high three trits)
 	static size_t const WRITE_REQUEST_FLAG = 2;
-	
+	// rw status
+	// + : can read/write disk
+	// 0 : can read only
+	// - : can write only
+	static size_t const RW_STATUS_FLAG = 3;
 
 	/*
 	disk operations

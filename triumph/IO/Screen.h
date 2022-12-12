@@ -7,6 +7,7 @@
 #include <array>
 
 #include "common/Tryte.h"
+#include "GPU/GPU.h"
 #include "Memory/Bank.h"
 
 class Screen
@@ -18,17 +19,20 @@ private:
 	SDL_Texture* screen_texture = nullptr;
 	std::vector<uint32_t> byte_framebuffer;
 
+	// access to GPU object
+	GPU gpu;
+
 	// screen size
 	size_t const PIXELS_PER_TRIT = 2;
 	size_t const PIXELS_PER_TILE = 9 * PIXELS_PER_TRIT;
-	int const TILE_GRID_WIDTH = 36;
-	int const TILE_GRID_HEIGHT = 27;
+	int const TILE_GRID_WIDTH = gpu.TILE_GRID_WIDTH;
+	int const TILE_GRID_HEIGHT = gpu.TILE_GRID_HEIGHT;
 	int const PIXEL_WIDTH = TILE_GRID_WIDTH * PIXELS_PER_TILE;
 	int const PIXEL_HEIGHT = TILE_GRID_HEIGHT * PIXELS_PER_TILE;
 	
 	// palettes are stored at start of work_RAM - 27 palettes, 81 Trytes
 	// 3 colours per palette, each colour is a tryte (high - R, mid - G, low - B)
-	uint64_t const PALETTE_START = 0; // $MMM
+	Tryte const PALETTE_START{ gpu.PALETTE_START };
 	std::vector<uint32_t> palettes{ 81, 0 };
 	std::array<uint32_t, 27> static const colour_values;
 
@@ -51,6 +55,7 @@ private:
 	int64_t static constexpr STATUS = 6560;
 	
 public:
+	Screen(GPU& gpu) : gpu{ gpu } {};
 	void read_tilemap(std::string const& filename);
 	void show_tilemap();
 
@@ -75,10 +80,10 @@ public:
 	
 
 	// VRAM (accessible as banks -1, -2, -3 by CPU)
-	Bank tryte_framebuffer{ FRAMEBUFFER_BANK };
-	Bank tilemap{ TILEMAP_BANK };
-	Bank work_RAM{ WORKRAM_BANK };
+	//Bank tryte_framebuffer{ FRAMEBUFFER_BANK };
+	//Bank tilemap{ TILEMAP_BANK };
+	//Bank work_RAM{ WORKRAM_BANK };
 
-	bool is_on;
+	bool is_on = false;
 	
 };

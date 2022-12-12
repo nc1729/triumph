@@ -7,9 +7,9 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
     // the opcode will be two Trytes long - the second is for the registers
     // for example, JP [A], [B], [C] => jmj abc
     Tryte const& reg_tryte = memory_[pc_ + 1];
-    int8_t const reg1 = Tryte::get_high(reg_tryte);
-	int8_t const reg2 = Tryte::get_mid(reg_tryte);
-    int8_t const reg3 = Tryte::get_low(reg_tryte);
+    int8_t const reg1 = reg_tryte.get_high();
+	int8_t const reg2 = reg_tryte.get_mid();
+    int8_t const reg3 = reg_tryte.get_low();
 
     // decode which jump statement this is and execute it
 	switch (mid)
@@ -32,8 +32,7 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
 			instr_size_ = 2;
             break;
         default:
-            crash_dump("Unrecognised instruction");
-            halt();
+            crash("Unrecognised instruction");
             break;
 		}
         break;
@@ -56,8 +55,7 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
             instr_size_ = 2;
             break;
         default:
-            crash_dump("Unrecognised instruction");
-            halt();
+            crash("Unrecognised instruction");
             break;
         }
 		break;
@@ -86,8 +84,7 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
             instr_size_ = 2;
             break;
         default:
-            crash_dump("Unrecognised instruction");
-            halt();
+            crash("Unrecognised instruction");
             break;
         }
         break;
@@ -152,8 +149,7 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
             instr_size_ = 2;
             break;
         default:
-            crash_dump("Unrecognised instruction");
-            halt();
+            crash("Unrecognised instruction");
             break;
         }
         break;
@@ -203,8 +199,7 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
             instr_size_ = 1;
             break;
         default:
-            crash_dump("Unrecognised instruction");
-            halt();
+            crash("Unrecognised instruction");
             break;
         }
         break;
@@ -247,8 +242,7 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
             instr_size_ = 1;
             break;
         default:
-            crash_dump("Unrecognised instruction");
-            halt();
+            crash("Unrecognised instruction");
             break;
         }
         break;
@@ -315,8 +309,7 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
             instr_size_ = 1;
             break;
         default:
-            crash_dump("Unrecognised instruction");
-            halt();
+            crash("Unrecognised instruction");
             break;
         }
 	break;
@@ -358,8 +351,7 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
             instr_size_ = 1;
             break;
         default:
-            crash_dump("Unrecognised instruction");
-            halt();
+            crash("Unrecognised instruction");
             break;
         }
         break;
@@ -381,14 +373,12 @@ void CPU::decode_and_execute_jump(int8_t const mid, int8_t const low)
             instr_size_ = 1;
             break;
         default:
-            crash_dump("Unrecognised instruction");
-            halt();
+            crash("Unrecognised instruction");
             break;
         }
 	break;
     default:
-        crash_dump("Unrecognised instruction");
-        halt();
+        crash("Unrecognised instruction");
         break;
 	}
 }

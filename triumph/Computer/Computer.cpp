@@ -13,6 +13,13 @@
 #include "IO/Console.h"
 #include "Computer/Computer.h"
 
+Computer::Computer(std::vector<Disk&> disks, TriumphCLOptions const& options) :
+	options{ options },
+	console{ std::cout, std::cin },
+	disks{ disks }
+{
+
+}
 void Computer::turn_on()
 {
 	is_on = true;

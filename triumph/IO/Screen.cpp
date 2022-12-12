@@ -7,8 +7,9 @@
 #include <cmath>
 
 #include "common/Tryte.h"
+#include "GPU/GPU.h"
 #include "IO/Screen.h"
-#include "Memory/Bank.h"
+#include "Memory/MemoryBlock.h"
 
 std::array<uint32_t, 27> const Screen::colour_values = 
 { 0, 10, 20, 29, 39, 49, 59, 69, 78, 88, 98, 108, 118, 128, 137, 147, 157, 167, 177, 186,
@@ -64,6 +65,7 @@ void Screen::turn_off()
     is_on = false;
 }
 
+/*
 void Screen::read_tilemap(std::string const& filename)
 {
     std::ifstream tilemap_stream(filename);
@@ -120,17 +122,20 @@ void Screen::show_tilemap()
     }
     return;
 }
+*/
 
 void Screen::write_tryte_fb_to_byte_fb()
 {
+    // fetch framebuffer ready for copying
+    MemoryBlock* framebuffer = gpu.get_framebuffer();
     // loop through tryte framebuffer
     for (int64_t i = 0; i < TILE_GRID_HEIGHT; i++)
     {
         for (int64_t j = 0; j < TILE_GRID_WIDTH; j++)
         {
-            Tryte& tile = tryte_framebuffer[(TILE_GRID_WIDTH * i) + j];
-            size_t palette_index = Tryte::get_high(tile) + 13;
-            size_t tile_addr = static_cast<size_t>(27 * static_cast<int64_t>(Tryte::get_mid(tile)) + static_cast<int64_t>(Tryte::get_low(tile)) + 364);
+            Tryte& tile = (*framebuffer)[(TILE_GRID_WIDTH * i) + j];
+            size_t palette_index = tile.get_high() + 13;
+            size_t tile_addr = static_cast<size_t>(27 * static_cast<int64_t>(tile.get_mid()) + static_cast<int64_t>(tile.get_low()) + 364);
             write_tile_to_framebuffer(j, i, palette_index, tile_addr);
         }
     }
@@ -145,7 +150,8 @@ void Screen::write_tile_to_framebuffer(size_t const grid_index_x, size_t const g
     colours[2] = palettes[3 * palette_index + 2]; // +1 colour
 
     // find pointer to tile's trytes in tilemap
-    Tryte* tile_trytes = &(tilemap[9 * tile_addr]);
+    MemoryBlock* tilemap = gpu.get_tilemap();
+    Tryte* tile_trytes = &((*tilemap)[9 * tile_addr]);
 
     size_t pixel_index_x = PIXELS_PER_TILE * grid_index_x;
     size_t pixel_index_y = PIXELS_PER_TILE * grid_index_y;
@@ -163,11 +169,12 @@ void Screen::write_tile_to_framebuffer(size_t const grid_index_x, size_t const g
 
 void Screen::regen_palettes()
 {
-    for (size_t j = 0; j < 27; j++)
+    MemoryBlock* work_RAM = gpu.get_work_RAM();
+    for (int64_t j = 0; j < 27; j++)
     {
-        Tryte& neg_colour = work_RAM[3 * j];
-        Tryte& zero_colour = work_RAM[3 * j + 1];
-        Tryte& pos_colour = work_RAM[3 * j + 2];
+        Tryte& neg_colour = (*work_RAM)[PALETTE_START + 3 * j];
+        Tryte& zero_colour = (*work_RAM)[PALETTE_START + (3 * j) + 1];
+        Tryte& pos_colour = (*work_RAM)[PALETTE_START + (3 * j) + 2];
 
         palettes[3 * j] = tryte_to_colour(neg_colour);
         palettes[3 * j + 1] = tryte_to_colour(zero_colour);
@@ -177,24 +184,15 @@ void Screen::regen_palettes()
 
 uint32_t Screen::tryte_to_colour(Tryte const& colour_tryte)
 {
-    uint32_t red = Tryte::get_high(colour_tryte) + 13;
-    uint32_t green = Tryte::get_mid(colour_tryte) + 13;
-    uint32_t blue = Tryte::get_low(colour_tryte) + 13;
+    uint32_t red = colour_tryte.get_high() + 13;
+    uint32_t green = colour_tryte.get_mid() + 13;
+    uint32_t blue = colour_tryte.get_low() + 13;
 
     return 0xFF000000 | (colour_values[red] << 16) | (colour_values[green] << 8) | colour_values[blue];
 }
 
 void Screen::run()
 {
-    // first, read tilemap's middle tile into tryte_frame_buffer with palette 0
-    for (size_t j = 0; j < 6561; j++)
-    {
-        tryte_framebuffer[j] = 0;
-    }
-
-    // cache the palettes as a byte array
-    regen_palettes();
-
     // event loop
     SDL_Event e;
     while (is_on)
@@ -208,6 +206,7 @@ void Screen::run()
             {
                 turn_off();
             }
+            /*
             if (e.type == SDL_KEYDOWN)
             {
                 switch (e.key.keysym.sym)
@@ -222,6 +221,7 @@ void Screen::run()
                         break;
                 }
             }
+            */
             if (e.type == SDL_MOUSEBUTTONDOWN)
             {
                 turn_off();
@@ -249,15 +249,13 @@ void Screen::run()
 
 void Screen::draw_to_screen()
 {
-    // set screen to busy
-    work_RAM[STATUS] = 0;
     write_tryte_fb_to_byte_fb();
     SDL_UpdateTexture(screen_texture, nullptr, byte_framebuffer.data(), PIXEL_WIDTH * sizeof(uint32_t));
     SDL_RenderCopy(renderer, screen_texture, nullptr, nullptr);
     SDL_RenderPresent(renderer);
-    work_RAM[STATUS] = 1;
 }
 
+/*
 void Screen::dump_bank(Bank const& bank)
 {
     size_t const ROW_LENGTH = 27;
@@ -278,3 +276,4 @@ void Screen::dump_bank(Bank const& bank)
     std::cout << "\n\n";
 
 }
+*/

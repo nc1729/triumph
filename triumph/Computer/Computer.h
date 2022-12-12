@@ -6,11 +6,9 @@
 
 #include "Computer/TriumphCLOptions.h"
 #include "CPU/CPU.h"
-#include "IO/Console.h"
 #include "IO/Disk.h"
 #include "IO/Screen.h"
-#include "Memory/Bank.h"
-#include "Memory/Memory.h"
+#include "Memory/MemoryBlock.h"
 
 
 class Computer
@@ -20,26 +18,25 @@ private:
 	TriumphCLOptions options;
 	// init Screen - contains SDL calls
 	Screen screen;
-	// Console interface
-	Console console;
-	// general purpose memory
-	Bank zero{ 0 };
-	// disk
+	GPU gpu;
 	std::vector<Disk>& disks;
-	// collate memory banks and initialise memory management
-	Memory memory;
+	// main memory
+	MemoryBlock memory;
+	BIOS bios;
 	// init CPU
-	CPU cpu;
+	CPU cpu{ memory };
 	
 	void disk_manager();
 	void console_manager();
 public:
-	Computer(std::vector<Disk>& disks, TriumphCLOptions const& options) :
+	Computer(std::vector<Disk>& disks, TriumphCLOptions const& options);
+	/* :
 	options{options},
 	console{std::cout, std::cin},
     disks{disks},
 	memory{{&zero, &screen.tryte_framebuffer, &screen.tilemap, &screen.work_RAM, &console.buffer}, disks},
 	cpu{memory} {};
+	*/
 
 	bool is_on = false;
 	void turn_on();

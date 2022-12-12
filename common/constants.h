@@ -5,11 +5,10 @@
 #include <array>
 #include <map>
 
-#include "Tryte.h"
+#include "common/Tryte.h"
 
 namespace constants
 {
-    Tryte const CONSOLE_BANK = -1;
     std::map<int64_t, std::array<int8_t, 3>> const int_to_ternary =
     {
         {-13, {-1, -1, -1}},
@@ -165,6 +164,19 @@ namespace constants
         // JPNP addr - equivalent to JP *, addr, addr
         "JPNP", "jpnp"
     };
+
+    // important memory addresses
+    Tryte const STACK_BOTTOM{ "mmm" };
+    Tryte const STACK_TOP{ "mMM" };
+    Tryte const CPU_START{ "000" };
+
+    // default bank (boot ROM)
+    Tryte const BOOT_ROM{ "MMM" };
+    Tryte const CONSOLE_BANK{ "0A0" }; // console at -27
+    Tryte const TILEMAP_BANK{ "00B" };
+    Tryte const GFX_RAM{ "00A" };
+    Tryte const MAIN_MEMORY{ "000" };
+    Tryte const DISK_ONE{ "00a" };
 }
 
 /*

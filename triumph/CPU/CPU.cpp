@@ -6,9 +6,9 @@
 #include "common/Tryte.h"
 #include "common/constants.h"
 #include "CPU/CPU.h"
-#include "Memory/Memory.h"
+#include "Memory/MemoryBlock.h"
 
-CPU::CPU(Memory& memory) :
+CPU::CPU(MemoryBlock& memory) :
 	memory_{memory}
 {
 	// CPU is switched off
@@ -100,17 +100,18 @@ void CPU::dump()
 void CPU::dump_stack()
 {
 	Tryte stack_start = sp_;
-	while (stack_start != Memory::STACK_BOTTOM)
+	while (stack_start != constants::STACK_BOTTOM)
 	{
 		std::cout << stack_start << ": " << memory_[stack_start] << '\n';
 		stack_start += 1;
 	}
 }
 
-void CPU::crash_dump(std::string const& err_msg)
+void CPU::crash(std::string const& err_msg)
 {
 	std::cerr << "TRIUMPH exception: " << err_msg << '\n';
 	dump();
+	halt();
 }
 
 bool& CPU::debug_mode()
@@ -125,9 +126,9 @@ void CPU::fetch()
 
 void CPU::decode_and_execute()
 {
-	int8_t high = Tryte::get_high(instr_);
-	int8_t mid = Tryte::get_mid(instr_);
-	int8_t low = Tryte::get_low(instr_);
+	int8_t high = instr_.get_high();
+	int8_t mid = instr_.get_mid();
+	int8_t low = instr_.get_low();
 
 	if (high == 10)
 	{
@@ -163,8 +164,7 @@ void CPU::decode_and_execute()
 			instr_size_ = 2;
 			break;
 		default:
-			crash_dump("Unrecognised instruction");
-			halt();
+			crash("Unrecognised instruction");
 			break;
 		}
 		break;
@@ -358,14 +358,12 @@ void CPU::decode_and_execute()
 			instr_size_ = 1;
 			break;
 		default:
-			crash_dump("Unrecongised instruction");
-			halt();
+			crash("Unrecongised instruction");
 			break;
 		}
 		break;
 	default:
-		crash_dump("Unrecognised instruction");
-		halt();
+		crash("Unrecognised instruction");
 		break;
 	}
 	// proceed to next instruction

@@ -3,7 +3,7 @@
 #include <string>
 
 #include "common/constants.h"
-#include "Memory/Bank.h"
+#include "Memory/MemoryBlock.h"
 
 class Console
 {
@@ -17,27 +17,29 @@ private:
 	std::ostream& out;
 	std::istream& in;
 
-	int64_t read_chars(std::string const& input_string);
-	int64_t read_ints(std::string const& input_string);
-	int64_t read_trytes(std::string const& input_string);
+	Tryte read_chars(std::string const& input_string);
+	Tryte read_ints(std::string const& input_string);
+	Tryte read_trytes(std::string const& input_string);
 public:
 	Console(std::ostream& out, std::istream& in) : out{ out }, in{ in } {};
 	DisplayMode mode = DisplayMode::RAW;
 	int64_t static constexpr BUFFER_SIZE = 729;
-	Bank buffer{ constants::CONSOLE_BANK };
+	Tryte const BANK_START{ "MMM" };
+	int64_t static constexpr BANK_SIZE = 6561;
+	Tryte const BANK_END = BANK_START + BANK_SIZE;
+	MemoryBlock con_bank{BANK_START, BANK_END};
 
 	// useful memory addresses
-	static int64_t constexpr COUT_BUFFER_START = -9841; // $MMM
-	static int64_t constexpr CIN_BUFFER_START = -9841 + BUFFER_SIZE; // $LMM
-	static int64_t constexpr CONSOLE_BANK_END = -9841 + 6561; // $DMM
+	Tryte const COUT_BUFFER_START = BANK_START; // $MMM
+	Tryte const CIN_BUFFER_START = COUT_BUFFER_START + BUFFER_SIZE; // $LMM
 	// CPU needs to tell the console how many Trytes to print
 	// this is stored at this address - reset to 0 after a flush
-	static int64_t constexpr COUT_BUFFER_LEN = CONSOLE_BANK_END - 4; // $Emj
+	Tryte const COUT_BUFFER_LEN = BANK_END - 4; // $Emj
 	// CPU can tell how many Trytes are stored in input buffer here
 	// overwritten when another read from stdin happens
-	static int64_t constexpr CIN_BUFFER_LEN = CONSOLE_BANK_END - 3; // $Emk
-	static int64_t constexpr CONSOLE_DISPLAY_MODE = CONSOLE_BANK_END - 2; // $Eml
-	static int64_t constexpr CONSOLE_STATE_ADDR = CONSOLE_BANK_END - 1; // $Emm
+	Tryte const CIN_BUFFER_LEN = BANK_END - 3; // $Emk
+	Tryte const CONSOLE_DISPLAY_MODE = BANK_END - 2; // $Eml
+	Tryte const CONSOLE_STATE_ADDR = BANK_END - 1; // $Emm
 
 	/*
 	console status trits - memory at $Emm 

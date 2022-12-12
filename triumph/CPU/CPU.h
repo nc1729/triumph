@@ -4,14 +4,15 @@
 #include <array>
 #include <chrono>
 
+#include "common/constants.h"
 #include "common/Tryte.h"
-#include "Memory/Memory.h"
+#include "Memory/MemoryBlock.h"
 
 class CPU
 {
 public:
 	// constructor
-	CPU(Memory& memory);
+	CPU(MemoryBlock& memory);
 	// turn CPU on
 	void turn_on();
 	// turn CPU off
@@ -32,8 +33,8 @@ public:
 	void dump();
 	// dump stack to stdout
 	void dump_stack();
-	// on crash, dump contents of registers and other things to stderr
-	void crash_dump(std::string const& err_msg);
+	// halt CPU and dump contents of registers and other things to stderr
+	void crash(std::string const& err_msg);
 	// public access to debug mode
 	bool& debug_mode();
 
@@ -46,6 +47,12 @@ private:
 	std::array<Tryte, 10> regs_ = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	// store the current instruction at position 0 - other regs follow in positions 1-9
 	Tryte& instr_ = regs_[0];
+	// program counter
+	Tryte pc_{ constants::CPU_START };
+	// stack pointer
+	Tryte sp_{ constants::STACK_BOTTOM };
+	// current bank
+	Tryte bank_{ constants::BOOT_ROM };
 
 	/*
 	flag variables
@@ -61,13 +68,7 @@ private:
 	memory variables
 	*/
 	// reference to memory array
-	Memory& memory_;
-	// program counter
-	Tryte& pc_ = memory_.pc();
-	// stack pointer
-	Tryte& sp_ = memory_.sp();
-	// current bank
-	Tryte& bank_ = memory_.bank();
+	MemoryBlock& memory_;
 
 	/*
 	clock variables
@@ -86,8 +87,6 @@ private:
 	size_t const cycles_per_frame_ = 50000;
 	// frame duration (1/60th of a second)
 	std::chrono::duration<int64_t, std::nano> const frame_duration_ = std::chrono::nanoseconds{1000000000 / 60};
-	// instruction size, used for jumping
-	size_t instr_size_;
 
 	/*
 	CPU variables and private functions
@@ -96,9 +95,10 @@ private:
 	bool on_ = false;
 	// sleep mode switch
 	bool asleep_ = false;
-
 	// debug mode switch
 	bool debug_mode_ = false;
+	// instruction size, used for jumping
+	Tryte instr_size_;
 
 	// fetch the Tryte at the instruction pointer and set it as current instruction
 	void fetch();
