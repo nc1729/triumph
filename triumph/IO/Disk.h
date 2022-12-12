@@ -34,9 +34,6 @@ private:
 	Tryte page_number;
 
 	Tryte disk_status;
-	static int8_t const READWRITE;
-	static int8_t const READONLY;
-	static int8_t const WRITEONLY;
 
 public:
 	std::string const disk_path;
@@ -113,6 +110,9 @@ public:
 	// 0 : disk is busy
 	// - : disk error (see error code - high three trits)
 	static size_t const STATUS_FLAG = 0;
+	static int8_t const READY = 1;
+	static int8_t const BUSY = 0;
+	static int8_t const ERROR = -1;
 	// read request flag
 	// + : read requested - disk will begin copying page to buffer when free
 	// 0 : do nothing
@@ -128,16 +128,19 @@ public:
 	// 0 : can read only
 	// - : can write only
 	static size_t const RW_STATUS_FLAG = 3;
+	static int8_t const READWRITE = 1;
+	static int8_t const READONLY = 0;
+	static int8_t const WRITEONLY = -1;
 
 	/*
 	disk operations
 	*/
 	// read from the given page (729 Trytes) to the disk_buffer at $0MM-$0mm
-	void read_from_page(int64_t const page_number);
+	void read_from_page(Tryte const page_number);
 	// write to the given page on disk
-	void write_to_page(int64_t const page_number);
+	void write_to_page(Tryte const page_number);
 	// verify disk header
-	bool header_is_valid();
+	//bool header_is_valid();
 	// after read/write, refresh buffer's metadata using internal Disk state - in case of accidental overwriting
-	void refresh_metadata();
+	//void refresh_metadata();
 };

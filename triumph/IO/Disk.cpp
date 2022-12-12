@@ -71,8 +71,8 @@ Disk::Disk(size_t const disk_number, std::string const& disk_path) :
 	disk_bank[SIZE] = disk_size_pages;
 	disk_bank[PAGE] = 0;
 	disk_bank[STATE] = 0;
-	disk_bank[STATE][STATUS_FLAG] = 1;
-	disk_bank[STATE][RW_STATUS_FLAG] = 1; // read disk header for this?
+	disk_bank[STATE][STATUS_FLAG] = READY;
+	disk_bank[STATE][RW_STATUS_FLAG] = READWRITE; // read disk header for this?
 
 }
 
@@ -135,101 +135,139 @@ bool Disk::is_bootdisk()
 void Disk::read_from_page(Tryte const page_number)
 {
 	// set disk status flag to busy
-	buffer[DISK_STATE_ADDR + 9841][Disk::STATUS_FLAG] = 0;
+	disk_bank[STATE][STATUS_FLAG] = 0;
 
 	// calculate 'unsigned' page number
 	size_t unsigned_page_number = 0;
 	if (page_number < 0)
 	{
-		unsigned_page_number = page_number + 19683;
+		unsigned_page_number = page_number.get_int() + 19683;
 	}
 	else
 	{
-		unsigned_page_number = page_number;
+		unsigned_page_number = page_number.get_int();
 	}
 
 	// check that we're accessing a valid page
 	if (unsigned_page_number >= disk_size_pages)
 	{
 		// set disk error trit
-		buffer[DISK_STATE_ADDR + 9841][STATUS_FLAG] = -1;
+		disk_bank[STATE][STATUS_FLAG] = ERROR;
 		// do nothing else to buffer
 		return;
 	}
 
 	// check that the hardwired permissions are being respected
-	if (rw_permissions[0] == WRITEONLY)
+	if (disk_bank[STATE][RW_STATUS_FLAG] == WRITEONLY)
 	{
 		// set disk error trit
-		buffer[DISK_STATE_ADDR + 9841][STATUS_FLAG] = -1;
+		disk_bank[STATE][STATUS_FLAG] = ERROR;
 		// do nothing else to buffer
 		return;
 	}
 
 	// open disk file and copy to buffer
-	file_handle.open(disk_path);
-	file_handle.seekg(PAGE_SIZE * unsigned_page_number, std::ios::beg);
-	for (size_t i = 0; i < 729; i++)
+	// always read to inactive buffer to prevent data race
+	MemoryBlock* dest;
+	if (disk_bank.bank() == 0)
 	{
-		file_handle >> buffer[i];
+		dest = &buffer;
+	}
+	else
+	{
+		dest = &disk_bank;
+	}
+	file_handle.open(disk_path);
+	file_handle.seekg(PAGE_SIZE.get_int() * unsigned_page_number, std::ios::beg);
+	for (Tryte i = 0; i < PAGE_SIZE; i++)
+	{
+		file_handle >> (*dest)[i];
 	}
 	file_handle.close();
 
 	// set disk status flag to free
-	buffer[DISK_STATE_ADDR + 9841][Disk::STATUS_FLAG] = 1;
+	disk_bank[STATE][STATUS_FLAG] = READY;
+	// swap buffers (CPU only ever accesses other buffer)
+	disk_bank.bank() = 1 - disk_bank.bank();
+	// refresh metadata
+	disk_bank[SIZE] = disk_size_tryte;
+	disk_bank[PAGE] = page_number;
 
-	refresh_metadata();
 }
 
 void Disk::write_to_page(Tryte const page_number)
 {
 	// set disk status flag to busy
-	buffer[DISK_STATE_ADDR + 9841][Disk::STATUS_FLAG] = 0;
+	disk_bank[STATE][STATUS_FLAG] = 0;
 
 	// calculate 'unsigned' page number
 	size_t unsigned_page_number = 0;
 	if (page_number < 0)
 	{
-		unsigned_page_number = page_number + 19683;
+		unsigned_page_number = page_number.get_int() + 19683;
 	}
 	else
 	{
-		unsigned_page_number = page_number;
+		unsigned_page_number = page_number.get_int();
 	}
 
 	// check that we're accessing a valid page
 	if (unsigned_page_number >= disk_size_pages)
 	{
 		// set disk error trit
-		buffer[DISK_STATE_ADDR + 9841][STATUS_FLAG] = -1;
+		disk_bank[STATE][STATUS_FLAG] = ERROR;
 		// do nothing else to buffer
 		return;
 	}
 
 	// check that the hardwired permissions are being respected
-	if (rw_permissions[0] == READONLY)
+	if (disk_bank[STATE][RW_STATUS_FLAG] == WRITEONLY)
 	{
 		// set disk error trit
-		buffer[DISK_STATE_ADDR + 9841][STATUS_FLAG] = -1;
+		disk_bank[STATE][STATUS_FLAG] = ERROR;
 		// do nothing else to buffer
 		return;
 	}
 
-	// open disk file and write from buffer
-	file_handle.open(disk_path);
-	file_handle.seekg(PAGE_SIZE * unsigned_page_number, std::ios::beg);
-	for (size_t i = 0; i < 729; i++)
+	// write contents of active buffer to inactive buffer
+	// this copy makes write_to_page invisible to CPU
+	MemoryBlock* page_to_write;
+	MemoryBlock* copy;
+	if (disk_bank.bank() == 0)
 	{
-		file_handle << buffer[i];
+		page_to_write = &disk_bank;
+		copy = &buffer;
+	}
+	else
+	{
+		page_to_write = &buffer;
+		copy = &disk_bank;
+	}
+	for (Tryte i = 0; i < PAGE_SIZE; i++)
+	{
+		(*copy)[i] = (*page_to_write)[i];
+	}
+	// swap buffers
+	disk_bank.bank() = 1 - disk_bank.bank();
+
+	// write the now inactive buffer to file
+	file_handle.open(disk_path);
+	file_handle.seekg(PAGE_SIZE.get_int() * unsigned_page_number, std::ios::beg);
+	for (Tryte i = 0; i < PAGE_SIZE; i++)
+	{
+		file_handle << (*page_to_write)[i];
 	}
 	file_handle.close();
 
 	// set disk status flag to free
-	buffer[DISK_STATE_ADDR + 9841][Disk::STATUS_FLAG] = 1;
-
-	refresh_metadata();
+	disk_bank[STATE][STATUS_FLAG] = 1;
+	
+	// refresh metadata
+	disk_bank[SIZE] = disk_size_tryte;
+	disk_bank[PAGE] = page_number;
 }
 
+/*
 bool Disk::header_is_valid()
 {
 	// read 'boot sector', first page
@@ -261,3 +299,4 @@ void Disk::refresh_metadata()
 	// refresh bootcode ptr
 	buffer[CACHE_BCODE_ADDR + 9841] = bootcode_addr;
 }
+*/
