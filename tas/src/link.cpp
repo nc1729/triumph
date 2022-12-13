@@ -116,12 +116,13 @@ std::vector<Block>& link::link_blocks(std::vector<Block>& blocks,
 						{
 							// name is a local jump label
 							// compute its Tryte address and replace the jump label
-							tryte = Tryte::get_str(block.address + block.jump_label_offsets[name]);
+							Tryte temp = block.address + static_cast<int64_t>(block.jump_label_offsets[name]);
+							tryte = temp.get_str();
 						}
 						else if (block_addresses.find(name) != block_addresses.end())
 						{
 							// name is a jump to another code block
-							tryte = Tryte::get_str(block_addresses.at(name));
+							tryte = block_addresses.at(name).get_str();
 						}
 						else
 						{
@@ -157,7 +158,7 @@ std::string link::output_verbose_assembly(std::vector<Block> const& blocks)
 		{
 			if (statement.type != StatementType::JUMP_LABEL)
 			{
-				output << Tryte::get_str(addr) << ": ";
+				output << addr.get_str() << ": ";
 				output << statement << ": ";
 				for (std::string const& tryte : statement.assembled_trytes)
 				{

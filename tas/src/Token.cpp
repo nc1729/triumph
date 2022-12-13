@@ -280,36 +280,36 @@ Token::Token(std::string const& word, size_t const& line_number, TokenType const
 			tryte_int += (power_of_3 * sign);
 			power_of_3 *= 3;
 		}
-		value = Tryte::get_str(Tryte(tryte_int));
+		value = Tryte(tryte_int).get_str();
 	}
 	else if (util::string_is_int(word))
 	{
 		type = TokenType::VAL;
-		value = Tryte::get_str(Tryte(std::stoi(word)));
+		value = Tryte(std::stoi(word)).get_str();
 	}	
 	else if (util::string_is_char(word))
 	{
 		type = TokenType::VAL;
-		value = Tryte::get_str(Tryte(static_cast<int>(word[1])));
+		value = Tryte(static_cast<int>(word[1])).get_str();
 	}
 	else if (util::string_is_control_char(word))
 	{
 		type = TokenType::VAL;
 		if (word[2] == 'a')
 		{
-			value = Tryte::get_str(Tryte(static_cast<int64_t>('\a')));
+			value = Tryte(static_cast<int64_t>('\a')).get_str();
 		}
 		else if (word[2] == 'n')
 		{
-			value = Tryte::get_str(Tryte(static_cast<int64_t>('\n')));
+			value = Tryte(static_cast<int64_t>('\n')).get_str();
 		}
 		else if (word[2] == 'r')
 		{
-			value = Tryte::get_str(Tryte(static_cast<int64_t>('\r')));
+			value = Tryte(static_cast<int64_t>('\r')).get_str();
 		}
 		else if (word[2] == 't')
 		{
-			value = Tryte::get_str(Tryte(static_cast<int64_t>('\t')));
+			value = Tryte(static_cast<int64_t>('\t')).get_str();
 		}
 	}
 	else if (util::string_is_addr(word))
