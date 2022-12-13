@@ -7,12 +7,23 @@
 #include "common/Tryte.h"
 #include "IO/Disk.h"
 
-int8_t const Disk::READWRITE = -1;
-int8_t const Disk::READONLY = 0;
-int8_t const Disk::WRITEONLY = -1;
+Tryte const Disk::PAGE_SIZE = 729;
+Tryte const Disk::BANK_SIZE{ 729 + 27 }; // page + 27 status Trytes
+
+Tryte const Disk::PAGE_START{ "MMM" };
+Tryte const Disk::PAGE_END = Disk::PAGE_START + Disk::PAGE_SIZE; // $LMM
+Tryte const Disk::BANK_END = Disk::PAGE_START + Disk::BANK_SIZE; // $LLM
+
+// after reading a page from disk, metadata about the new page is stored for later use
+// the size of the disk (in pages)
+Tryte const Disk::SIZE{ Disk::BANK_END - 3 }; // $LMk
+// the current page
+Tryte const Disk::PAGE{ Disk::BANK_END - 2 }; // $LMl
+// various state flags for requesting read/write
+Tryte const Disk::STATE{ Disk::BANK_END - 1 }; // $LMm
 
 Disk::Disk(size_t const disk_number, std::string const& disk_path) : 
-	disk_path{ disk_path }, number{ disk_number }, buffer{ static_cast<int64_t>(disk_number) }
+	disk_path{ disk_path }, number{ disk_number }
 {
 	// calculate disk_size
 	file_handle.open(disk_path);
@@ -23,15 +34,17 @@ Disk::Disk(size_t const disk_number, std::string const& disk_path) :
 	}
 	file_handle.seekg(0, std::ios::end);
 	disk_size_chars = file_handle.tellg();
-	disk_size_pages = disk_size_chars / PAGE_SIZE.get_int();
+	disk_size_pages = disk_size_chars / CHAR_PAGE_SIZE;
 
 	file_handle.close();
 
+	/*
 	if (!is_valid())
 	{
 		std::string err_msg = disk_path + " is not a valid TRIUMPH disk file.";
 		throw std::runtime_error(err_msg);
 	}
+	*/
 
 	// load control Trytes and metadata
 	// set disk name
@@ -179,7 +192,7 @@ void Disk::read_from_page(Tryte const page_number)
 	}
 	file_handle.open(disk_path);
 	file_handle.seekg(PAGE_SIZE.get_int() * unsigned_page_number, std::ios::beg);
-	for (Tryte i = 0; i < PAGE_SIZE; i++)
+	for (Tryte i = 0; i < PAGE_SIZE; ++i)
 	{
 		file_handle >> (*dest)[i];
 	}
@@ -243,7 +256,7 @@ void Disk::write_to_page(Tryte const page_number)
 		page_to_write = &buffer;
 		copy = &disk_bank;
 	}
-	for (Tryte i = 0; i < PAGE_SIZE; i++)
+	for (Tryte i = 0; i < PAGE_SIZE; ++i)
 	{
 		(*copy)[i] = (*page_to_write)[i];
 	}
@@ -253,7 +266,7 @@ void Disk::write_to_page(Tryte const page_number)
 	// write the now inactive buffer to file
 	file_handle.open(disk_path);
 	file_handle.seekg(PAGE_SIZE.get_int() * unsigned_page_number, std::ios::beg);
-	for (Tryte i = 0; i < PAGE_SIZE; i++)
+	for (Tryte i = 0; i < PAGE_SIZE; ++i)
 	{
 		file_handle << (*page_to_write)[i];
 	}

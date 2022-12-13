@@ -6,6 +6,7 @@
 #include "IO/Console.h"
 #include "Memory/Bank.h"
 
+/*
 void Console::flush_to_out()
 {
 	// set console status to busy
@@ -183,3 +184,4 @@ void Console::set_display_mode()
 		mode = DisplayMode::CHAR;
 	}
 }
+*/

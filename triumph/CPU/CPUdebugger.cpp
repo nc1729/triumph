@@ -61,12 +61,12 @@ void CPU::debug()
         else if (command == "stack")
         {
             std::cout << "Stack pointer: " << sp_ <<'\n';
-            if (sp_ > Memory::STACK_BOTTOM)
+            if (sp_ > constants::STACK_BOTTOM)
             {
                 std::cout << "Stack has underflowed\n";
                 continue;
             }
-            else if (sp_ < Memory::STACK_TOP)
+            else if (sp_ < constants::STACK_TOP)
             {
                 std::cout << "Stack has overflowed\n";
                 continue;
@@ -76,7 +76,7 @@ void CPU::debug()
         }
         else if (command == "bank")
         {
-            std::cout << "Memory bank: " << memory_[Memory::BANK] << '\n';
+            std::cout << "Memory bank: " << memory_.bank() << '\n';
         }
         else if (command == "c" || command == "current")
         {
@@ -176,17 +176,17 @@ void CPU::debug_set_command(std::vector<std::string> const& words)
         // handle second argument
         if (util::string_is_septavingt(words[2]))
         {
-            memory_[Memory::BANK] = Tryte(words[2].substr(2));
+            memory_.bank() = Tryte(words[2].substr(2));
             return;
         }
         else if (util::string_is_tryte(words[2]))
         {
-            memory_[Memory::BANK] = Tryte(words[2]);
+            memory_.bank() = Tryte(words[2]);
             return;
         }
         else if (util::string_is_int(words[2]))
         {
-            memory_[Memory::BANK] = Tryte(std::stoi(words[2]));
+            memory_.bank() = Tryte(std::stoi(words[2]));
             return;
         }
 

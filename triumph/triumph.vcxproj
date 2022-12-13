@@ -145,22 +145,20 @@
     <ClInclude Include="..\common\FileIO.h" />
     <ClInclude Include="..\common\Tryte.h" />
     <ClInclude Include="..\common\util.h" />
+    <ClInclude Include="Computer\BIOS.h" />
     <ClInclude Include="Computer\Computer.h" />
     <ClInclude Include="Computer\TriumphCLOptions.h" />
     <ClInclude Include="CPU\CPU.h" />
     <ClInclude Include="GPU\GPU.h" />
-    <ClInclude Include="IO\Console.h" />
     <ClInclude Include="IO\Disk.h" />
     <ClInclude Include="IO\Screen.h" />
-    <ClInclude Include="Memory\Bank.h" />
-    <ClInclude Include="Memory\BankManager.h" />
-    <ClInclude Include="Memory\Memory.h" />
     <ClInclude Include="Memory\MemoryBlock.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\FileIO.cpp" />
     <ClCompile Include="..\common\Tryte.cpp" />
     <ClCompile Include="..\common\util.cpp" />
+    <ClCompile Include="Computer\BIOS.cpp" />
     <ClCompile Include="Computer\Computer.cpp" />
     <ClCompile Include="Computer\main.cpp" />
     <ClCompile Include="CPU\CPU.cpp" />
@@ -168,12 +166,8 @@
     <ClCompile Include="CPU\CPUInstructions.cpp" />
     <ClCompile Include="CPU\CPUjump.cpp" />
     <ClCompile Include="GPU\GPU.cpp" />
-    <ClCompile Include="IO\Console.cpp" />
     <ClCompile Include="IO\Disk.cpp" />
     <ClCompile Include="IO\Screen.cpp" />
-    <ClCompile Include="Memory\Bank.cpp" />
-    <ClCompile Include="Memory\BankManager.cpp" />
-    <ClCompile Include="Memory\Memory.cpp" />
     <ClCompile Include="Memory\MemoryBlock.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

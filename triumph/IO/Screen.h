@@ -20,11 +20,11 @@ private:
 	std::vector<uint32_t> byte_framebuffer;
 
 	// access to GPU object
-	GPU gpu;
+	GPU& gpu;
 
 	// screen size
-	size_t const PIXELS_PER_TRIT = 2;
-	size_t const PIXELS_PER_TILE = 9 * PIXELS_PER_TRIT;
+	int const PIXELS_PER_TRIT = 2;
+	int const PIXELS_PER_TILE = 9 * PIXELS_PER_TRIT;
 	int const TILE_GRID_WIDTH = gpu.TILE_GRID_WIDTH;
 	int const TILE_GRID_HEIGHT = gpu.TILE_GRID_HEIGHT;
 	int const PIXEL_WIDTH = TILE_GRID_WIDTH * PIXELS_PER_TILE;

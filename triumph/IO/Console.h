@@ -5,6 +5,7 @@
 #include "common/constants.h"
 #include "Memory/MemoryBlock.h"
 
+#if 0
 class Console
 {
 private:
@@ -67,3 +68,4 @@ public:
 	void read_from_in();
 	void set_display_mode();
 };
+#endif

@@ -14,14 +14,16 @@ private:
 	std::fstream file_handle;
 	size_t disk_size_chars;
 	// 729 Trytes in a page - 2187 chars in a page
-	size_t static const PAGE_SIZE = 2187;
+	size_t static const CHAR_PAGE_SIZE = 2187;
 	// validate disk - check all chars are septavingtesmal and size of disk is a positive integer number of pages
-	bool is_valid();
+	//bool is_valid();
 	// check if disk is bootable
-	bool is_bootdisk();
+	//bool is_bootdisk();
 
+	MemoryBlock disk_bank{ PAGE_START, BANK_END };
 	// private buffer for disk operations (file I/O ops shouldn't interfere with Tryte ops)
 	MemoryBlock buffer{ PAGE_START, PAGE_END };
+	
 
 	/*
 	private Tryte metadata
@@ -51,26 +53,26 @@ public:
 	Disk() = delete;
 	Disk(size_t const disk_number, std::string const& disk_path);
 
-	
-	Tryte const PAGE_SIZE{ 729 };
-	Tryte const BANK_SIZE{ 729 + 27 }; // page + 27 status Trytes
+	Tryte static const PAGE_SIZE;
+	Tryte static const BANK_SIZE;
 
 	/*
 	important memory addresses
 	*/
-	Tryte const PAGE_START{ "MMM" };
-	Tryte const PAGE_END = PAGE_START + PAGE_SIZE; // $LMM
-	Tryte const BANK_END = PAGE_START + BANK_SIZE; // $LLM
+	Tryte static const PAGE_START;
+	Tryte static const PAGE_END;
+	Tryte static const BANK_END;
 
 	// after reading a page from disk, metadata about the new page is stored for later use
 	// the size of the disk (in pages)
-	Tryte const SIZE{ BANK_END - 3 }; // $LMk
+	Tryte static const SIZE;
 	// the current page
-	Tryte const PAGE{ BANK_END - 2 }; // $LMl
+	Tryte static const PAGE;
 	// various state flags for requesting read/write
-	Tryte const STATE{ BANK_END - 1 }; // $LMm
+	Tryte static const STATE;
 
-	MemoryBlock disk_bank{ PAGE_START, BANK_END };
+
+	MemoryBlock* get_bank() { return &disk_bank; }
 
 	/*
 	// buffer start
@@ -118,11 +120,17 @@ public:
 	// 0 : do nothing
 	// - : do nothing
 	static size_t const READ_REQUEST_FLAG = 1;
+	static int8_t const READ_REQUEST = 1;
+	static int8_t const READ_READY = 0;
+	static int8_t const READ_ERR = -1;
 	// write request flag
 	// + : write requested - disk will begin copying page to buffer when free
 	// 0 : do nothing
 	// - : disk write error (see error code - high three trits)
 	static size_t const WRITE_REQUEST_FLAG = 2;
+	static int8_t const WRITE_REQUEST = 1;
+	static int8_t const WRITE_READY = 0;
+	static int8_t const WRITE_ERR = -1;
 	// rw status
 	// + : can read/write disk
 	// 0 : can read only
@@ -144,3 +152,4 @@ public:
 	// after read/write, refresh buffer's metadata using internal Disk state - in case of accidental overwriting
 	//void refresh_metadata();
 };
+

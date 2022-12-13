@@ -13,11 +13,23 @@
 #include "IO/Console.h"
 #include "Computer/Computer.h"
 
-Computer::Computer(std::vector<Disk&> disks, TriumphCLOptions const& options) :
+Computer::Computer(std::vector<Disk>& disks, TriumphCLOptions const& options) :
+	disks{ disks },
 	options{ options },
-	console{ std::cout, std::cin },
-	disks{ disks }
+	screen{gpu}
 {
+	// initialise memory
+	memory.add_bank(bios.get_bank(), constants::BOOT_ROM);
+	memory.add_bank(gpu.get_work_RAM(), constants::GFX_RAM);
+	memory.add_bank(gpu.get_tilemap(), constants::TILEMAP_BANK);
+	Tryte disk_num = 0;
+	for (Disk& disk : disks)
+	{
+		++disk_num;
+		memory.add_bank(disk.get_bank(), disk_num);
+	}
+	// save number of loaded disks in memory (used for booting)
+	memory[constants::DISK_NUM] = disk_num;
 
 }
 void Computer::turn_on()
@@ -33,6 +45,12 @@ void Computer::boot()
 	{
 		return;
 	}
+
+	// set memory to point at boot ROM
+	memory.bank() = constants::BOOT_ROM;
+
+
+	/*
 
 	// find a bootable disk
 	if (disks.size() > 0)
@@ -94,6 +112,7 @@ void Computer::boot()
 			memory.sp() = Memory::STACK_BOTTOM;
 		}
 	}
+	*/
 
 	// if debug flag found, set CPU into debug mode on startup
 	if (options.debug_mode)
@@ -104,7 +123,18 @@ void Computer::boot()
 	// start IO in new thread
 	std::thread IO_thread{ &Computer::IO_manager, this };
 
+	// start CPU in new thread
+	std::thread cpu_thread{ &CPU::run, &(this->cpu) };
 
+	// and run screen in main thread
+	screen.turn_on();
+	screen.run();
+
+	// when screen is switched off, stop the CPU
+	cpu.turn_off();
+	cpu_thread.join();
+
+	/*
 	if (options.console_mode)
 	{
 		// start CPU in this thread
@@ -129,6 +159,7 @@ void Computer::boot()
 		cpu.turn_off();
 		cpu_thread.join();
 	}
+	*/
 	
 	this->is_on = false;
 	IO_thread.join();
@@ -136,51 +167,52 @@ void Computer::boot()
 
 void Computer::disk_manager()
 {
-	// check if a disk is being accessed and CPU is sleeping (to prevent data race)
-	if (memory.bank() > constants::zero && cpu.is_asleep())
+	// check if a disk is being accessed
+	if (memory.bank() > constants::zero)
 	{
 		// check for a CPU read request
-		if (memory[Disk::DISK_STATE_ADDR][Disk::READ_REQUEST_FLAG] == 1)
+		if (memory[Disk::STATE][Disk::READ_REQUEST_FLAG] == 1)
 		{
 			// the CPU has requested a read
 
 			// which page was requested?
-			int64_t page_number = memory[Disk::CACHE_PAGE_ADDR];
+			Tryte page_number = memory[Disk::PAGE];
+
 			// which disk is this?
-			size_t disk_number = static_cast<size_t>(memory.bank() - 1);
+			size_t disk_number = static_cast<size_t>(memory.bank().get_int() - 1);
 			Disk& disk = disks[disk_number];
 
 			// perform the read
 			disk.read_from_page(page_number);
 
 			// reset read request flag
-			memory[Disk::DISK_STATE_ADDR][Disk::READ_REQUEST_FLAG] = 0;
+			memory[Disk::STATE][Disk::READ_REQUEST_FLAG] = Disk::READ_READY;
 		}
 
 		// check for a CPU write request
-		if (memory[Disk::DISK_STATE_ADDR][Disk::WRITE_REQUEST_FLAG] == 1)
+		if (memory[Disk::STATE][Disk::WRITE_REQUEST_FLAG] == 1)
 		{
 			// the CPU has requested a write
 
 			// which page was requested?
-			size_t page_number = static_cast<size_t>(memory[Disk::CACHE_PAGE_ADDR] + 9841);
+			Tryte page_number = memory[Disk::PAGE];
+
 			// which disk is this?
-			size_t disk_number = static_cast<size_t>(memory.bank() + 1);
+			size_t disk_number = static_cast<size_t>(memory.bank().get_int() - 1);
 			Disk& disk = disks[disk_number];
+
 			// perform the write
 			disk.write_to_page(page_number);
 
 
 			// reset write request flag
-			memory[Disk::DISK_STATE_ADDR][Disk::WRITE_REQUEST_FLAG] = 0;
+			memory[Disk::STATE][Disk::WRITE_REQUEST_FLAG] = Disk::WRITE_READY;
 
 		}
-
-		// wake CPU when read/write is finished
-		cpu.wake();
 	}
 }
 
+/*
 void Computer::console_manager()
 {
 	// refresh display mode (it may have changed since last cycle)
@@ -207,12 +239,13 @@ void Computer::console_manager()
 		}
 	}
 }
+*/
 
 void Computer::IO_manager()
 {
 	while (this->is_on)
 	{
-		console_manager();
+		//console_manager();
 		if (disks.size() > 0)
 		{
 			disk_manager();

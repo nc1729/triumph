@@ -33,20 +33,8 @@
     <ClInclude Include="CPU\CPU.h">
       <Filter>CPU</Filter>
     </ClInclude>
-    <ClInclude Include="Memory\Bank.h">
-      <Filter>Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory\BankManager.h">
-      <Filter>Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory\Memory.h">
-      <Filter>Memory</Filter>
-    </ClInclude>
     <ClInclude Include="Memory\MemoryBlock.h">
       <Filter>Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\Console.h">
-      <Filter>IO</Filter>
     </ClInclude>
     <ClInclude Include="IO\Disk.h">
       <Filter>IO</Filter>
@@ -69,6 +57,9 @@
     <ClInclude Include="GPU\GPU.h">
       <Filter>GPU</Filter>
     </ClInclude>
+    <ClInclude Include="Computer\BIOS.h">
+      <Filter>Computer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Computer\Computer.cpp">
@@ -89,20 +80,8 @@
     <ClCompile Include="CPU\CPUjump.cpp">
       <Filter>CPU</Filter>
     </ClCompile>
-    <ClCompile Include="Memory\Bank.cpp">
-      <Filter>Memory</Filter>
-    </ClCompile>
-    <ClCompile Include="Memory\BankManager.cpp">
-      <Filter>Memory</Filter>
-    </ClCompile>
-    <ClCompile Include="Memory\Memory.cpp">
-      <Filter>Memory</Filter>
-    </ClCompile>
     <ClCompile Include="Memory\MemoryBlock.cpp">
       <Filter>Memory</Filter>
-    </ClCompile>
-    <ClCompile Include="IO\Console.cpp">
-      <Filter>IO</Filter>
     </ClCompile>
     <ClCompile Include="IO\Disk.cpp">
       <Filter>IO</Filter>
@@ -121,6 +100,9 @@
     </ClCompile>
     <ClCompile Include="GPU\GPU.cpp">
       <Filter>GPU</Filter>
+    </ClCompile>
+    <ClCompile Include="Computer\BIOS.cpp">
+      <Filter>Computer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

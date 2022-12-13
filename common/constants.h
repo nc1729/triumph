@@ -168,7 +168,10 @@ namespace constants
     // important memory addresses
     Tryte const STACK_BOTTOM{ "mmm" };
     Tryte const STACK_TOP{ "mMM" };
+    // CPU will begin execution here
     Tryte const CPU_START{ "000" };
+    // on boot, number of connected disks will be written here
+    Tryte const DISK_NUM{ "i00" };
 
     // default bank (boot ROM)
     Tryte const BOOT_ROM{ "MMM" };
@@ -176,7 +179,6 @@ namespace constants
     Tryte const TILEMAP_BANK{ "00B" };
     Tryte const GFX_RAM{ "00A" };
     Tryte const MAIN_MEMORY{ "000" };
-    Tryte const DISK_ONE{ "00a" };
 }
 
 /*

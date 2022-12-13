@@ -44,7 +44,7 @@ void CPU::push(Tryte const& x)
 	{
 		// stack has overflowed
 		STACK_FLAG = 1;
-		crash_dump("Stack has overflowed.");
+		crash("Stack has overflowed.");
 	}
 }
 
@@ -56,7 +56,7 @@ void CPU::pop(Tryte& x)
 	{
 		// stack has underflowed
 		STACK_FLAG = -1;
-		crash_dump("Stack has underflowed.");
+		crash("Stack has underflowed.");
 	}
 }
 

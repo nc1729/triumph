@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 
+#include "Computer/BIOS.h"
 #include "Computer/TriumphCLOptions.h"
 #include "CPU/CPU.h"
 #include "IO/Disk.h"
@@ -22,6 +23,7 @@ private:
 	std::vector<Disk>& disks;
 	// main memory
 	MemoryBlock memory;
+	// BIOS chip
 	BIOS bios;
 	// init CPU
 	CPU cpu{ memory };
