@@ -19,7 +19,6 @@ Computer::Computer(std::vector<Disk>& disks, TriumphCLOptions const& options) :
 	screen{gpu}
 {
 	// initialise memory
-	memory.add_bank(bios.get_bank(), constants::BOOT_ROM);
 	memory.add_bank(gpu.get_work_RAM(), constants::GFX_RAM);
 	memory.add_bank(gpu.get_tilemap(), constants::TILEMAP_BANK);
 	Tryte disk_num = 0;
@@ -46,8 +45,11 @@ void Computer::boot()
 		return;
 	}
 
-	// set memory to point at boot ROM
-	memory.bank() = constants::BOOT_ROM;
+	// set memory to point at bank 0
+	memory.bank() = constants::MAIN_MEMORY;
+
+	// write boot program to memory
+	BIOS();
 
 
 	/*

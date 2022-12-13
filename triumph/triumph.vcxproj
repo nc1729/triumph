@@ -145,7 +145,6 @@
     <ClInclude Include="..\common\FileIO.h" />
     <ClInclude Include="..\common\Tryte.h" />
     <ClInclude Include="..\common\util.h" />
-    <ClInclude Include="Computer\BIOS.h" />
     <ClInclude Include="Computer\Computer.h" />
     <ClInclude Include="Computer\TriumphCLOptions.h" />
     <ClInclude Include="CPU\CPU.h" />

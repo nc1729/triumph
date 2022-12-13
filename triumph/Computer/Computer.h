@@ -4,7 +4,6 @@
 #include <iostream>
 #include <string>
 
-#include "Computer/BIOS.h"
 #include "Computer/TriumphCLOptions.h"
 #include "CPU/CPU.h"
 #include "IO/Disk.h"
@@ -23,8 +22,6 @@ private:
 	std::vector<Disk>& disks;
 	// main memory
 	MemoryBlock memory;
-	// BIOS chip
-	BIOS bios;
 	// init CPU
 	CPU cpu{ memory };
 	
@@ -43,6 +40,7 @@ public:
 	bool is_on = false;
 	void turn_on();
 	void boot();
+	void BIOS();
 	// disk and console run in the same thread to prevent race conditions
 	void IO_manager();
 };

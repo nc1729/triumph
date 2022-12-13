@@ -57,9 +57,6 @@
     <ClInclude Include="GPU\GPU.h">
       <Filter>GPU</Filter>
     </ClInclude>
-    <ClInclude Include="Computer\BIOS.h">
-      <Filter>Computer</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Computer\Computer.cpp">
