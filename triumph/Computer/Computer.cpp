@@ -14,8 +14,8 @@
 #include "Computer/Computer.h"
 
 Computer::Computer(std::vector<Disk>& disks, TriumphCLOptions const& options) :
+    options{ options },
 	disks{ disks },
-	options{ options },
 	screen{gpu}
 {
 	// initialise memory

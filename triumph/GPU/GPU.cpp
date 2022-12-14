@@ -14,14 +14,14 @@ MemoryBlock* GPU::get_framebuffer()
 	if (work_RAM.bank() == 0)
 	{
 		// switch to other framebuffer
-		work_RAM.bank() == 1;
+		work_RAM.bank() = 1;
 		// pass work RAM framebuffer to Screen
 		return &work_RAM;
 	}
 	else
 	{
 		// switch to work RAM framebuffer
-		work_RAM.bank() == 0;
+		work_RAM.bank() = 0;
 		// pass second framebuffer to Screen
 		return &framebuffer;
 	}

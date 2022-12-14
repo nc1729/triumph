@@ -23,12 +23,12 @@ private:
 	GPU& gpu;
 
 	// screen size
-	int const PIXELS_PER_TRIT = 2;
-	int const PIXELS_PER_TILE = 9 * PIXELS_PER_TRIT;
-	int const TILE_GRID_WIDTH = gpu.TILE_GRID_WIDTH;
-	int const TILE_GRID_HEIGHT = gpu.TILE_GRID_HEIGHT;
-	int const PIXEL_WIDTH = TILE_GRID_WIDTH * PIXELS_PER_TILE;
-	int const PIXEL_HEIGHT = TILE_GRID_HEIGHT * PIXELS_PER_TILE;
+	int64_t const PIXELS_PER_TRIT = 2;
+	int64_t const PIXELS_PER_TILE = 9 * PIXELS_PER_TRIT;
+	int64_t const TILE_GRID_WIDTH = gpu.TILE_GRID_WIDTH;
+	int64_t const TILE_GRID_HEIGHT = gpu.TILE_GRID_HEIGHT;
+	int64_t const PIXEL_WIDTH = TILE_GRID_WIDTH * PIXELS_PER_TILE;
+	int64_t const PIXEL_HEIGHT = TILE_GRID_HEIGHT * PIXELS_PER_TILE;
 	
 	// palettes are stored at start of work_RAM - 27 palettes, 81 Trytes
 	// 3 colours per palette, each colour is a tryte (high - R, mid - G, low - B)

@@ -153,15 +153,15 @@ void Screen::write_tile_to_framebuffer(size_t const grid_index_x, size_t const g
     MemoryBlock* tilemap = gpu.get_tilemap();
     Tryte* tile_trytes = &((*tilemap)[9 * tile_addr]);
 
-    size_t pixel_index_x = PIXELS_PER_TILE * grid_index_x;
-    size_t pixel_index_y = PIXELS_PER_TILE * grid_index_y;
+    int64_t pixel_index_x = PIXELS_PER_TILE * grid_index_x;
+    int64_t pixel_index_y = PIXELS_PER_TILE * grid_index_y;
 
-    for (size_t row = 0; row < PIXELS_PER_TILE; row++)
+    for (int64_t row = 0; row < PIXELS_PER_TILE; row++)
     {
-        size_t y = pixel_index_y + row;
-        for (size_t col = 0; col < PIXELS_PER_TILE; col++)
+        int64_t y = pixel_index_y + row;
+        for (int64_t col = 0; col < PIXELS_PER_TILE; col++)
         {
-            size_t x = pixel_index_x + col;
+            int64_t x = pixel_index_x + col;
             byte_framebuffer[(PIXEL_WIDTH * y) + x] = colours[tile_trytes[row / PIXELS_PER_TRIT][8 - (col / PIXELS_PER_TRIT)] + 1];
         }
     }

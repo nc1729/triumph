@@ -16,10 +16,11 @@ class Computer
 private:
 	// options from command line
 	TriumphCLOptions options;
-	// init Screen - contains SDL calls
-	Screen screen;
+	// init GPU
 	GPU gpu;
 	std::vector<Disk>& disks;
+	// init Screen - contains SDL calls
+	Screen screen;
 	// main memory
 	MemoryBlock memory;
 	// init CPU

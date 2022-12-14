@@ -14,6 +14,10 @@ Effectively, we want to abstract away the actual hardware.
 */
 class GPU
 {
+public:
+    Tryte const BANK_START{ "MMM" };
+	Tryte const BANK_END{ "DMM" };
+	Tryte const PALETTE_START{ BANK_START + FRAMEBUF_SIZE };
 private:
 	MemoryBlock work_RAM{ BANK_START, BANK_END };
 	MemoryBlock tilemap_RAM{ BANK_START, BANK_END };
@@ -25,9 +29,7 @@ public:
 	int64_t static constexpr TILE_GRID_WIDTH = 36;
 	int64_t static constexpr TILE_GRID_HEIGHT = 27;
 	int64_t static constexpr FRAMEBUF_SIZE = TILE_GRID_HEIGHT * TILE_GRID_WIDTH;
-	Tryte const BANK_START{ "MMM" };
-	Tryte const BANK_END{ "DMM" };
-	Tryte const PALETTE_START{ BANK_START + FRAMEBUF_SIZE };
+	
 
 	MemoryBlock* get_work_RAM() { return &work_RAM; }
 	MemoryBlock* get_tilemap() { return &tilemap_RAM; }
