@@ -42,7 +42,8 @@ private:
 	void write_tryte_fb_to_byte_fb();
 
 	// write a given tile in the tilemap buffer to a given x, y spot in the tryte framebuffer
-	void write_tile_to_framebuffer(size_t const grid_index_x, size_t const grid_index_y, size_t const palette_index, size_t const tile_addr);
+	void write_tile_to_framebuffer(size_t const grid_index_x, size_t const grid_index_y, 
+		size_t const palette_index, int64_t const tile_addr);
 	// using the 81 trytes stored in palette memory, construct the byte palettes array
 	void regen_palettes();
 	// convert a RGB Tryte (high - red, mid - green, low - blue) into a color SDL2 can understand

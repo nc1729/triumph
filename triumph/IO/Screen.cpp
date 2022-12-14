@@ -133,15 +133,15 @@ void Screen::write_tryte_fb_to_byte_fb()
     {
         for (int64_t j = 0; j < TILE_GRID_WIDTH; j++)
         {
-            Tryte& tile = (*framebuffer)[(TILE_GRID_WIDTH * i) + j];
+            Tryte& tile = (*framebuffer)[gpu.BANK_START + (TILE_GRID_WIDTH * i) + j];
             size_t palette_index = tile.get_high() + 13;
-            size_t tile_addr = static_cast<size_t>(27 * static_cast<int64_t>(tile.get_mid()) + static_cast<int64_t>(tile.get_low()) + 364);
+            int64_t tile_addr = 27 * static_cast<int64_t>(tile.get_mid()) + static_cast<int64_t>(tile.get_low()) + 364;
             write_tile_to_framebuffer(j, i, palette_index, tile_addr);
         }
     }
 }
 
-void Screen::write_tile_to_framebuffer(size_t const grid_index_x, size_t const grid_index_y, size_t const palette_index, size_t const tile_addr)
+void Screen::write_tile_to_framebuffer(size_t const grid_index_x, size_t const grid_index_y, size_t const palette_index, int64_t const tile_addr)
 {
     // get palette colours
     std::array<uint32_t, 3> colours;
@@ -151,7 +151,8 @@ void Screen::write_tile_to_framebuffer(size_t const grid_index_x, size_t const g
 
     // find pointer to tile's trytes in tilemap
     MemoryBlock* tilemap = gpu.get_tilemap();
-    Tryte* tile_trytes = &((*tilemap)[9 * tile_addr]);
+    //Tryte* tile_trytes = &((*tilemap)[gpu.BANK_START + 9 * tile_addr]);
+    Tryte tile_start = gpu.BANK_START + 9 * tile_addr;
 
     int64_t pixel_index_x = PIXELS_PER_TILE * grid_index_x;
     int64_t pixel_index_y = PIXELS_PER_TILE * grid_index_y;
@@ -162,7 +163,7 @@ void Screen::write_tile_to_framebuffer(size_t const grid_index_x, size_t const g
         for (int64_t col = 0; col < PIXELS_PER_TILE; col++)
         {
             int64_t x = pixel_index_x + col;
-            byte_framebuffer[(PIXEL_WIDTH * y) + x] = colours[tile_trytes[row / PIXELS_PER_TRIT][8 - (col / PIXELS_PER_TRIT)] + 1];
+            byte_framebuffer[(PIXEL_WIDTH * y) + x] = colours[(*tilemap)[tile_start + row / PIXELS_PER_TRIT][8 - (col / PIXELS_PER_TRIT)] + 1];
         }
     }
 }
