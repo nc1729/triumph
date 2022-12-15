@@ -2,8 +2,8 @@
 #include "common/Tryte.h"
 #include "Memory/MemoryBlock.h"
 
-MemoryBlock::MemoryBlock(Tryte const& start, Tryte const& end) :
-	start_{start}, end_{end}
+MemoryBlock::MemoryBlock(std::string const& name, Tryte const& start, Tryte const& end) :
+	name{name}, start_{start}, end_{end}
 {
 	// initialise local memory to zero
 	local_[start_] = constants::zero;

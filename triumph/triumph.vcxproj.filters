@@ -102,4 +102,7 @@
       <Filter>Computer</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="Tryte.natvis" />
+  </ItemGroup>
 </Project>

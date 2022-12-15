@@ -22,7 +22,7 @@ private:
 	// init Screen - contains SDL calls
 	Screen screen;
 	// main memory
-	MemoryBlock memory;
+	MemoryBlock memory{ "main" };
 	// init CPU
 	CPU cpu{ memory };
 	

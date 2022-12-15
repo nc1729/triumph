@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
         // the first disk in the argument list will be assigned to bank 1, then bank 2 etc
         try
         {
-            disks.push_back(Disk(disk_number, disk_name));
+            disks.emplace_back(disk_number, disk_name);
         }
         catch (std::runtime_error const& e)
         {

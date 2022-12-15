@@ -16,12 +16,12 @@ void CPU::save(Tryte& x, Tryte const& y)
 
 void CPU::set_bank(Tryte const& x)
 {
-	bank_ = x;
+	memory_.bank() = x;
 }
 
 void CPU::get_bank(Tryte& x)
 {
-	x = bank_;
+	x = memory_.bank();
 }
 
 void CPU::set(Tryte& x, Tryte const& y)

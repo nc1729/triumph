@@ -20,9 +20,9 @@ private:
 	// check if disk is bootable
 	//bool is_bootdisk();
 
-	MemoryBlock disk_bank{ PAGE_START, BANK_END };
+	MemoryBlock disk_bank{ "disk", PAGE_START, BANK_END};
 	// private buffer for disk operations (file I/O ops shouldn't interfere with Tryte ops)
-	MemoryBlock buffer{ PAGE_START, PAGE_END };
+	MemoryBlock buffer{ "disk_buffer", PAGE_START, PAGE_END};
 	
 
 	/*

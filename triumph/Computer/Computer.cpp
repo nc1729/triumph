@@ -170,6 +170,7 @@ void Computer::boot()
 void Computer::disk_manager()
 {
 	// check if a disk is being accessed
+	int64_t bank = memory.bank().get_int();
 	if (memory.bank() > constants::zero)
 	{
 		// check for a CPU read request

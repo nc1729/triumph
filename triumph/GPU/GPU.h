@@ -19,9 +19,9 @@ public:
 	Tryte const BANK_END{ "DMM" };
 	Tryte const PALETTE_START{ BANK_START + FRAMEBUF_SIZE };
 private:
-	MemoryBlock work_RAM{ BANK_START, BANK_END };
-	MemoryBlock tilemap_RAM{ BANK_START, BANK_END };
-	MemoryBlock framebuffer{ BANK_START, BANK_START + FRAMEBUF_SIZE };
+	MemoryBlock work_RAM{ "work_RAM", BANK_START, BANK_END};
+	MemoryBlock tilemap_RAM{ "tilemap_RAM", BANK_START, BANK_END};
+	MemoryBlock framebuffer{ "framebuffer", BANK_START, BANK_START + FRAMEBUF_SIZE};
 
 public:
 	GPU();

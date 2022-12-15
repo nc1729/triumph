@@ -76,6 +76,7 @@ void CPU::run()
 					std::this_thread::sleep_until(frame_start + frame_duration_);
 					frame_start = clock_.now();
 				}
+				dump();
 			}
 		}
 	}
@@ -86,7 +87,7 @@ void CPU::dump()
 	std::cout << "Program counter: " << pc_ << '\n';
 	std::cout << "Last instruction: " << instr_ << '\n';
 	std::cout << "Stack pointer: " << sp_ << '\n';
-	std::cout << "Memory bank: " << bank_ << '\n';
+	std::cout << "Memory bank: " << memory_.bank() << '\n';
 
 	std::cout << "---------REGISTERS---------\n";
 	std::cout << "A : " << regs_[1] << " B : " << regs_[2] << " C : " << regs_[3] << '\n';

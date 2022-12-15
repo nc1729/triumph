@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+	<Type Name="Tryte">
+		<Intrinsic Name="value" Expression="trits_[0] + 3*trits_[1] + 9*trits_[2] + 27*trits_[3] + 81*trits_[4] + 243*trits_[5] + 729*trits_[6] + 2187*trits_[7] + 6561*trits_[8]"/>
+	
+	<DisplayString>{{ value={value()} }}</DisplayString>
+	</Type>
+</AutoVisualizer>

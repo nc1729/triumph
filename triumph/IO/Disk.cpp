@@ -25,6 +25,9 @@ Tryte const Disk::STATE{ Disk::BANK_END - 1 }; // $LMm
 Disk::Disk(size_t const disk_number, std::string const& disk_path) : 
 	disk_path{ disk_path }, number{ disk_number }
 {
+	// set up buffer
+	disk_bank.add_bank(&buffer, 1);
+
 	// calculate disk_size
 	file_handle.open(disk_path);
 	if (!file_handle)
@@ -190,11 +193,12 @@ void Disk::read_from_page(Tryte const page_number)
 	{
 		dest = &disk_bank;
 	}
+	Tryte start = dest->get_start_addr();
 	file_handle.open(disk_path);
 	file_handle.seekg(PAGE_SIZE.get_int() * unsigned_page_number, std::ios::beg);
 	for (Tryte i = 0; i < PAGE_SIZE; ++i)
 	{
-		file_handle >> (*dest)[i];
+		file_handle >> (*dest)[start + i];
 	}
 	file_handle.close();
 
@@ -256,9 +260,11 @@ void Disk::write_to_page(Tryte const page_number)
 		page_to_write = &buffer;
 		copy = &disk_bank;
 	}
+	Tryte write_start = page_to_write->get_start_addr();
+	Tryte copy_start = copy->get_start_addr();
 	for (Tryte i = 0; i < PAGE_SIZE; ++i)
 	{
-		(*copy)[i] = (*page_to_write)[i];
+		(*copy)[copy_start + i] = (*page_to_write)[write_start + i];
 	}
 	// swap buffers
 	disk_bank.bank() = 1 - disk_bank.bank();
@@ -268,7 +274,7 @@ void Disk::write_to_page(Tryte const page_number)
 	file_handle.seekg(PAGE_SIZE.get_int() * unsigned_page_number, std::ios::beg);
 	for (Tryte i = 0; i < PAGE_SIZE; ++i)
 	{
-		file_handle << (*page_to_write)[i];
+		file_handle << (*page_to_write)[write_start + i];
 	}
 	file_handle.close();
 
