@@ -22,7 +22,15 @@ Tryte& MemoryBlock::operator[](Tryte const& addr)
 	}
 	else
 	{
-		return (*banks_.at(current_))[addr];
+		MemoryBlock* current_bank = banks_.at(current_);
+		if (addr < current_bank->end() && addr >= current_bank->begin())
+		{
+			return (*current_bank)[addr];
+		}
+		else
+		{
+			return local_.at(addr);
+		}
 	}
 }
 

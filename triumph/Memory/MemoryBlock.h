@@ -23,6 +23,9 @@ public:
 	// remove a bank from list of loaded banks, using its index
 	void remove_bank(Tryte const& index);
 
+	Tryte begin() { return start_; }
+	Tryte end() { return end_; }
+
 private:
 	// storage in this memory block
 	std::unordered_map<Tryte, Tryte> local_;

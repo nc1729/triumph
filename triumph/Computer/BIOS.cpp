@@ -9,8 +9,8 @@ void Computer::BIOS()
 {
 	// write boot program to memory
 
-	// SET A, DISK_NUM
-	memory["000"s] = "maa"s;
+	// LOAD A, $DISK_NUM
+	memory["000"s] = "mda"s;
 	memory["00a"s] = constants::DISK_NUM;
 
 	// CPZ A
@@ -47,7 +47,7 @@ void Computer::BIOS()
 	memory["0aI"s] = Disk::STATE;
 	// STAR C, #00a
 	memory["0aH"s] = "mkc"s;
-	memory["0aG"s] = "00a"s;
+	memory["0aG"s] = "00c"s;
 	// JPZ $0aJ (keep loading disk state until its STATUS_FLAG is 1)
 	memory["0aF"s] = "jCj"s;
 	memory["0aE"s] = "0aJ"s;

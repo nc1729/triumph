@@ -74,7 +74,7 @@ void CPU::debug()
             // print contents of stack
             dump_stack();
         }
-        else if (command == "bank")
+        else if (command == "b" || command == "bank")
         {
             std::cout << "Memory bank: " << memory_.bank() << '\n';
         }
@@ -278,7 +278,7 @@ void CPU::debug_dump_memory(std::vector<std::string> const& words)
 void CPU::debug_show_help()
 {
     std::cout << "Commands:\n";
-    std::cout << "bank                            : print current bank\n";
+    std::cout << "b(ank)                          : print current bank\n";
     std::cout << "c(urrent)                       : print current instruction opcode\n";
     std::cout << "d(ump) $ADDR1 $ADDR2            : dump memory between two addresses\n";
     std::cout << "h(elp)                          : print this help\n";
