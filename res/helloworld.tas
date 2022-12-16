@@ -1,6 +1,5 @@
-alias FRAMEBUFFER -101
-alias TILEMAP_BANK -102
-alias SCREEN_WORKRAM -103
+alias WORK_RAM -1
+alias TILEMAP_BANK -2
 
 main
 {
@@ -49,9 +48,10 @@ write_to_palette_0
     // store bank
     PUSH G; GANK G
     // switch to work RAM
-    BANK SCREEN_WORKRAM
+    BANK WORK_RAM
     // set C to pointer to palette 0
-    SET C, 0sMLA
+    // palette starts at $LDM (972 trytes for framebuffer) - palette 0 is 39 Trytes after that
+    SET C, 0sLCA
     // negative trits - black
     SET B, 0sMMM
     SAVE B, [C]; INC C
@@ -81,7 +81,7 @@ write_to_framebuffer
     // store current bank in stack
     PUSH G; GANK G
     // switch bank to framebuffer
-    BANK FRAMEBUFFER
+    BANK WORK_RAM
 
     // set to row 0 of framebuffer
     SET C, 0sMMM
@@ -121,27 +121,26 @@ load_page
 {
     PUSH G; GANK G
     PUSH D
-    SAVE C, $Eml  // $Eml - current page
+    SAVE C, $LMl  // $Lml - current page
     BANK B        // set the current bank to bank_number
-    LOAD D, $Emm // D = disk flag
+    LOAD D, $LMm // D = disk flag
     OR D, 0t-------+- // set read request trit to 1
-    SAVE D, $Emm // send read request
+    SAVE D, $LMm // send read request
 
-    SLEEP; // disk manager will awaken CPU when it's done
+    //SLEEP; // disk manager will awaken CPU when it's done
     
     /*
     !send_loop
-        LOAD D, $Emm
+        LOAD D, $LMm
         STAR D, 0t0000000+0 // tritwise multiply - get read request trit alone
         CPZ D
         JPP send_loop // if D > 0, disk hasn't started reading, go back to send_loop
-
+    */
     !wait_loop
-        LOAD D, $Emm
+        LOAD D, $LMm
         STAR D, 0t00000000+ // get disk status trit
         CPZ D
         JPZ wait_loop // if D == 0, disk is still busy, keep waiting
-    */
     
     // leave
     POP D

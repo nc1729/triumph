@@ -76,7 +76,6 @@ void CPU::run()
 					std::this_thread::sleep_until(frame_start + frame_duration_);
 					frame_start = clock_.now();
 				}
-				dump();
 			}
 		}
 	}
