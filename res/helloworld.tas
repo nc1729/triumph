@@ -5,6 +5,7 @@ main
 {
     CALL copy_to_tilemap
     CALL write_to_palette_0
+    BREAK;
     CALL write_to_framebuffer
     JP main
 }

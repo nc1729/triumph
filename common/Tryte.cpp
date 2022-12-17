@@ -18,7 +18,7 @@ Tryte::Tryte()
 // string constructor
 Tryte::Tryte(std::string const& s)
 {
-	if (s.find_first_not_of(constants::septavingt_chars) == std::string::npos && s.length() == 3)
+	if (s.find_first_not_of(constants::schars) == std::string::npos && s.length() == 3)
 	{
 		// s was a valid Tryte string
 		std::array<int8_t, 3> const high_ternary = constants::int_to_ternary.at(constants::schar_to_val.at(s[0]));
@@ -39,6 +39,8 @@ Tryte::Tryte(std::string const& s)
 	else
 	{
 		std::string err_str = s + " is not a valid Tryte";
+		std::cout << s << '\n';
+		std::cout << s.size() << '\n';
 		throw std::invalid_argument(err_str);
 	}
 }

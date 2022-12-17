@@ -71,7 +71,7 @@ bool util::string_is_int(std::string const& word)
 bool util::string_is_tryte(std::string const& word)
 {
 	return std::all_of(word.begin(), word.end(),
-		[](char c) {return constants::septavingt_chars.find(c) != std::string::npos; });
+		[](char c) {return constants::schars.find(c) != std::string::npos; });
 }
 
 bool util::string_is_septavingt(std::string const& word)
@@ -147,7 +147,7 @@ bool util::string_is_addr(std::string const& word)
 
 bool util::string_is_septavingt_chars(std::string const& word)
 {
-	return word.find_first_not_of(constants::septavingt_chars) == std::string::npos;
+	return word.find_first_not_of(constants::schars) == std::string::npos;
 }
 
 bool util::string_is_jump_label(std::string const& word)

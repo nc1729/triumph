@@ -99,7 +99,7 @@ void handle::jp(Statement& statement)
         // - means that arg is an addr/name
         // 0 means that arg is a jump placeholder
         // + means that arg is a reg
-        code_char = constants::septavingt_chars[13 + (9 * arg_flags[0]) + (3 * arg_flags[1]) + arg_flags[2]];
+        code_char = constants::schars[13 + (9 * arg_flags[0]) + (3 * arg_flags[1]) + arg_flags[2]];
         // opcode will be j + id_char + third_char, where third_char is determined in various ways
 
         // and work through all 27 (!) cases separately
