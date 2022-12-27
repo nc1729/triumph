@@ -51,7 +51,7 @@ public:
 	// buffer accessible by CPU
 	
 	Disk() = delete;
-	Disk(size_t const disk_number, std::string const& disk_path);
+	Disk(std::string const& disk_path);
 
 	Tryte static const PAGE_SIZE;
 	Tryte static const BANK_SIZE;

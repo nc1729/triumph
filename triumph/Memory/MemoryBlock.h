@@ -24,8 +24,10 @@ public:
 	// remove a bank from list of loaded banks, using its index
 	void remove_bank(Tryte const& index);
 
-	Tryte begin() { return start_; }
-	Tryte end() { return end_; }
+	Tryte begin() const { return start_; }
+	Tryte end() const { return end_; }
+
+	int64_t size() const;
 
 private:
 	// storage in this memory block

@@ -44,4 +44,7 @@ public:
 	void BIOS();
 	// disk and console run in the same thread to prevent race conditions
 	void IO_manager();
+
+	// useful for testing and debugging
+	std::vector<Tryte> dump_memory(Tryte const& start, Tryte const& end);
 };

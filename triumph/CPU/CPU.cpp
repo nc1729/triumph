@@ -58,11 +58,12 @@ void CPU::cycle()
 void CPU::run()
 {
 	this->turn_on();
+	auto frame_start = clock_.now();
 	while (on_)
 	{
-		auto frame_start = clock_.now();
 		if (!asleep_)
 		{
+			//dump();
 			if (debug_mode_)
 			{
 				debug();
@@ -95,6 +96,7 @@ void CPU::dump()
 
 	std::cout << "-----------STACK-----------\n";
 	dump_stack();
+	std::cout << '\n';
 }
 
 void CPU::dump_stack()

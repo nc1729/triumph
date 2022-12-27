@@ -1,0 +1,138 @@
+main
+DMM: JPS $copy_to_tilemap : j0J DMC 
+DMK: JPS $write_to_palette_0 : j0J DKD 
+DMI: BREAK : MMM 
+DMH: JPS $write_to_framebuffer : j0J DJG 
+DMF: JP $main : jMj DMM 
+DMD: HALT : 000 
+
+
+copy_to_tilemap
+DMC: SET b 00a : mab 00a 
+DMA: SET c b : acb 
+DM0: SET d MMM : mad MMM 
+DMb: PUSH g : mfg 
+DMc: GANK g : mJg 
+!start 
+DMd: BANK b : mjb 
+DMe: PUSH b : mfb 
+DMf: PUSH c : mfc 
+DMg: JPS $load_page : j0J DIe 
+DMi: POP c : mFc 
+DMj: POP b : mFb 
+DMk: PUSH b : mfb 
+DMl: PUSH c : mfc 
+DMm: PUSH d : mfd 
+DLM: SET b MMM : mab MMM 
+DLK: SET c AMM : mac AMM 
+DLI: SET d a00 : mad a00 
+DLG: JPS $memcpy : j0J DHa 
+DLE: POP d : mFd 
+DLD: POP c : mFc 
+DLC: POP b : mFb 
+DLB: BANK 00B : Mj0 00B 
+DL0: PUSH b : mfb 
+DLa: PUSH c : mfc 
+DLb: PUSH d : mfd 
+DLc: SET b AMM : mab AMM 
+DLe: SET c d : acd 
+DLf: SET d a00 : mad a00 
+DLh: JPS $memcpy : j0J DHa 
+DLj: POP d : mFd 
+DLk: POP c : mFc 
+DLl: POP b : mFb 
+DLm: ADD d a00 : med a00 
+DKL: INC c : mlc 
+DKK: CMP c 00j : mcc 00j 
+DKI: JP $start * * : jIj DMd 
+DKG: BANK g : mjg 
+DKF: POP g : mFg 
+DKE: PJP : j0j 
+
+
+write_to_palette_0
+DKD: PUSH b : mfb 
+DKC: PUSH c : mfc 
+DKB: PUSH g : mfg 
+DKA: GANK g : mJg 
+DK0: BANK 00A : Mj0 00A 
+DKb: SET c LCA : mac LCA 
+DKd: SET b MMM : mab MMM 
+DKf: SAVE b c : Dbc 
+DKg: INC c : mlc 
+DKh: SET b MMM : mab MMM 
+DKj: SAVE b c : Dbc 
+DKk: INC c : mlc 
+DKl: SET b mmM : mab mmM 
+DJM: SAVE b c : Dbc 
+DJL: BANK g : mjg 
+DJK: POP g : mFg 
+DJJ: POP c : mFc 
+DJI: POP b : mFb 
+DJH: PJP : j0j 
+
+
+write_to_framebuffer
+DJG: PUSH b : mfb 
+DJF: PUSH c : mfc 
+DJE: PUSH g : mfg 
+DJD: GANK g : mJg 
+DJC: BANK 00A : Mj0 00A 
+DJA: SET c MMM : mac MMM 
+DJa: SET d $hello_string : mad DII 
+DJc: SET e d : aed 
+DJd: ADD e 00m : mee 00m 
+!printloop 
+DJf: LOAD a d : dad 
+DJg: SAVE a c : Dac 
+DJh: INC c : mlc 
+DJi: INC d : mld 
+DJj: CMP d e : cde 
+DJk: JP $printloop * * : jIj DJf 
+DJm: BANK g : mjg 
+DIM: POP g : mFg 
+DIL: POP c : mFc 
+DIK: POP b : mFb 
+DIJ: PJP : j0j 
+
+
+hello_string
+DII: "Hello, world!" : 0cI 0dG 0d0 0d0 0dc 0bJ 0ae 0dk 0dc 0df 0d0 0dH 0af 000 
+
+
+load_page
+DIe: PUSH g : mfg 
+DIf: GANK g : mJg 
+DIg: PUSH d : mfd 
+DIh: SAVE c LMl : mDc LMl 
+DIj: BANK b : mjb 
+DIk: LOAD d LMm : mdd LMm 
+DIm: OR d MMG : mBd MMG 
+DHL: SAVE d LMm : mDd LMm 
+!wait_loop 
+DHJ: LOAD d LMm : mdd LMm 
+DHH: STAR d 00a : mkd 00a 
+DHF: CPZ d : mCd 
+DHE: JP * $wait_loop * : jCj DHJ 
+DHC: POP d : mFd 
+DHB: BANK g : mjg 
+DHA: POP g : mFg 
+DH0: PJP : j0j 
+
+
+memcpy
+DHa: PUSH e : mfe 
+!loop 
+DHb: CPZ d : mCd 
+DHc: JP * $done * : jCj DHl 
+DHe: LOAD e b : deb 
+DHf: SAVE e c : Dec 
+DHg: INC b : mlb 
+DHh: INC c : mlc 
+DHi: DEC d : mLd 
+DHj: JP $loop : jMj DHb 
+!done 
+DHl: POP e : mFe 
+DHm: PJP : j0j 
+
+

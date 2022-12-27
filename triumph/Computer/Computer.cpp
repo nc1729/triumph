@@ -254,3 +254,13 @@ void Computer::IO_manager()
 		}
 	}
 }
+
+std::vector<Tryte> Computer::dump_memory(Tryte const& start, Tryte const& end)
+{
+	std::vector<Tryte> output;
+	for (Tryte index = start; index != end; ++index)
+	{
+		output.push_back(memory[index]);
+	}
+	return output;
+}

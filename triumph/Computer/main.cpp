@@ -5,6 +5,7 @@
 #include <thread>
 #include <stdexcept>
 
+#include "common/debug_utils.h"
 #include "common/Tryte.h"
 #include "common/CLI11/CLI11.hpp"
 #include "Computer/TriumphCLOptions.h"
@@ -39,20 +40,18 @@ int main(int argc, char** argv) {
     CLI11_PARSE(app, argc, argv);
 
     std::vector<Disk> disks;
-    size_t disk_number = 1;
     for (std::string const& disk_name : options.disk_filenames)
     {
         // the first disk in the argument list will be assigned to bank 1, then bank 2 etc
         try
         {
-            disks.emplace_back(disk_number, disk_name);
+            disks.emplace_back(disk_name);
         }
         catch (std::runtime_error const& e)
         {
             std::cerr << e.what() << '\n';
             return 1;
         }
-        disk_number++;
     }
 
     try

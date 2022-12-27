@@ -31,7 +31,7 @@ copy_to_tilemap
         INC C
         CMP C, 10
         JPN start
-    
+
     BANK G; POP G
     RET
 }

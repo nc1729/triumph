@@ -22,8 +22,8 @@ Tryte const Disk::PAGE{ Disk::BANK_END - 2 }; // $LMl
 // various state flags for requesting read/write
 Tryte const Disk::STATE{ Disk::BANK_END - 1 }; // $LMm
 
-Disk::Disk(size_t const disk_number, std::string const& disk_path) : 
-	disk_path{ disk_path }, number{ disk_number }
+Disk::Disk(std::string const& disk_path) : 
+	disk_path{ disk_path }
 {
 	// set up buffer
 	disk_bank.add_bank(&buffer, 1);
