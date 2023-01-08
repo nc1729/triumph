@@ -207,6 +207,7 @@ void CPU::decode_and_execute()
 		break;
 	case 0:
 		// 0XY - HALT - maybe debugging instructions here?
+		dump();
 		halt();
 		instr_size_ = 1;
 		break;

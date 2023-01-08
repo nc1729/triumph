@@ -74,7 +74,7 @@ Tryte const& MemoryBlock::operator[](Tryte const& addr) const
 		{
 			return local_.at(addr);
 		}
-		catch(const std::out_of_range& e)
+		catch(const std::out_of_range&)
 		{
 			std::cout << "MemoryBlock::operator[] tried to access invalid address in local_\n";
 			std::cout << "Tried to access address $" << addr << " in bank " << name << '\n';
@@ -88,7 +88,7 @@ Tryte const& MemoryBlock::operator[](Tryte const& addr) const
 		{
 			current_bank = banks_.at(current_);
 		}
-		catch(const std::out_of_range& e)
+		catch(const std::out_of_range&)
 		{
 			std::cout << "MemoryBlock::operator[] tried to access bad bank\n";
 			std::cout << "Bank " << current_.get_int() << " in bank " << name << " doesn't exist!";
@@ -105,7 +105,7 @@ Tryte const& MemoryBlock::operator[](Tryte const& addr) const
 			{
 				return local_.at(addr);
 			}
-			catch(const std::out_of_range& e)
+			catch(const std::out_of_range&)
 			{
 				std::cout << "MemoryBlock::operator[] tried to access invalid address in local_\n with current = " << current_ << '\n';
 			    std::cout << "Tried to access address $" << addr << " in bank " << name << '\n';

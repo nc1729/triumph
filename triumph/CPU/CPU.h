@@ -51,8 +51,6 @@ private:
 	Tryte pc_{ constants::CPU_START };
 	// stack pointer
 	Tryte sp_{ constants::STACK_BOTTOM };
-	// current bank
-	Tryte bank_{ constants::BOOT_ROM };
 
 	/*
 	flag variables

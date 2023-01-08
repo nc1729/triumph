@@ -202,27 +202,29 @@ void Screen::run()
         {
             uint64_t frame_start = SDL_GetPerformanceCounter();
 
+            if (!cpu.is_on())
+            {
+                turn_off();
+            }
+
             // handle input
             if (e.type == SDL_QUIT)
             {
                 turn_off();
             }
-            /*
             if (e.type == SDL_KEYDOWN)
             {
                 switch (e.key.keysym.sym)
                 {
-                    case SDLK_f:
-                        dump_bank(tryte_framebuffer);
+                    case SDLK_d:
+                        cpu.debug_mode() = true;
                         break;
                     case SDLK_t:
-                        dump_bank(tilemap);
                         break;
                     default:
                         break;
                 }
             }
-            */
             if (e.type == SDL_MOUSEBUTTONDOWN)
             {
                 turn_off();

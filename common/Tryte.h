@@ -21,7 +21,7 @@ public:
 	*/
 
 	// default constructor (default value is 0)
-	Tryte();
+	Tryte() {};
 
 	// string constructor (uses integer constructor)
 	Tryte(std::string const& s);
@@ -46,6 +46,9 @@ public:
 				n--;
 			}
 			this->trits_[i] = rem;
+
+			// trits are zero by default - if n == 0 break out of loop early
+			if (n == 0) break;
 		}
 	};
 

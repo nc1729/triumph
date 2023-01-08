@@ -5,7 +5,6 @@ main
 {
     CALL copy_to_tilemap
     CALL write_to_palette_0
-    BREAK;
     CALL write_to_framebuffer
     JP main
 }
@@ -16,6 +15,7 @@ Copy pages 1-9 from disk into the tilemap memory.
 */
 copy_to_tilemap
 {
+    BREAK;
     SET B, 1 // bank number 1 (pointing to disk)
     SET C, B // page number 1
     SET D, 0sMMM // data pointer
@@ -45,6 +45,7 @@ Set palette 0 at 0sMLA's colours to
 */
 write_to_palette_0
 {
+    BREAK;
     PUSH B; PUSH C
     // store bank
     PUSH G; GANK G
@@ -77,6 +78,7 @@ to show on screen
 */
 write_to_framebuffer
 {
+    BREAK;
     PUSH B; PUSH C
 
     // store current bank in stack

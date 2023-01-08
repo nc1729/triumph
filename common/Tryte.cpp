@@ -8,13 +8,6 @@
 #include "common/constants.h"
 #include "common/Tryte.h"
 
-// default constructor
-Tryte::Tryte()
-{
-	// initialise internal trit array with zeroes
-	trits_ = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-}
-
 // string constructor
 Tryte::Tryte(std::string const& s)
 {

@@ -16,7 +16,7 @@
 Computer::Computer(std::vector<Disk>& disks, TriumphCLOptions const& options) :
     options{ options },
 	disks{ disks },
-	screen{gpu}
+	screen{cpu, gpu}
 {
 	// initialise memory
 	memory.add_bank(gpu.get_work_RAM(), constants::GFX_RAM);
@@ -172,6 +172,9 @@ void Computer::disk_manager()
 	// check if a disk is being accessed
 	if (memory.bank() > constants::zero)
 	{
+		// cache bank so it doesn't get changed by CPU
+		Tryte bank = memory.bank();
+
 		// check for a CPU read request
 		if (memory[Disk::STATE][Disk::READ_REQUEST_FLAG] == 1)
 		{
@@ -181,7 +184,7 @@ void Computer::disk_manager()
 			Tryte page_number = memory[Disk::PAGE];
 
 			// which disk is this?
-			size_t disk_number = static_cast<size_t>(memory.bank().get_int() - 1);
+			size_t disk_number = static_cast<size_t>(bank.get_int() - 1);
 			Disk& disk = disks[disk_number];
 
 			// perform the read
@@ -200,7 +203,7 @@ void Computer::disk_manager()
 			Tryte page_number = memory[Disk::PAGE];
 
 			// which disk is this?
-			size_t disk_number = static_cast<size_t>(memory.bank().get_int() - 1);
+			size_t disk_number = static_cast<size_t>(bank.get_int() - 1);
 			Disk& disk = disks[disk_number];
 
 			// perform the write
@@ -252,6 +255,12 @@ void Computer::IO_manager()
 		{
 			disk_manager();
 		}
+
+		// wait before trying to read disk again
+		auto now = std::chrono::steady_clock::now();
+		using std::chrono::operator""ms;
+		auto wake_time = now + 50ms;
+		std::this_thread::sleep_until(wake_time);
 	}
 }
 

@@ -7,6 +7,7 @@
 #include <array>
 
 #include "common/Tryte.h"
+#include "CPU/CPU.h"
 #include "GPU/GPU.h"
 #include "Memory/Bank.h"
 
@@ -18,6 +19,9 @@ private:
 	SDL_Renderer* renderer = nullptr;
 	SDL_Texture* screen_texture = nullptr;
 	std::vector<uint32_t> byte_framebuffer;
+
+	// access to CPU
+	CPU& cpu;
 
 	// access to GPU object
 	GPU& gpu;
@@ -56,7 +60,7 @@ private:
 	int64_t static constexpr STATUS = 6560;
 	
 public:
-	Screen(GPU& gpu) : gpu{ gpu } {};
+	Screen(CPU& cpu, GPU& gpu) : cpu{ cpu }, gpu{ gpu } {};
 	void read_tilemap(std::string const& filename);
 	void show_tilemap();
 
