@@ -8,14 +8,8 @@
 #include "common/constants.h"
 #include "common/Tryte.h"
 
-// default constructor
-Tryte::Tryte()
-{
-	// initialise internal trit array with zeroes
-	trits_ = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-}
-
 // integer constructor
+/*
 Tryte::Tryte(int64_t n)
 {
 	// fill internal trit array
@@ -37,6 +31,7 @@ Tryte::Tryte(int64_t n)
 		trits_[i] = rem;
 	}
 }
+*/
 
 // string constructor
 Tryte::Tryte(std::string const& s)

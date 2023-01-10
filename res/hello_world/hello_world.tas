@@ -1,0 +1,175 @@
+alias FRAMEBUFFER -101
+alias TILEMAP_BANK -102
+alias SCREEN_WORKRAM -103
+
+main
+{
+    CALL copy_to_tilemap
+    CALL write_to_palette_0
+    CALL write_to_framebuffer
+    JP main
+}
+
+/*
+copy_to_tilemap
+Copy pages 1-9 from disk into the tilemap memory.
+*/
+copy_to_tilemap
+{
+    SET B, 1 // bank number 1 (pointing to disk)
+    SET C, B // page number 1
+    SET D, 0sMMM // data pointer
+    PUSH G; GANK G // set G to current bank
+
+    !start
+        BANK B // set bank to disk
+        CALL load_page B, C
+        CALL memcpy 0sMMM, 0sAMM, 729
+        BANK TILEMAP_BANK
+        CALL memcpy 0sAMM, D, 729
+        ADD D, 729
+        INC C
+        CMP C, 10
+        JPN start
+    
+    BANK G; POP G
+    RET
+}
+
+/*
+write_to_palette_0
+Set palette 0 at 0sMLA's colours to
+    - : 0sMMM - black
+    0 : 0smmM - yellow
+    + : 0smmM - yellow
+*/
+write_to_palette_0
+{
+    PUSH B; PUSH C
+    // store bank
+    PUSH G; GANK G
+    // switch to work RAM
+    BANK SCREEN_WORKRAM
+    // set C to pointer to palette 0
+    SET C, 0sMLA
+    // negative trits - black
+    SET B, 0sMMM
+    SAVE B, [C]; INC C
+    // zero trits - black
+    SET B, 0sMMM
+    SAVE B, [C]; INC C
+    // positive trits - yellow
+    SET B, 0smmM
+    SAVE B, [C]
+
+    // leave
+    BANK G
+    POP G; POP C; POP B
+    RET
+}
+
+/*
+write_to_framebuffer
+
+With a tilemap loaded, write the string at hello_string to the framebuffer
+to show on screen
+*/
+write_to_framebuffer
+{
+    PUSH B; PUSH C
+
+    // store current bank in stack
+    PUSH G; GANK G
+    // switch bank to framebuffer
+    BANK FRAMEBUFFER
+
+    // set to row 0 of framebuffer
+    SET C, 0sMMM
+    // load pointer to string
+    SET D, hello_string
+
+    // set E to end of string
+    SET E, D
+    ADD E, 13
+
+    // main loop
+    !printloop
+    LOAD A, [D]
+    SAVE A, [C]; INC C; INC D
+    CMP D, E
+    JPN printloop
+
+    // clear stack and leave
+    BANK G
+    POP G; POP C; POP B
+    RET
+
+}
+
+hello_string
+{
+    "Hello, world!"
+}
+
+/*
+load_page(B: bank_number, C: page_number)
+
+Open the disk at bank_number, and send a read request to the disk to make
+the page at page_number accessible in the disk bank's buffer.
+*/
+load_page
+{
+    PUSH G; GANK G
+    PUSH D
+    SAVE C, $Eml  // $Eml - current page
+    BANK B        // set the current bank to bank_number
+    LOAD D, $Emm // D = disk flag
+    OR D, 0t-------+- // set read request trit to 1
+    SAVE D, $Emm // send read request
+
+    SLEEP; // disk manager will awaken CPU when it's done
+    
+    /*
+    !send_loop
+        LOAD D, $Emm
+        STAR D, 0t0000000+0 // tritwise multiply - get read request trit alone
+        CPZ D
+        JPP send_loop // if D > 0, disk hasn't started reading, go back to send_loop
+
+    !wait_loop
+        LOAD D, $Emm
+        STAR D, 0t00000000+ // get disk status trit
+        CPZ D
+        JPZ wait_loop // if D == 0, disk is still busy, keep waiting
+    */
+    
+    // leave
+    POP D
+    BANK G; POP G
+    RET
+}
+
+/*
+memcpy(B: start_ptr, C: dest_ptr, D: length)
+
+Copy a block of memory of length D ("unsigned") from [start_ptr] to [dest_ptr].
+*/
+memcpy
+{
+    PUSH E // E is temporary variable
+    !loop
+        CPZ D
+        JPZ done
+        // set address [C] to value at [B]
+        LOAD E, [B]
+        SAVE E, [C]
+        // increment pointers
+        INC B; INC C
+        // and decrement length
+        DEC D // when D is zero, we've finished copying and can leave
+        JP loop
+    
+    !done
+        POP E
+        RET
+}

@@ -11,7 +11,7 @@ class Tryte
 {
 private:
 	// trits arranged from least significant to most significant
-	std::array<int8_t, 9> trits_;
+	std::array<int8_t, 9> trits_{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	static std::map<char, int64_t> const schar_to_val;
 	static std::string const schars;
 
@@ -21,10 +21,33 @@ public:
 	*/
 
 	// default constructor (default value is 0)
-	Tryte();
+	Tryte() {};
 
 	// integer constructor
-	Tryte(int64_t n);
+	constexpr Tryte(int64_t n)
+	{
+		// fill internal trit array
+		for (size_t i = 0; i < 9; i++)
+		{
+			int8_t rem = static_cast<int8_t>(n % 3);
+			n /= 3;
+			// deal with carry
+			if (rem == 2)
+			{
+				rem = -1;
+				n++;
+			}
+			else if (rem == -2)
+			{
+				rem = 1;
+				n--;
+			}
+			trits_[i] = rem;
+
+			// trits are zero by default - if n == 0 break out of loop early
+			if (n == 0) break;
+		}
+	}
 
 	// string constructor (uses integer constructor)
 	Tryte(std::string const& s);

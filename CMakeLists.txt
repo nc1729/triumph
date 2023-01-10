@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 3.13)
 project(triumph VERSION 1.0 DESCRIPTION "TRIUMPH ternary computer")
 
 # require c++14
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 

@@ -210,5 +210,11 @@ void Computer::IO_manager()
 		{
 			disk_manager();
 		}
+
+		// wait before trying to read disk again
+		auto now = std::chrono::steady_clock::now();
+		using std::chrono::operator""ms;
+		auto wake_time = now + 50ms;
+		std::this_thread::sleep_until(wake_time);
 	}
 }
